@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.androidteam.jobnow.RegisterActivity">
+
+    <EditText
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:id="@+id/edtFullName"
+        android:gravity="left|center_vertical"
+        android:hint="@string/full_name"
+        android:textSize="16sp"
+        android:background="@drawable/bg_btn_info"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+
+    <EditText
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:id="@+id/edtEmail"
+        android:gravity="left|center_vertical"
+        android:hint="@string/email"
+        android:textSize="16sp"
+        android:background="@drawable/bg_btn_info"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <EditText
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:id="@+id/edtPhoneNumber"
+        android:gravity="left|center_vertical"
+        android:hint="@string/phone_number"
+        android:textSize="16sp"
+        android:background="@drawable/bg_btn_info"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <EditText
+        android:layout_marginBottom="10dp"
+        android:padding="10dp"
+        android:id="@+id/edtPassword"
+        android:gravity="left|center_vertical"
+        android:hint="@string/password"
+        android:password="true"
+        android:textSize="16sp"
+        android:background="@drawable/bg_btn_info"
+        android:layout_width="match_parent"
+        android:layout_height="40dp" />
+
+    <Button
+        android:layout_marginBottom="10dp"
+        android:id="@+id/btnSignup"
+        android:text="@string/sign_up"
+        android:textColor="@android:color/white"
+        android:background="@drawable/bg_btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textColor="#666666"
+        android:text="by signing up, I have read and aggree to JobNow.com\n Term of Service and Privacy "
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>
