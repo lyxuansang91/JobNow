@@ -69,10 +69,31 @@ public class ProfileFragment extends Fragment {
                 setPager();
             }
         });
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                tabSelected = position;
+                setTabSelected();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     private void setPager() {
         viewPager.setCurrentItem(tabSelected);
+        setTabSelected();
+    }
+
+    private void setTabSelected() {
         switch (tabSelected) {
             case 0:
                 tab1.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
@@ -127,9 +148,9 @@ public class ProfileFragment extends Fragment {
 
     private void bindData() {
         FragmentPagerItems pages = new FragmentPagerItems(getActivity());
-        for (int titleResId : tabs()) {
-            pages.add(FragmentPagerItem.of(getString(titleResId), MyProfileFragment.class));
-        }
+        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
+        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
+        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
         FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
                 getChildFragmentManager(), pages);
 

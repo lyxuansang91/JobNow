@@ -19,19 +19,19 @@
             android:layout_above="@+id/tabbottom"
             android:orientation="vertical">
 
-            <android.support.v7.widget.Toolbar
+            <com.androidteam.jobnow.widget.CenteredToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary"
+                android:title="@string/profile"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
             <!--<include layout="@layout/content_profile2" />-->
             <FrameLayout
                 android:id="@+id/fl_change"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-            </FrameLayout>
+                android:layout_height="match_parent"></FrameLayout>
         </LinearLayout>
 
         <com.flyco.tablayout.CommonTabLayout

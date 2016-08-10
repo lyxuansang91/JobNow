@@ -108,4 +108,16 @@
     <string name="exprience">Exprience</string>
     <string name="skills">Skills</string>
     <string name="tab">TAB</string>
+    <string name="emailAddress">Email Address</string>
+    <string name="phoneNumber">Phone Number</string>
+    <string name="gender">Gender</string>
+    <string name="birthday">Birthday</string>
+    <string name="country">Country</string>
+    <string name="postalCode">Postal Code</string>
+    <string name="description">Description</string>
+    <string name="addExprience">Add Exprience</string>
+    <string name="addSkill">Add Skill</string>
+    <string name="editSkill">Edit Skill</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

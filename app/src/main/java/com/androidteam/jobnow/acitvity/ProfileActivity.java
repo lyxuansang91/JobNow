@@ -3,11 +3,11 @@ package com.androidteam.jobnow.acitvity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.fragment.ProfileFragment;
+import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -30,9 +30,9 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
+        CenteredToolbar toolbar = (CenteredToolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        toolbar.setTitle("Profile");
         InitUI();
         bindData();
         InitEvent();
