@@ -6,7 +6,9 @@
     <color name="colorBackGroundSignUp">#ff8344</color>
     <color name="colorBackGroundLogin">#3ba7eb</color>
     <color name="colorGray">#e0e0e0</color>
+    <color name="darkGray">#7d7d7d</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="backgroudTab">#f8f8f8</color>
+    <color name="colorMoney">#f96145</color>
 </resources>

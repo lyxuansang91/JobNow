@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.fragment.FilterFragment;
+import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
@@ -40,6 +41,9 @@ public class ProfileActivity extends AppCompatActivity {
         for (int i = 0; i < mTitles.length; i++) {
             switch (i) {
                 case 0:
+                    mFragments2.add(new MainFragment());
+                    break;
+                case 1:
                     mFragments2.add(new FilterFragment());
                     break;
                 default:

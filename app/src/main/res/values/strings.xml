@@ -121,5 +121,7 @@
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
     <string name="search_hint">Search by name</string>
+    <string name="jobList">Job List</string>
+    <string name="mapList">Map List</string>
 
 </resources>
