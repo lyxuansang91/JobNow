@@ -120,4 +120,6 @@
     <string name="editSkill">Edit Skill</string>
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
+    <string name="search_hint">Search by name</string>
+
 </resources>

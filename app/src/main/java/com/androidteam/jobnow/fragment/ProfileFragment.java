@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
@@ -158,6 +159,9 @@ public class ProfileFragment extends Fragment {
     }
 
     private void initUI(View v) {
+        CenteredToolbar toolbar = (CenteredToolbar) v.findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+        toolbar.setTitle("Profile");
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
 
 //        viewPagerTab.setViewPager(viewPager);

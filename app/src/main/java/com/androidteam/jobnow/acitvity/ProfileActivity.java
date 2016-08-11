@@ -3,11 +3,10 @@ package com.androidteam.jobnow.acitvity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.fragment.FilterFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
-import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -30,9 +29,6 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        CenteredToolbar toolbar = (CenteredToolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-        toolbar.setTitle("Profile");
         InitUI();
         bindData();
         InitEvent();
@@ -41,17 +37,22 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void bindData() {
         String[] mTitles = {getString(R.string.home), getString(R.string.saved), getString(R.string.applied), getString(R.string.profile)};
-
-        for (String title : mTitles) {
-            mFragments2.add(new ProfileFragment());
-        }
         for (int i = 0; i < mTitles.length; i++) {
+            switch (i) {
+                case 0:
+                    mFragments2.add(new FilterFragment());
+                    break;
+                default:
+                    mFragments2.add(new ProfileFragment());
+                    break;
+
+            }
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
         }
 
         tabbottom.setTabData(mTabEntities, this, R.id.fl_change, mFragments2);
         tabbottom.showMsg(1, 10);
-        tabbottom.setCurrentTab(3);
+        tabbottom.setCurrentTab(0);
     }
 
     private void InitEvent() {
@@ -65,7 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
 //                mTabLayout_6.setCurrentTab(position);
 //                mTabLayout_7.setCurrentTab(position);
 //                mTabLayout_8.setCurrentTab(position);
-                Toast.makeText(ProfileActivity.this, "Selected " + position, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(ProfileActivity.this, "Selected " + position, Toast.LENGTH_SHORT).show();
             }
 
             @Override
