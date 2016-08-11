@@ -4,4 +4,8 @@
         <item>All Specializations</item>
         <item>All Specializations</item>
     </string-array>
+    <string-array name="item_sortBy">
+        <item>Sort by</item>
+        <item>Sort by</item>
+    </string-array>
 </resources>
