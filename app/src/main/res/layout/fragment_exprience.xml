@@ -11,6 +11,7 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/lnAddExp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -36,6 +37,7 @@
             android:background="@color/colorGray" />
 
         <LinearLayout
+            android:id="@+id/lnJob1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -68,6 +70,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:tag="edit"
                     android:id="@+id/imgEdit1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -107,6 +110,7 @@
             android:background="@color/colorGray" />
 
         <LinearLayout
+            android:id="@+id/lnJob2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
@@ -139,6 +143,7 @@
                 </LinearLayout>
 
                 <ImageView
+                    android:tag="edit"
                     android:id="@+id/imgEdit2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

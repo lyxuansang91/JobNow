@@ -204,6 +204,7 @@
             android:padding="10dp">
 
             <Button
+                android:id="@+id/btnCancel"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
@@ -213,6 +214,7 @@
                 android:textColor="@color/white" />
 
             <Button
+                android:id="@+id/btnSave"
                 android:layout_width="0dip"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"

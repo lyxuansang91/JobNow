@@ -1,5 +1,6 @@
 package com.androidteam.jobnow.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -9,8 +10,10 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.acitvity.FilterActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +26,7 @@ public class MainFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewpager;
+    private ImageView imgFilter;
 
     public MainFragment() {
         // Required empty public constructor
@@ -41,17 +45,25 @@ public class MainFragment extends Fragment {
     private void InitUI(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewpager = (ViewPager) view.findViewById(R.id.viewpager);
+        imgFilter = (ImageView) view.findViewById(R.id.imgFilter);
+        imgFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FilterActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+
+            }
+        });
         setupViewPager(viewpager);
         tabLayout.setupWithViewPager(viewpager);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         viewPagerAdapter = new ViewPagerAdapter(getChildFragmentManager());
-        viewPagerAdapter.addFragment(new JobListFragment(), getString(R.string.jobList));
-        viewPagerAdapter.addFragment(new JobListFragment(), getString(R.string.mapList));
-//        viewPagerAdapter.addFragment(new RankFragment(), getString(R.string.caiDat));
+        viewPagerAdapter.addFragment(JobListFragment.getInstance(false), getString(R.string.jobList));
+        viewPagerAdapter.addFragment(new MapListFragment(), getString(R.string.mapList));
         viewPager.setAdapter(viewPagerAdapter);
-
     }
 
 

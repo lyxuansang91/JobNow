@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -162,6 +164,13 @@ public class ProfileFragment extends Fragment {
         CenteredToolbar toolbar = (CenteredToolbar) v.findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
         toolbar.setTitle("Profile");
+
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeButtonEnabled(true);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setHomeAsUpIndicator(R.mipmap.ic_back);
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("Profile");
         viewPager = (ViewPager) v.findViewById(R.id.viewpager);
 
 //        viewPagerTab.setViewPager(viewPager);
@@ -177,4 +186,5 @@ public class ProfileFragment extends Fragment {
         custom_text2 = (TextView) v.findViewById(R.id.custom_text2);
         custom_text3 = (TextView) v.findViewById(R.id.custom_text3);
     }
+
 }

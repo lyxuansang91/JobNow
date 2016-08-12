@@ -11,4 +11,7 @@
     <color name="black">#000000</color>
     <color name="backgroudTab">#f8f8f8</color>
     <color name="colorMoney">#f96145</color>
+    <color name="colorBgApplyJob">#fa603c</color>
+    <color name="colorBgSaveJob">#026dbb</color>
+
 </resources>

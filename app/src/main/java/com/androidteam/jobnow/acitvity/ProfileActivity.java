@@ -3,9 +3,10 @@ package com.androidteam.jobnow.acitvity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
-import com.androidteam.jobnow.fragment.FilterFragment;
+import com.androidteam.jobnow.fragment.JobListFragment;
 import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
 import com.androidteam.jobnow.widget.TabEntity;
@@ -44,10 +45,15 @@ public class ProfileActivity extends AppCompatActivity {
                     mFragments2.add(new MainFragment());
                     break;
                 case 1:
-                    mFragments2.add(new FilterFragment());
+                    mFragments2.add(JobListFragment.getInstance(true));
+                    break;
+                case 2:
+                    mFragments2.add(JobListFragment.getInstance(true));
+                    break;
+                case 3:
+                    mFragments2.add(new ProfileFragment());
                     break;
                 default:
-                    mFragments2.add(new ProfileFragment());
                     break;
 
             }
@@ -82,7 +88,18 @@ public class ProfileActivity extends AppCompatActivity {
 
     private void InitUI() {
         tabbottom = (CommonTabLayout) findViewById(R.id.tabbottom);
+    }
 
+    long key_pressed;
+
+    @Override
+    public void onBackPressed() {
+        if(System.currentTimeMillis()- key_pressed < 2000) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(getApplicationContext(), "Back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        key_pressed = System.currentTimeMillis();
     }
 
 }
