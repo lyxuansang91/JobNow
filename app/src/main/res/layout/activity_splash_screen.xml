@@ -1,77 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:weightSum="5"
-    android:background="@mipmap/splash"
-    android:orientation="vertical"
-    android:layout_height="match_parent">
-
-    <ImageView
-        android:layout_gravity="center_horizontal"
-        android:src="@mipmap/ic_logo"
-        android:layout_width="120dp"
-        android:scaleType="fitCenter"
-        android:layout_weight="1"
-        android:background="@null"
-        android:layout_height="0dip" />
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
     <LinearLayout
-        android:layout_weight="3"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/splash"
         android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:layout_width="match_parent"
-        android:padding="40dp"
-        android:layout_height="wrap_content">
+        android:weightSum="5">
 
-        <TextView android:id="@+id/tvNumberJob"
-            android:layout_gravity="center"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:layout_width="120dp"
+            android:layout_height="0dip"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1"
+            android:background="@null"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_logo" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="26sp"
-            android:textStyle="bold"
-            android:text="12.345 Job in Job now"
-            />
+            android:layout_weight="3"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="40dp">
 
-        <TextView android:id="@+id/tvIntro"
-            android:layout_margin="20dp"
-            android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/tvNumberJob"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="12.345 Job in Job now"
+                android:textColor="@android:color/white"
+                android:textSize="26sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvIntro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="20dp"
+                android:text="Most Quality Jobs, Most Quality Employers, Most trusted"
+                android:textColor="@android:color/white"
+                android:textSize="18sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
-            android:textColor="@android:color/white"
-            android:layout_gravity="center"
-            android:text="Most Quality Jobs, Most Quality Employers, Most trusted"
-            />
-    </LinearLayout>
-    
-    <LinearLayout
-        android:layout_weight="1"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        
-        <Button
-            android:id="@+id/btnSignUp"
-            android:background="@drawable/bg_btn_signup"
-            android:text="Sign Up"
-            android:textSize="14sp"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_margin="@dimen/dp5"
-            android:layout_height="wrap_content" />
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnLogin"
-            android:background="@drawable/bg_btn_log_in"
-            android:layout_margin="@dimen/dp5"
-            android:text="Log In"
-            android:textSize="14sp"
-            android:textColor="@android:color/white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/btnSignUp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp5"
+                android:background="@drawable/bg_btn_signup"
+                android:text="Sign Up"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnLogin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/dp5"
+                android:background="@drawable/bg_btn_log_in"
+                android:text="Log In"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
