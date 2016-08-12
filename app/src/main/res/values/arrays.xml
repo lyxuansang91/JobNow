@@ -5,7 +5,7 @@
         <item>All Specializations</item>
     </string-array>
     <string-array name="item_sortBy">
-        <item>Sort by</item>
-        <item>Sort by</item>
+        <item>by Date</item>
+        <item>by Salary</item>
     </string-array>
 </resources>
