@@ -1,0 +1,11 @@
+Unstaged changes after reset:
+M	app/app-release.apk
+M	app/build.gradle
+M	app/src/main/AndroidManifest.xml
+M	app/src/main/java/com/androidteam/jobnow/acitvity/FilterActivity.java
+M	app/src/main/java/com/androidteam/jobnow/acitvity/LoginActivity.java
+M	app/src/main/java/com/androidteam/jobnow/acitvity/ProfileActivity.java
+M	app/src/main/java/com/androidteam/jobnow/acitvity/RegisterActivity.java
+M	app/src/main/java/com/androidteam/jobnow/fragment/MapListFragment.java
+M	app/src/main/res/mipmap-xhdpi/ic_apply_job.png
+D	app/src/main/res/mipmap-xxhdpi/ic_apply_job.png
