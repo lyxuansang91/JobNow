@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
-                android:src="@mipmap/ic_ring" />
+                android:src="@mipmap/ic_back" />
 
             <ImageView
                 android:id="@+id/imgFilter"

@@ -9,9 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.androidteam.jobnow.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -59,20 +63,13 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         if(mMap == null) {
             mMap = googleMap;
-            mPerth = mMap.addMarker(new MarkerOptions()
-                    .position(PERTH)
-                    .title("Perth"));
-            mPerth.setTag(0);
-
-            mSydney = mMap.addMarker(new MarkerOptions()
-                    .position(SYDNEY)
-                    .title("Sydney"));
-            mSydney.setTag(0);
-
-            mBrisbane = mMap.addMarker(new MarkerOptions()
-                    .position(BRISBANE)
-                    .title("Brisbane"));
-            mBrisbane.setTag(0);
+            MarkerOptions markerOption = new MarkerOptions()
+                    .position(PERTH).icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker))
+                    .snippet("600-900 USD")
+                    .title("Taxi");
+            mPerth = mMap.addMarker(markerOption);
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLng(mPerth.getPosition());
+            mMap.animateCamera(cameraUpdate);
         }
 
     }

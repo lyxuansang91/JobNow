@@ -91,15 +91,4 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     long key_pressed;
-
-    @Override
-    public void onBackPressed() {
-        if(System.currentTimeMillis()- key_pressed < 2000) {
-            super.onBackPressed();
-        } else {
-            Toast.makeText(getApplicationContext(), "Back again to exit", Toast.LENGTH_SHORT).show();
-        }
-        key_pressed = System.currentTimeMillis();
-    }
-
 }

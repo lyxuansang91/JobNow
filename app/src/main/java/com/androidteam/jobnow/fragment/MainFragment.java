@@ -26,7 +26,7 @@ public class MainFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewpager;
-    private ImageView imgFilter;
+    private ImageView imgFilter, imgBack;
 
     public MainFragment() {
         // Required empty public constructor
@@ -46,6 +46,13 @@ public class MainFragment extends Fragment {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewpager = (ViewPager) view.findViewById(R.id.viewpager);
         imgFilter = (ImageView) view.findViewById(R.id.imgFilter);
+        imgBack = (ImageView) view.findViewById(R.id.imgRing);
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().finish();
+            }
+        });
         imgFilter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
