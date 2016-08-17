@@ -126,5 +126,5 @@
     <string name="mapList">Map List</string>
     <string name="title_activity_detail_jobs">DetailJobsActivity</string>
     <string name="job_description"><![CDATA[- Perform equipment troubleshooting and implement courter measure - \n Perform equipment program modification (PLC, HMI & Robotics programming) \n - Production equipment maitenance planning \n- Lead, train and manage a team of engineering staff in functional tasks \n- Lead improvement project and activities]]></string>
-
+    <string name="facebook_app_id">344352675903581</string>
 </resources>

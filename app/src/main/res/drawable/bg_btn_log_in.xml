@@ -1,16 +1,27 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/colorBackGroundLogin" />
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <gradient android:angle="90" android:endColor="#288ccb" android:startColor="#288ccb" android:type="linear" />
+            <padding android:bottom="3dp" android:left="3dp" android:right="3dp" android:top="3dp" />
 
-    <padding
-        android:bottom="3dp"
-        android:left="3dp"
-        android:right="3dp"
-        android:top="3dp" />
+            <corners android:radius="@dimen/dp5" />
+        </shape>
+    </item>
+    <item android:state_pressed="true">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <gradient android:angle="90" android:endColor="#288ccb" android:startColor="#288ccb" android:type="linear" />
+            <padding android:bottom="3dp" android:left="3dp" android:right="3dp" android:top="3dp" />
 
-    <corners
-        android:bottomLeftRadius="@dimen/dp5"
-        android:bottomRightRadius="@dimen/dp5"
-        android:topLeftRadius="@dimen/dp5"
-        android:topRightRadius="@dimen/dp5" />
-</shape>
+            <corners android:radius="@dimen/dp5" />
+        </shape>
+    </item>
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android">
+            <gradient android:angle="90" android:endColor="#40adf2" android:startColor="#288ccb" android:type="linear" />
+            <padding android:bottom="3dp" android:left="3dp" android:right="3dp" android:top="3dp" />
+
+            <corners android:radius="@dimen/dp5" />
+        </shape>
+    </item>
+</selector>

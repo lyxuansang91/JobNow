@@ -6,6 +6,7 @@ import android.graphics.Typeface;
 import android.os.Build;
 
 import com.androidteam.jobnow.utils.TypefaceUtil;
+import com.facebook.FacebookSdk;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -18,6 +19,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        FacebookSdk.sdkInitialize(getApplicationContext());
         TypefaceUtil.overrideFont(getApplicationContext(), "SERIF", "helveticaneue.ttf");
         changeAppFont();
     }
