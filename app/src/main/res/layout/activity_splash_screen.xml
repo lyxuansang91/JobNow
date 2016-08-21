@@ -2,83 +2,121 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@mipmap/splash"
     android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/splash"
-        android:orientation="vertical"
-        android:weightSum="5">
+        android:background="#33000000">
 
-        <ImageView
-            android:layout_width="120dp"
-            android:layout_height="0dip"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1"
-            android:background="@null"
-            android:scaleType="fitCenter"
-            android:src="@mipmap/ic_logo" />
-
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center_horizontal"
-            android:orientation="vertical"
+            android:layout_height="match_parent"
             android:padding="40dp">
 
-            <TextView
-                android:id="@+id/tvNumberJob"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="12.345 Job in Job now"
-                android:textColor="@android:color/white"
-                android:textSize="26sp"
-                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/lnButton"
+                android:orientation="vertical"
+                android:weightSum="5">
 
-            <TextView
-                android:id="@+id/tvIntro"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="20dp"
-                android:text="Most Quality Jobs, Most Quality Employers, Most trusted"
-                android:textColor="@android:color/white"
-                android:textSize="18sp" />
-        </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@null"
+                    android:layout_marginTop="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/ic_logo" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="horizontal">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvNumberJob"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:gravity="center"
+                            android:text="12.345 Job in Job now"
+                            android:textColor="@android:color/white"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvIntro"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_margin="10dp"
+                            android:gravity="center"
+                            android:text="Most Quality Jobs •  Most Quality Employers •  Most Trusted"
+                            android:textColor="@android:color/white" />
+                    </LinearLayout>
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/lnButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/btnLoginFacebook"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSignUp"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dp5"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_btn_signup"
+                    android:text="Sign Up"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/btnLogin"
+                    android:layout_width="0dip"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dp5"
+                    android:layout_weight="1"
+                    android:background="@drawable/bg_btn_log_in"
+                    android:text="Log In"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
 
             <Button
-                android:id="@+id/btnSignUp"
-                android:layout_width="wrap_content"
+                android:id="@+id/btnLoginFacebook"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp5"
-                android:background="@drawable/bg_btn_signup"
-                android:text="Sign Up"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:layout_alignParentBottom="true"
 
-            <Button
-                android:id="@+id/btnLogin"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dp5"
-                android:background="@drawable/bg_btn_log_in"
-                android:text="Log In"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:background="@drawable/bg_btn_facebook"
+                android:drawableLeft="@mipmap/ic_facebook"
+                android:padding="10dp"
+                android:text="Log In With Facebook"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+        </RelativeLayout>
 
-        </LinearLayout>
+    </RelativeLayout>
 
-
-    </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
