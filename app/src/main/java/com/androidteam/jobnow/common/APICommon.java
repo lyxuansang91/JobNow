@@ -4,13 +4,14 @@ import android.util.Log;
 
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.RegisterFBReponse;
+import com.androidteam.jobnow.models.RegisterFBRequest;
+import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
 
 import retrofit.Call;
 import retrofit.http.Body;
-import retrofit.http.Field;
 import retrofit.http.POST;
-import retrofit.http.Query;
 
 /**
  * Created by SANG on 8/21/2016.
@@ -22,7 +23,7 @@ public class APICommon {
     public static final int WEB = 2;
     private static final String TAG = APICommon.class.getSimpleName();
 
-    public static String getApiKey(){
+    public static String getApiKey() {
         return "tD0EudnC92D198TR";
     }
 
@@ -43,7 +44,7 @@ public class APICommon {
             String md5_hash = FunctionCommon.hashString(path_url + ":" + time + ":" + api_key);
             builder.append(md5_hash);
             return builder.toString();
-        } catch(Exception ex) {
+        } catch (Exception ex) {
             Log.e(TAG, ex.getMessage());
             return null;
         }
@@ -52,6 +53,11 @@ public class APICommon {
     public interface JobNowService {
         @POST("users/postLogin")
         Call<LoginResponse> loginUser(@Body LoginRequest request);
+
+        @POST("users/postRegister")
         Call<RegisterResponse> registerUser(@Body RegisterRequest request);
+
+        @POST("users/postRegisterSocialite")
+        Call<RegisterFBReponse> registerFB(@Body RegisterFBRequest request);
     }
 }

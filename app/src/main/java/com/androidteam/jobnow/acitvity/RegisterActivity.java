@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -11,9 +12,17 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.models.RegisterRequest;
+import com.androidteam.jobnow.models.RegisterResponse;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class RegisterActivity extends AppCompatActivity {
-
+    private static final String TAG = RegisterActivity.class.getSimpleName();
     private Button btnSignup;
     private EditText edtFullName;
     private EditText edtPhoneNumber;
@@ -33,13 +42,42 @@ public class RegisterActivity extends AppCompatActivity {
             ab.setTitle(R.string.sign_up);
             ab.setDisplayHomeAsUpEnabled(true);
         }
-        
+
         btnSignup = (Button) findViewById(R.id.btnSignup);
+        edtFullName = (EditText) findViewById(R.id.edtFullName);
+        edtPhoneNumber = (EditText) findViewById(R.id.edtPhoneNumber);
+        edtEmail = (EditText) findViewById(R.id.edtEmail);
+        edtPassword = (EditText) findViewById(R.id.edtPassword);
+
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivity(intent);
+//                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+//                startActivity(intent);
+                String fullname = edtFullName.getText().toString();
+                String phoneNumber = edtPhoneNumber.getText().toString();
+                String email = edtEmail.getText().toString();
+                String password = edtPassword.getText().toString();
+                APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+                Call<RegisterResponse> registerFBReponseCall =
+                        service.registerUser(new RegisterRequest(fullname, phoneNumber, email, password));
+                registerFBReponseCall.enqueue(new Callback<RegisterResponse>() {
+                    @Override
+                    public void onResponse(Response<RegisterResponse> response, Retrofit retrofit) {
+                        Log.d(TAG, "get login response: " + response.body().toString());
+                        int code = response.code();
+                        if (code == 200) {
+                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                            startActivity(intent);
+                        }
+                        Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        Log.d(TAG, "(on failed): " + t.toString());
+                    }
+                });
             }
         });
     }

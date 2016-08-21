@@ -14,6 +14,10 @@ import android.widget.Toast;
 
 import com.androidteam.jobnow.BuildConfig;
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.models.RegisterFBReponse;
+import com.androidteam.jobnow.models.RegisterFBRequest;
+import com.androidteam.jobnow.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -28,8 +32,13 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
-public class SplashScreen extends AppCompatActivity {
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
+public class SplashScreen extends AppCompatActivity {
+    private static final String TAG = SplashScreen.class.getSimpleName();
     private Button btnLogin;
     private Button btnSignUp;
     private Button btnLoginFacebook;
@@ -73,8 +82,32 @@ public class SplashScreen extends AppCompatActivity {
 //                                    editor.commit();
 //                                    CLog.d(TAG, "token fb: " + loginResult.getAccessToken().getToken());
 //                                    EventBus.getDefault().post(new LoginSuccessEvent(LoginSuccessEvent.TYPE_FACEBOOK));
-                                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                                    startActivity(intent);
+//                                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+//                                    startActivity(intent);
+                                    String email = object.optString("email");
+                                    String name = object.optString("name");
+                                    String fbid = object.optString("id");
+                                    String avatar = Utils.addressAvatarFB(fbid);
+                                    APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+                                    Call<RegisterFBReponse> registerFBReponseCall =
+                                            service.registerFB(new RegisterFBRequest(name, email, avatar, fbid));
+                                    registerFBReponseCall.enqueue(new Callback<RegisterFBReponse>() {
+                                        @Override
+                                        public void onResponse(Response<RegisterFBReponse> response, Retrofit retrofit) {
+                                            Log.d(TAG, "get login response: " + response.body().toString());
+                                            int code = response.code();
+                                            if (code == 200) {
+                                                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                                                startActivity(intent);
+                                            }
+                                            Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                                        }
+
+                                        @Override
+                                        public void onFailure(Throwable t) {
+                                            Log.d(TAG, "(on failed): " + t.toString());
+                                        }
+                                    });
                                 } else {
 
                                 }
