@@ -15,6 +15,7 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
+import com.androidteam.jobnow.utils.Utils;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -58,26 +59,39 @@ public class RegisterActivity extends AppCompatActivity {
                 String phoneNumber = edtPhoneNumber.getText().toString();
                 String email = edtEmail.getText().toString();
                 String password = edtPassword.getText().toString();
-                APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-                Call<RegisterResponse> registerFBReponseCall =
-                        service.registerUser(new RegisterRequest(fullname, phoneNumber, email, password));
-                registerFBReponseCall.enqueue(new Callback<RegisterResponse>() {
-                    @Override
-                    public void onResponse(Response<RegisterResponse> response, Retrofit retrofit) {
-                        Log.d(TAG, "get login response: " + response.body().toString());
-                        int code = response.code();
-                        if (code == 200) {
-                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                            startActivity(intent);
+                if (email.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.pleaseInputEmail), Toast.LENGTH_SHORT).show();
+                } else if (password.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.pleaseInputPassword), Toast.LENGTH_SHORT).show();
+                } else if (!Utils.isEmailValid(email)) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.emailNotValid), Toast.LENGTH_SHORT).show();
+                } else if (fullname.isEmpty()) {
+                    Toast.makeText(RegisterActivity.this, getString(R.string.pleaseInputFullName), Toast.LENGTH_SHORT).show();
+                }else if(phoneNumber.isEmpty()){
+                    Toast.makeText(RegisterActivity.this, getString(R.string.pleaseInputPhoneNumber), Toast.LENGTH_SHORT).show();
+                }else {
+                    APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+                    Call<RegisterResponse> registerFBReponseCall =
+                            service.registerUser(new RegisterRequest(fullname, phoneNumber, email, password));
+                    registerFBReponseCall.enqueue(new Callback<RegisterResponse>() {
+                        @Override
+                        public void onResponse(Response<RegisterResponse> response, Retrofit retrofit) {
+                            Log.d(TAG, "get login response: " + response.body().toString());
+                            int code = response.code();
+                            if (code == 200) {
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivity(intent);
+                            }
+                            Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
                         }
-                        Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
-                    }
 
-                    @Override
-                    public void onFailure(Throwable t) {
-                        Log.d(TAG, "(on failed): " + t.toString());
-                    }
-                });
+                        @Override
+                        public void onFailure(Throwable t) {
+                            Log.d(TAG, "(on failed): " + t.toString());
+                        }
+                    });
+                }
+
             }
         });
     }
