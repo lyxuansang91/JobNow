@@ -13,32 +13,43 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
-            android:padding="10dp">
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary">
 
-            <ImageView
+            <RelativeLayout
                 android:id="@+id/imgRing"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:src="@mipmap/ic_back" />
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize">
 
-            <ImageView
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/ic_ring" />
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:id="@+id/imgFilter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
                 android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:src="@mipmap/ic_filter" />
+                android:layout_centerVertical="true">
 
-            <com.androidteam.jobnow.widget.CustomEditText
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@mipmap/ic_filter" />
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/edSearch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/imgFilter"
                 android:layout_toRightOf="@+id/imgRing"
                 android:background="@drawable/bg_search"
@@ -60,10 +71,12 @@
             app:tabIndicatorColor="@color/colorPrimary"
             app:tabSelectedTextColor="@color/colorPrimary"
             app:tabTextColor="@color/black" />
+
         <View
             android:layout_width="match_parent"
-            android:background="@color/colorGray"
-            android:layout_height="1dp"/>
+            android:layout_height="1dp"
+            android:background="@color/colorGray" />
+
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"

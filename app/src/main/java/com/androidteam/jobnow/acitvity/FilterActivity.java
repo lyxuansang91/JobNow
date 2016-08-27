@@ -6,6 +6,8 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,8 +37,9 @@ public class FilterActivity extends AppCompatActivity {
     private DisableScrollRecyclerView rvJobLocation, rvSkill;
     private JobLocationAdapter jobLocationAdapter;
     private SkillAdapter skillAdapter;
-
+    private RelativeLayout imgBack;
     private void initUI() {
+        imgBack = (RelativeLayout) findViewById(R.id.imgBack);
         spnIndustry = (Spinner) findViewById(R.id.spnIndustry);
         rvJobLocation = (DisableScrollRecyclerView) findViewById(R.id.rvJobLocation);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
@@ -62,6 +65,16 @@ public class FilterActivity extends AppCompatActivity {
 
         initUI();
         bindData();
+        initevent();
+    }
+
+    private void initevent() {
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void bindData() {
@@ -93,7 +106,7 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void getJobLocation() {
-        /*APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         String url = APICommon.BASE_URL + "country/getAllCountry/" + APICommon.getSign(APICommon.getApiKey(), "api/v1/country/getAllCountry")
                 + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType();
         Call<JobLocationResponse> jobLocationResponseCall = service.getJobLocation(url);
@@ -111,11 +124,11 @@ public class FilterActivity extends AppCompatActivity {
             public void onFailure(Throwable t) {
                 Toast.makeText(FilterActivity.this, getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
 
-        for (int i = 0; i < 9; i++) {
-            jobLocationAdapter.add(new JobLocationResponse.JobLocationResult());
-        }
+//        for (int i = 0; i < 9; i++) {
+//            jobLocationAdapter.add(new JobLocationResponse.JobLocationResult());
+//        }
     }
 
     private void getIndustry() {

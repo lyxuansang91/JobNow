@@ -12,39 +12,49 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="?attr/actionBarSize"
             android:orientation="vertical"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="10dp">
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/imgRing"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="10dp"
-                    android:src="@mipmap/ic_back" />
+                <RelativeLayout
+                    android:id="@+id/imgBack"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize">
 
-                <ImageView
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginLeft="10dp"
+                        android:src="@mipmap/ic_back" />
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:id="@+id/imgFilter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@mipmap/ic_filter" />
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginRight="10dp"
+                        android:src="@mipmap/ic_filter" />
+
+                </RelativeLayout>
 
                 <com.androidteam.jobnow.widget.CustomEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
                     android:layout_toLeftOf="@+id/imgFilter"
-                    android:layout_toRightOf="@+id/imgRing"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/imgBack"
                     android:background="@drawable/bg_search"
                     android:drawableLeft="@mipmap/ic_search"
                     android:drawablePadding="5dp"
@@ -117,7 +127,8 @@
                     android:id="@+id/rvJobLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -131,7 +142,8 @@
                     android:id="@+id/rvSkill"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp" />
+                    android:layout_marginTop="10dp"
+                    android:visibility="visible" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -140,6 +152,82 @@
                     android:text="Show more"
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:text="Salary"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_salary"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_salary_left">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="@string/price" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:background="#d5d6d4" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <EditText
+                            android:id="@+id/edMin"
+                            android:layout_width="0dip"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="#d5d6d4" />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:background="#e7e7e7">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:text="-"
+                                android:textColor="@color/black" />
+                        </RelativeLayout>
+
+                        <View
+                            android:layout_width="1dp"
+                            android:layout_height="match_parent"
+                            android:background="#d5d6d4" />
+
+                        <EditText
+                            android:id="@+id/edMax"
+                            android:layout_width="0dip"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1" />
+                    </LinearLayout>
+                </LinearLayout>
             </LinearLayout>
 
 
@@ -154,7 +242,8 @@
             android:drawableLeft="@mipmap/ic_refresh"
             android:drawablePadding="5dp"
             android:text="Reset Filter"
-            android:textColor="@color/colorPrimary" />
+            android:textColor="@color/colorPrimary"
+            android:visibility="visible" />
 
         <Button
             android:id="@+id/btnFilter"
@@ -165,7 +254,8 @@
             android:background="@drawable/bg_btn_signup"
             android:text="Filter"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
+            android:textColor="@color/white"
+            android:visibility="visible" />
     </RelativeLayout>
 
 </android.support.design.widget.CoordinatorLayout>

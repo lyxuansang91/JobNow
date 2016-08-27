@@ -49,4 +49,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:9.4.0'
     compile 'com.facebook.android:facebook-android-sdk:4.+'
     compile 'com.squareup.picasso:picasso:2.5.2'
+    compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.6'
 }

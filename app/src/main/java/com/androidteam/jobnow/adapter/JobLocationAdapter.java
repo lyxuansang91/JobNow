@@ -49,7 +49,7 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
         }
 
         public void bindData(JobLocationResponse.JobLocationResult locationResult) {
-//            checkBox.setText(locationResult.Name);
+            checkBox.setText(locationResult.Name);
         }
 
     }

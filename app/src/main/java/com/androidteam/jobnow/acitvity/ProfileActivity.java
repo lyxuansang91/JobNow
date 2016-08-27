@@ -3,7 +3,6 @@ package com.androidteam.jobnow.acitvity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.fragment.JobListFragment;

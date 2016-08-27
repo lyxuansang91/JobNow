@@ -21,4 +21,7 @@ public class JobObject {
     public Integer IsActive;
     public String created_at;
     public String updated_at;
+    public String LocationName;
+    public String CompanyName;
+    public String CompanyLogo;
 }

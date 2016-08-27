@@ -134,4 +134,5 @@
     <string name="pleaseInputPhoneNumber">Please input phone number</string>
     <string name="error_connect">please check your network connection</string>
     <string name="AllSpecializations">All Specializations</string>
+    <string name="price">Price</string>
 </resources>

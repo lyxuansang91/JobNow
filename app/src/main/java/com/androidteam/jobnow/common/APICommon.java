@@ -71,6 +71,9 @@ public class APICommon {
         Call<JobListReponse> getJobList(@Url String url, @Query("page") int page, @Query("Order") String Order, @Query("Title") String Title, @Query("Location") String Location, @Query("Skill") String Skill, @Query("MinSalary") double MinSalary, @Query("FromSalary") double FromSalary, @Query("ToSalary") double ToSalary);
 
         @GET()
+        Call<JobListReponse> getJobList(@Url String url);
+
+        @GET()
         Call<IndustryResponse> getIndustry(@Url String url);
 
         @GET

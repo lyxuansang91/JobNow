@@ -66,7 +66,7 @@ public class JobListFragment extends Fragment {
     }
 
     private void bindData() {
-        JobListRequest jobListRequest = new JobListRequest(1, "ASC", "", "1,2,3,4", "1,2", 10, 500, 35000000);
+        JobListRequest jobListRequest = new JobListRequest(1, "ASC", "", "", "", 10, 500, 35000000);
 //        List<JobObject> jobObjects = new ArrayList<>();
 //        for (int i = 0; i < 10; i++) {
 //            jobObjects.add(new JobObject());
@@ -77,8 +77,9 @@ public class JobListFragment extends Fragment {
                 + "/" + APICommon.getDeviceType() + "/" + sharedPreferences.getInt(Config.KEY_ID, 0) + "/" + sharedPreferences.getString(Config.KEY_TOKEN, "");
 
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-        Call<JobListReponse> getJobList =
-                service.getJobList(url, jobListRequest.page, jobListRequest.Order, jobListRequest.Title, jobListRequest.Location, jobListRequest.Skill, jobListRequest.MinSalary, jobListRequest.FromSalary, jobListRequest.ToSalary);
+//        Call<JobListReponse> getJobList =
+//                service.getJobList(url, jobListRequest.page, jobListRequest.Order, jobListRequest.Title, jobListRequest.Location, jobListRequest.Skill, jobListRequest.MinSalary, jobListRequest.FromSalary, jobListRequest.ToSalary);
+        Call<JobListReponse> getJobList = service.getJobList(url);
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
@@ -106,7 +107,6 @@ public class JobListFragment extends Fragment {
         adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>());
         rvListJob.setAdapter(adapter);
         Utils.closeKeyboard(getActivity());
-
     }
 
 }

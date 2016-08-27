@@ -2,7 +2,7 @@
     android:id="@+id/lnJob"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#f1faff"
+    android:background="@color/white"
     android:orientation="vertical">
 
     <RelativeLayout
@@ -17,7 +17,8 @@
             android:layout_centerVertical="true"
             android:background="@drawable/bg_featured"
             android:gravity="center_vertical"
-            android:paddingLeft="10dp">
+            android:paddingLeft="10dp"
+            android:visibility="gone">
 
             <TextView
                 android:id="@+id/tvFeautured"
@@ -50,9 +51,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <TextView
+            android:id="@+id/tvLocation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:drawableLeft="@mipmap/ic_location"
@@ -61,10 +64,11 @@
             android:textColor="@color/darkGray" />
 
         <TextView
+            android:id="@+id/tvPrice"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:drawableLeft="@mipmap/ic_location"
+            android:layout_marginTop="5dp"
+            android:drawableLeft="@mipmap/ic_money"
             android:drawablePadding="10dp"
             android:text="6.000 - 9.000 (USD)"
             android:textColor="@color/colorMoney"
@@ -93,6 +97,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/tvCompanyName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Primarius Search Consultancy Pte Ltd"
@@ -100,6 +105,7 @@
                 android:textStyle="bold" />
 
             <TextView
+                android:id="@+id/tvTime"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
