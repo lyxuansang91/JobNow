@@ -1,5 +1,8 @@
 package com.androidteam.jobnow.utils;
 
+import android.app.Activity;
+import android.view.inputmethod.InputMethodManager;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -72,5 +75,15 @@ public class Utils {
             return true;
         else
             return false;
+    }
+
+    public static void closeKeyboard(Activity c) {
+        try {
+            InputMethodManager input = (InputMethodManager) c
+                    .getSystemService(Activity.INPUT_METHOD_SERVICE);
+            input.hideSoftInputFromWindow(c.getCurrentFocus().getWindowToken(), 0);
+        }catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }

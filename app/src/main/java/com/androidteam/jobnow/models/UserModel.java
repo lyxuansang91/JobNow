@@ -42,4 +42,7 @@ public class UserModel implements Serializable {
 
     @SerializedName("updated_at")
     public String updated_at;
+
+    @SerializedName("ApiToken")
+    public String ApiToken;
 }
