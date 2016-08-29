@@ -74,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
                     Log.d(TAG, "get login response: " + response.body().toString());
                     int code = response.code();
+                    Log.d(TAG, "code: " + code);
                     if(code == 200) {
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         startActivity(intent);
