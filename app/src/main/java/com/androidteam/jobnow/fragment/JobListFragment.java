@@ -66,7 +66,8 @@ public class JobListFragment extends Fragment {
     }
 
     private void bindData() {
-        JobListRequest jobListRequest = new JobListRequest(1, "ASC", "", "", "", 10, 500, 35000000);
+        JobListRequest jobListRequest =
+                new JobListRequest(1, "ASC", null, null, null, null, null, null);
 
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         Call<JobListReponse> getJobList = service.getJobListByParam(

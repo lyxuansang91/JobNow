@@ -68,18 +68,18 @@ public class APICommon {
         @POST("users/postRegisterSocialite")
         Call<RegisterFBReponse> registerFB(@Body RegisterFBRequest request);
 
-        @GET("jobs/getListJob/{sign}/{app_id}/{device_type}")
+        @GET("jobs/getListJob/{sign}/{app_id}/{device_type}/")
         Call<JobListReponse> getJobListByParam(@Path("sign") String sign,
                                                @Path("app_id") String app_id,
                                                @Path("device_type") int device_type,
-                                               @Query("page") int page,
+                                               @Query("page") Integer page,
                                                @Query("Order") String Order ,
                                                @Query("Title") String Title,
                                                @Query("Location") String Location,
                                                @Query("Skill") String Skill,
-                                               @Query("MinSalary") double MinSalary,
-                                               @Query("FromSalary") double FromSalary,
-                                               @Query("ToSalary") double ToSalary);
+                                               @Query("MinSalary") Integer MinSalary,
+                                               @Query("FromSalary") Integer FromSalary,
+                                               @Query("ToSalary")  Integer ToSalary);
 
         @GET()
         Call<JobListReponse> getJobList(@Url String url);

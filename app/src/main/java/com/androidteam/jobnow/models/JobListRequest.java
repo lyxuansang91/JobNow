@@ -7,16 +7,17 @@ import java.io.Serializable;
  */
 public class JobListRequest extends BaseRequest implements Serializable {
     public static final String PATH_URL = "api/v1/jobs/getListJob";
-    public int page;
+    public Integer page;
     public String Order;
     public String Title;
     public String Location;
     public String Skill;
-    public double MinSalary;
-    public double FromSalary;
-    public double ToSalary;
+    public Integer MinSalary;
+    public Integer FromSalary;
+    public Integer ToSalary;
 
-    public JobListRequest(int page, String Order, String Title, String Location, String Skill, double MinSalary, double FromSalary, double ToSalary) {
+    public JobListRequest(Integer page, String Order, String Title, String Location, String Skill,
+                          Integer MinSalary, Integer FromSalary, Integer ToSalary) {
         super(PATH_URL);
         this.page = page;
         this.Order = Order;
