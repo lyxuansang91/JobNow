@@ -104,6 +104,6 @@ public class APICommon {
                                                 @Part("device_type") RequestBody device_type,
                                                 @Part("ApiToken") RequestBody ApiToken,
                                                 @Part("UserID") RequestBody userid,
-                                                @Part("Files") RequestBody file);
+                                                @Part("Files\"; filename=\"avatar.jpg\"") RequestBody file);
     }
 }
