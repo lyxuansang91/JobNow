@@ -2,8 +2,10 @@ package com.androidteam.jobnow.fragment;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,12 +27,19 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.acitvity.MyApplication;
+import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.RequestBody;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -38,13 +47,17 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment {
-
+    private String TAG = ProfileFragment.class.getSimpleName();
     private ViewPager viewPager;
 
     public int[] tabs() {
@@ -200,7 +213,32 @@ public class ProfileFragment extends Fragment {
     private void uploadAvatar(final String path) {
         final File file = new File(path);
         if (file.exists()) {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+//            String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+            int userid = sharedPreferences.getInt(Config.KEY_ID, 0);
+            RequestBody requestBodyImage = RequestBody.create(MediaType.parse("image/*"), file);
+            RequestBody sign = RequestBody.create(MediaType.parse("text/plain"), APICommon.getSign(APICommon.getApiKey(), "api/v1/files/postUploadFile"));
+            RequestBody appid = RequestBody.create(MediaType.parse("text/plain"), APICommon.getAppId());
+            RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), APICommon.getDeviceType() + "");
+            RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), userid + "");
+            RequestBody token = RequestBody.create(MediaType.parse("text/plain"), sharedPreferences.getString(Config.KEY_TOKEN, ""));
 
+            APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+            Log.d(TAG, "sign: " + APICommon.getSign(APICommon.getApiKey(), "api/v1/files/postUploadFile") + " appid: " + APICommon.getAppId() + " device_type: " + APICommon.getDeviceType() + " token: " + sharedPreferences.getString(Config.KEY_TOKEN, "") + " userid: " + userid);
+            Call<UploadFileResponse> call = service.postuploadFile(sign, appid,deviceType , token, userId, requestBodyImage);
+            call.enqueue(new Callback<UploadFileResponse>() {
+                @Override
+                public void onResponse(Response<UploadFileResponse> response, Retrofit retrofit) {
+                    if (response.body() != null) {
+                        Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

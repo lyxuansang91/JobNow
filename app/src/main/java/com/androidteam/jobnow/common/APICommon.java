@@ -13,8 +13,7 @@ import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.models.UploadFileResponse;
-
-import java.io.File;
+import com.squareup.okhttp.RequestBody;
 
 import retrofit.Call;
 import retrofit.http.Body;
@@ -99,7 +98,12 @@ public class APICommon {
         Call<SkillResponse> getSkill(@Url String url);
 
         @Multipart
-        @POST("api/v1/files/postUploadFile")
-        Call<UploadFileResponse> postuploadFile(@Part("sign") String sign, @Part("app_id") String app_id, @Part("device_type") int device_type, @Part("Files") File file);
+        @POST("files/postUploadFile")
+        Call<UploadFileResponse> postuploadFile(@Part("sign") RequestBody sign,
+                                                @Part("app_id") RequestBody app_id,
+                                                @Part("device_type") RequestBody device_type,
+                                                @Part("ApiToken") RequestBody ApiToken,
+                                                @Part("UserID") RequestBody userid,
+                                                @Part("Files") RequestBody file);
     }
 }
