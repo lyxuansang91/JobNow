@@ -1,6 +1,7 @@
 package com.androidteam.jobnow.acitvity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
 import com.androidteam.jobnow.utils.Utils;
@@ -59,13 +61,13 @@ public class LoginActivity extends AppCompatActivity {
     private void getLogin() {
         String email = edtEmail.getText().toString();
         String password = edtPassword.getText().toString();
-        if(email.isEmpty()){
+        if (email.isEmpty()) {
             Toast.makeText(LoginActivity.this, getString(R.string.pleaseInputEmail), Toast.LENGTH_SHORT).show();
-        }else if(password.isEmpty()){
+        } else if (password.isEmpty()) {
             Toast.makeText(LoginActivity.this, getString(R.string.pleaseInputPassword), Toast.LENGTH_SHORT).show();
-        }else if(!Utils.isEmailValid(email)){
+        } else if (!Utils.isEmailValid(email)) {
             Toast.makeText(LoginActivity.this, getString(R.string.emailNotValid), Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
             Call<LoginResponse> loginResponseCall =
                     service.loginUser(new LoginRequest(email, password));
@@ -74,8 +76,11 @@ public class LoginActivity extends AppCompatActivity {
                 public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
                     Log.d(TAG, "get login response: " + response.body().toString());
                     int code = response.code();
-                    Log.d(TAG, "code: " + code);
-                    if(code == 200) {
+                    if (code == 200) {
+                        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(Config.KEY_TOKEN, response.body().result.apiToken).commit();
+                        editor.putInt(Config.KEY_ID, response.body().result.id).commit();
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         startActivity(intent);
                     }

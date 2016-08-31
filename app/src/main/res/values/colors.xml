@@ -13,5 +13,6 @@
     <color name="colorMoney">#f96145</color>
     <color name="colorBgApplyJob">#fa603c</color>
     <color name="colorBgSaveJob">#026dbb</color>
+    <color name="bg_jobFeatured">#f1faff</color>
 
 </resources>

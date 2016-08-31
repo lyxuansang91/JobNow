@@ -10,6 +10,6 @@ import java.util.ArrayList;
  */
 public class LoginResponse extends BaseResponse implements Serializable {
 
-    public UserModel[] result;
+    public UserModel result;
 
 }

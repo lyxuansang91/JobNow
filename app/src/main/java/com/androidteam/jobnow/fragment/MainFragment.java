@@ -10,10 +10,11 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.FilterActivity;
+import com.androidteam.jobnow.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class MainFragment extends Fragment {
     private TabLayout tabLayout;
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewpager;
-    private ImageView imgFilter, imgBack;
+    private RelativeLayout imgFilter, imgBack;
 
     public MainFragment() {
         // Required empty public constructor
@@ -45,8 +46,8 @@ public class MainFragment extends Fragment {
     private void InitUI(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewpager = (ViewPager) view.findViewById(R.id.viewpager);
-        imgFilter = (ImageView) view.findViewById(R.id.imgFilter);
-        imgBack = (ImageView) view.findViewById(R.id.imgRing);
+        imgFilter = (RelativeLayout) view.findViewById(R.id.imgFilter);
+        imgBack = (RelativeLayout) view.findViewById(R.id.imgRing);
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +65,7 @@ public class MainFragment extends Fragment {
         });
         setupViewPager(viewpager);
         tabLayout.setupWithViewPager(viewpager);
+        Utils.closeKeyboard(getActivity());
     }
 
     private void setupViewPager(ViewPager viewPager) {
