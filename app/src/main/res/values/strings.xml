@@ -136,4 +136,8 @@
     <string name="AllSpecializations">All Specializations</string>
     <string name="price">Price</string>
     <string name="search_result">Kết quả tìm kiếm</string>
+    <string name="takephoto">Take photo</string>
+    <string name="gallery">Gallery</string>
+    <string name="addPhoto">Add photo</string>
+    <string name="selectFile">Select file</string>
 </resources>

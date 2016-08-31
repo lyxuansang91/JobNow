@@ -1,8 +1,6 @@
 package com.androidteam.jobnow.fragment;
 
 
-import android.content.Context;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,7 +14,6 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
-import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobObject;
@@ -86,7 +83,7 @@ public class JobListFragment extends Fragment {
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
-                if (response.body().code == 200) {
+                if (response.body()!=null && response.body().code == 200) {
                     if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
                         adapter.addAll(response.body().result.data);
                     }

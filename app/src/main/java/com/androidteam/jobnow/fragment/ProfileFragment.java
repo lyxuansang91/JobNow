@@ -1,10 +1,21 @@
 package com.androidteam.jobnow.fragment;
 
 
+import android.app.Activity;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,6 +31,13 @@ import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
+
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 
 /**
@@ -41,6 +59,12 @@ public class ProfileFragment extends Fragment {
     private ImageView ic_tab1, ic_tab2, ic_tab3;
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
+    private CircleImageView img_avatar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -90,6 +114,94 @@ public class ProfileFragment extends Fragment {
 
             }
         });
+
+        img_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeAvatar();
+            }
+        });
+    }
+
+    private void changeAvatar() {
+        final CharSequence[] items = {getString(R.string.takephoto), getString(R.string.gallery), getString(R.string.cancel)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(getString(R.string.addPhoto));
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals(getString(R.string.takephoto))) {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    getActivity().startActivityForResult(intent, 11);
+                } else if (items[item].equals(getString(R.string.gallery))) {
+                    Intent intent = new Intent(
+                            Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    intent.setType("image/*");
+                    getActivity().startActivityForResult(
+                            Intent.createChooser(intent, getString(R.string.selectFile)),
+                            12);
+                } else if (items[item].equals(getString(R.string.cancel))) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 11) {
+                Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                thumbnail.compress(Bitmap.CompressFormat.JPEG, 90, bytes);
+                File destination = new File(Environment.getExternalStorageDirectory(),
+                        System.currentTimeMillis() + ".jpg");
+                FileOutputStream fo;
+                try {
+                    destination.createNewFile();
+                    fo = new FileOutputStream(destination);
+                    fo.write(bytes.toByteArray());
+                    fo.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                img_avatar.setImageBitmap(thumbnail);
+                uploadAvatar(destination.getPath());
+            } else if (requestCode == 12) {
+                Uri selectedImageUri = data.getData();
+                String[] projection = {MediaStore.MediaColumns.DATA};
+                CursorLoader cursorLoader = new CursorLoader(getActivity(), selectedImageUri, projection, null, null,
+                        null);
+                Cursor cursor = cursorLoader.loadInBackground();
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+                cursor.moveToFirst();
+                String selectedImagePath = cursor.getString(column_index);
+                Bitmap bm;
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                BitmapFactory.decodeFile(selectedImagePath, options);
+                final int REQUIRED_SIZE = 200;
+                int scale = 1;
+                while (options.outWidth / scale / 2 >= REQUIRED_SIZE
+                        && options.outHeight / scale / 2 >= REQUIRED_SIZE)
+                    scale *= 2;
+                options.inSampleSize = scale;
+                options.inJustDecodeBounds = false;
+                bm = BitmapFactory.decodeFile(selectedImagePath, options);
+                img_avatar.setImageBitmap(bm);
+                uploadAvatar(selectedImagePath);
+            }
+        }
+    }
+
+    private void uploadAvatar(final String path) {
+        final File file = new File(path);
+        if (file.exists()) {
+
+        }
     }
 
     private void setPager() {
@@ -186,6 +298,7 @@ public class ProfileFragment extends Fragment {
         custom_text1 = (TextView) v.findViewById(R.id.custom_text1);
         custom_text2 = (TextView) v.findViewById(R.id.custom_text2);
         custom_text3 = (TextView) v.findViewById(R.id.custom_text3);
+        img_avatar = (CircleImageView) v.findViewById(R.id.img_avatar);
     }
 
     @Override
