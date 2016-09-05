@@ -38,6 +38,7 @@
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_alignParentRight="true"
+                    android:visibility="visible"
                     android:layout_centerVertical="true">
 
                     <ImageView
@@ -94,6 +95,7 @@
                     android:textStyle="bold" />
 
                 <EditText
+                    android:id="@+id/edtTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
@@ -109,6 +111,7 @@
                     android:entries="@array/item_Specializations" />
 
                 <EditText
+                    android:id="@+id/edtMinimumSalary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
