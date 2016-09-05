@@ -33,15 +33,22 @@ import retrofit.Retrofit;
 public class JobListFragment extends Fragment {
     private String TAG = JobListFragment.class.getSimpleName();
     public static String KEY_SEACH = "hasSearch";
+    public static String KEY_JOB = "key_job";
 
     public JobListFragment() {
         // Required empty public constructor
     }
 
     public static Fragment getInstance(boolean hasSearch) {
+        Fragment fragment = getInstance(hasSearch, null);
+        return fragment;
+    }
+
+    public static Fragment getInstance(boolean hasSearch, JobListRequest request) {
         Fragment fragment = new JobListFragment();
         Bundle bundle = new Bundle();
         bundle.putBoolean(KEY_SEACH, hasSearch);
+        bundle.putSerializable(KEY_JOB, request);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -63,8 +70,15 @@ public class JobListFragment extends Fragment {
     }
 
     private void bindData() {
-        JobListRequest jobListRequest =
-                new JobListRequest(1, "ASC", null, null, null, null, null, null);
+        JobListRequest jobListRequest = null;
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            jobListRequest = (JobListRequest) bundle.getSerializable(KEY_JOB);
+        }
+        Log.d(TAG, "job list request: " + jobListRequest);
+        if(jobListRequest == null)
+            jobListRequest = new JobListRequest(1, "ASC", null, null, null, null,
+                    null, null, null);
 
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         Call<JobListReponse> getJobList = service.getJobListByParam(
@@ -78,7 +92,8 @@ public class JobListFragment extends Fragment {
                 jobListRequest.Skill,
                 jobListRequest.MinSalary,
                 jobListRequest.FromSalary,
-                jobListRequest.ToSalary);
+                jobListRequest.ToSalary,
+                jobListRequest.industryID);
         //Call<JobListReponse> getJobList = service.getJobList(url);
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override

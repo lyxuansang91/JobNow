@@ -18,5 +18,6 @@ public class JobLocationResponse extends BaseResponse {
         public String Description;
         public String created_at;
         public String updated_at;
+        public boolean isChecked = false;
     }
 }

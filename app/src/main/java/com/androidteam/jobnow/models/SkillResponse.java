@@ -16,5 +16,6 @@ public class SkillResponse extends BaseResponse {
         public String Description;
         public String created_at;
         public String updated_at;
+        public boolean isChecked = false;
     }
 }

@@ -4,13 +4,17 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.fragment.JobListFragment;
+import com.androidteam.jobnow.models.JobListRequest;
 
 public class SearchResultActivity extends AppCompatActivity {
 
+    public static final String TAG = SearchResultActivity.class.getSimpleName();
+    public static final String KEY_JOB = "key_job";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,9 +31,17 @@ public class SearchResultActivity extends AppCompatActivity {
 
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         if(ft != null) {
-            ft.replace(R.id.container, JobListFragment.getInstance(false));
+            Bundle bundle = getIntent().getExtras();
+            JobListRequest request = null;
+            if(bundle != null) {
+                request = (JobListRequest) bundle.getSerializable(KEY_JOB);
+                Log.d(TAG, "job list request title: " + request.Title);
+            }
+            ft.replace(R.id.container, JobListFragment.getInstance(false, request));
             ft.commit();
         }
+
+
     }
 
     @Override

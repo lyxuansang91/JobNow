@@ -83,7 +83,8 @@ public class APICommon {
                                                @Query("Skill") String Skill,
                                                @Query("MinSalary") Integer MinSalary,
                                                @Query("FromSalary") Integer FromSalary,
-                                               @Query("ToSalary") Integer ToSalary);
+                                               @Query("ToSalary") Integer ToSalary,
+                                               @Query("IndustryID") Integer industryID);
 
         @GET()
         Call<JobListReponse> getJobList(@Url String url);

@@ -11,6 +11,7 @@ import android.widget.CompoundButton;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.models.SkillResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +38,11 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                SkillResponse.Skill skill = getItembyPostion(position);
+                if(skill != null) {
+                    skill.isChecked = isChecked;
+                    setData(position, skill);
+                }
                 if (isChecked) {
                     holder.checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
                 } else {

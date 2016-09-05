@@ -5,10 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.models.JobLocationResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,11 +34,25 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        super.onBindViewHolder(holder, position);
         holder.bindData(list.get(position));
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                JobLocationResponse.JobLocationResult result = getItembyPostion(position);
+                if(result != null) {
+                    result.isChecked = isChecked;
+                    setData(position, result);
+                }
+            }
+        });
     }
 
     @Override
     public JobLocationResponse.JobLocationResult getItembyPostion(int position) {
         return super.getItembyPostion(position);
+    }
+
+    public boolean isChecked(int position) {
+        return getItembyPostion(position).isChecked;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -45,7 +61,6 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
         public ViewHolder(View view) {
             super(view);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
-
         }
 
         public void bindData(JobLocationResponse.JobLocationResult locationResult) {

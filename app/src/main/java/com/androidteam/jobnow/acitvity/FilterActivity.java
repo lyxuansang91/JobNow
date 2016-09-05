@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ import com.androidteam.jobnow.adapter.SkillAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.models.IndustryObject;
 import com.androidteam.jobnow.models.IndustryResponse;
+import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.widget.DisableScrollRecyclerView;
@@ -41,11 +44,18 @@ public class FilterActivity extends AppCompatActivity {
     private SkillAdapter skillAdapter;
     private RelativeLayout imgBack;
     private Button btnFilter;
+    private EditText edMin, edMax, edtTitle, edtMinSalary;
+
+
     private void initUI() {
         imgBack = (RelativeLayout) findViewById(R.id.imgBack);
         spnIndustry = (Spinner) findViewById(R.id.spnIndustry);
         rvJobLocation = (DisableScrollRecyclerView) findViewById(R.id.rvJobLocation);
         btnFilter = (Button) findViewById(R.id.btnFilter);
+        edtTitle = (EditText) findViewById(R.id.edtTitle);
+        edMin = (EditText) findViewById(R.id.edMin);
+        edMax = (EditText) findViewById(R.id.edMax);
+        edtMinSalary = (EditText) findViewById(R.id.edtMinimumSalary);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvJobLocation.setLayoutManager(layoutManager);
         rvJobLocation.setHasFixedSize(true);
@@ -72,6 +82,56 @@ public class FilterActivity extends AppCompatActivity {
         initevent();
     }
 
+    private String getLocationParseFromLocations() {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < jobLocationAdapter.getItemCount(); i++) {
+            JobLocationResponse.JobLocationResult location = jobLocationAdapter.getItembyPostion(i);
+            if(location != null) {
+                if(location.isChecked) {
+                    if (sb.toString().equals("")) {
+                        sb.append(location.id);
+                    } else {
+                        sb.append(',');
+                        sb.append(location.id);
+                    }
+                }
+            }
+        }
+        Log.d(TAG, "location : "+ sb.toString());
+        return null;
+    }
+
+    private String getSkillParseFromSkills() {
+        StringBuilder sb = new StringBuilder("");
+        for(int i = 0; i < skillAdapter.getItemCount(); i++) {
+            SkillResponse.Skill skillItem = skillAdapter.getItembyPostion(i);
+            if(skillItem != null) {
+                if(skillItem.isChecked) {
+                    if (sb.toString().equals("")) {
+                        sb.append(skillItem.id);
+                    } else {
+                        sb.append(',');
+                        sb.append(skillItem.id);
+                    }
+                }
+            }
+        }
+        Log.d(TAG, "get skill string: " + sb.toString());
+        return sb.toString();
+    }
+
+    private Integer convertFromString(String number) {
+        Integer result;
+        try {
+            result = Integer.parseInt(number);
+            return result;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+
+        }
+    }
+
     private void initevent() {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,6 +145,29 @@ public class FilterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+                String title = edtTitle.getText().toString();
+                if(title.equals(""))
+                    title = null;
+
+                Integer minSalary = convertFromString(edtMinSalary.getText().toString());
+
+                Integer fromSalary = convertFromString(edMin.getText().toString());
+
+                Integer toSalary = convertFromString(edMax.getText().toString());
+
+                IndustryObject industry = industryAdapter.getItem(
+                        spnIndustry.getSelectedItemPosition());
+
+                Integer industryId = industry.id;
+
+                String skill = getSkillParseFromSkills();
+                String location = getLocationParseFromLocations();
+                JobListRequest request = new JobListRequest(1, "ASC",title, location, skill,
+                        minSalary, fromSalary, toSalary, industryId);
+
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(SearchResultActivity.KEY_JOB, request);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
@@ -99,7 +182,7 @@ public class FilterActivity extends AppCompatActivity {
     private void getSkill() {
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         String url = APICommon.BASE_URL + "skill/getListSkill/" + APICommon.getSign(APICommon.getApiKey(), "api/v1/skill/getListSkill")
-                + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType();
+                + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType() + "/0";
         Call<SkillResponse> jobLocationResponseCall = service.getSkill(url);
         jobLocationResponseCall.enqueue(new Callback<SkillResponse>() {
             @Override
