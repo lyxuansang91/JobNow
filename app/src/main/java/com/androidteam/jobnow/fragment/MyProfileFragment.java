@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.androidteam.jobnow.R;
-import com.androidteam.jobnow.eventbus.BindProfileEvent;
+import com.androidteam.jobnow.eventbus.BindProfile1Event;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -61,7 +61,7 @@ public class MyProfileFragment extends Fragment {
     }
 
     @Subscribe
-    public void onEvent(BindProfileEvent event) {
+    public void onEvent(BindProfile1Event event) {
         tvEmail.setText(event.userModel.email);
         tvPhoneNumber.setText(event.userModel.phoneNumber);
 //        tvGender.setText(event.userModel.email);

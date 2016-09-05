@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.ViewPager;
@@ -33,18 +35,17 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.eventbus.BindProfile1Event;
 import com.androidteam.jobnow.eventbus.BindProfileEvent;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.models.UserDetailResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -307,16 +308,54 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindData() {
-        FragmentPagerItems pages = new FragmentPagerItems(getActivity());
-        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
-        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
-        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
-        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
-                getChildFragmentManager(), pages);
-
-        viewPager.setAdapter(adapter);
-
+//        FragmentPagerItems pages = new FragmentPagerItems(getActivity());
+//        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
+//        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
+//        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
+//        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+//                getChildFragmentManager(), pages);
+        MyPagerAdapter adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapterViewPager);
+        viewPager.setOffscreenPageLimit(3);
         loadUserDetail();
+    }
+
+
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+        private int NUM_ITEMS = 3;
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new MyProfileFragment();
+                case 1:
+                    return new ExprienceFragment();
+                case 2:
+                    return new SkillsFragment();
+                default:
+                    new MyProfileFragment();
+                    return null;
+            }
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return getString(tabs()[position]);
+        }
+
     }
 
     private void loadUserDetail() {
@@ -390,17 +429,22 @@ public class ProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-//    @Override
-//    public void onAttach(Activity activity) {
-//        super.onAttach(activity);
-//        if (!EventBus.getDefault().isRegistered(this))
-//            EventBus.getDefault().register(this);
-//    }
-//
-//    @Override
-//    public void onDetach() {
-//        if (EventBus.getDefault().isRegistered(this))
-//            EventBus.getDefault().unregister(this);
-//        super.onDetach();
-//    }
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDetach() {
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+        super.onDetach();
+    }
+
+    @Subscribe
+    public void onEvent(BindProfileEvent event) {
+        EventBus.getDefault().post(new BindProfile1Event(event.userModel));
+    }
 }
