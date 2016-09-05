@@ -14,6 +14,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.view.ViewPager;
@@ -35,9 +37,6 @@ import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
-import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
 
@@ -72,7 +71,8 @@ public class ProfileFragment extends Fragment {
     private ImageView ic_tab1, ic_tab2, ic_tab3;
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
-    private CircleImageView img_avatar;
+    public static CircleImageView img_avatar;
+    public static TextView tvName, tvLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -217,15 +217,15 @@ public class ProfileFragment extends Fragment {
 //            String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
             int userid = sharedPreferences.getInt(Config.KEY_ID, 0);
             RequestBody requestBodyImage = RequestBody.create(MediaType.parse("image/*"), file);
-            RequestBody sign = RequestBody.create(MediaType.parse("text/plain"), APICommon.getSign(APICommon.getApiKey(), "api/v1/files/postUploadFile"));
+            RequestBody sign = RequestBody.create(MediaType.parse("text/plain"), APICommon.getSign(APICommon.getApiKey(), "api/v1/users/postAvatarUploadFile"));
             RequestBody appid = RequestBody.create(MediaType.parse("text/plain"), APICommon.getAppId());
             RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), APICommon.getDeviceType() + "");
             RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), userid + "");
             RequestBody token = RequestBody.create(MediaType.parse("text/plain"), sharedPreferences.getString(Config.KEY_TOKEN, ""));
 
             APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-            Log.d(TAG, "sign: " + APICommon.getSign(APICommon.getApiKey(), "api/v1/files/postUploadFile") + " appid: " + APICommon.getAppId() + " device_type: " + APICommon.getDeviceType() + " token: " + sharedPreferences.getString(Config.KEY_TOKEN, "") + " userid: " + userid);
-            Call<UploadFileResponse> call = service.postuploadFile(sign, appid,deviceType , token, userId, requestBodyImage);
+            Log.d(TAG, "sign: " + APICommon.getSign(APICommon.getApiKey(), "api/v1/users/postAvatarUploadFile") + " appid: " + APICommon.getAppId() + " device_type: " + APICommon.getDeviceType() + " token: " + sharedPreferences.getString(Config.KEY_TOKEN, "") + " userid: " + userid);
+            Call<UploadFileResponse> call = service.postuploadAvatar(sign, appid, deviceType, token, userId, requestBodyImage);
             call.enqueue(new Callback<UploadFileResponse>() {
                 @Override
                 public void onResponse(Response<UploadFileResponse> response, Retrofit retrofit) {
@@ -301,15 +301,54 @@ public class ProfileFragment extends Fragment {
     }
 
     private void bindData() {
-        FragmentPagerItems pages = new FragmentPagerItems(getActivity());
-        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
-        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
-        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
-        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
-                getChildFragmentManager(), pages);
-
-        viewPager.setAdapter(adapter);
+//        FragmentPagerItems pages = new FragmentPagerItems(getActivity());
+//        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
+//        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
+//        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
+//        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
+//                getChildFragmentManager(), pages);
+        MyPagerAdapter adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
+        viewPager.setAdapter(adapterViewPager);
+        viewPager.setOffscreenPageLimit(3);
     }
+
+
+    public class MyPagerAdapter extends FragmentPagerAdapter {
+        private int NUM_ITEMS = 3;
+
+        public MyPagerAdapter(FragmentManager fragmentManager) {
+            super(fragmentManager);
+        }
+
+        // Returns total number of pages
+        @Override
+        public int getCount() {
+            return NUM_ITEMS;
+        }
+
+        // Returns the fragment to display for that page
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return new MyProfileFragment();
+                case 1:
+                    return new ExprienceFragment();
+                case 2:
+                    return new SkillsFragment();
+                default:
+                    return new MyProfileFragment();
+            }
+        }
+
+        // Returns the page title for the top indicator
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return getString(tabs()[position]);
+        }
+
+    }
+
 
     private void initUI(View v) {
         CenteredToolbar toolbar = (CenteredToolbar) v.findViewById(R.id.toolbar);
@@ -336,6 +375,9 @@ public class ProfileFragment extends Fragment {
         custom_text1 = (TextView) v.findViewById(R.id.custom_text1);
         custom_text2 = (TextView) v.findViewById(R.id.custom_text2);
         custom_text3 = (TextView) v.findViewById(R.id.custom_text3);
+
+        tvName = (TextView) v.findViewById(R.id.tvName);
+        tvLocation = (TextView) v.findViewById(R.id.tvLocation);
         img_avatar = (CircleImageView) v.findViewById(R.id.img_avatar);
     }
 
@@ -349,4 +391,5 @@ public class ProfileFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

@@ -45,4 +45,22 @@ public class UserModel implements Serializable {
 
     @SerializedName("ApiToken")
     public String apiToken;
+
+    @SerializedName("Avatar")
+    public String avatar;
+
+    @SerializedName("BirthDay")
+    public String birthDay;
+
+    @SerializedName("PhoneNumber")
+    public String phoneNumber;
+
+    @SerializedName("CountryID")
+    public String countryID;
+
+    @SerializedName("Description")
+    public String description;
+
+    @SerializedName("job_seeker")
+    public JobSeekerObject job_seeker;
 }
