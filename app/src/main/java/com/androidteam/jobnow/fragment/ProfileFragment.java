@@ -33,13 +33,18 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.eventbus.BindProfileEvent;
 import com.androidteam.jobnow.models.UploadFileResponse;
+import com.androidteam.jobnow.models.UserDetailResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItem;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItemAdapter;
 import com.ogaclejapan.smarttablayout.utils.v4.FragmentPagerItems;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
+import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -73,6 +78,7 @@ public class ProfileFragment extends Fragment {
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
     private CircleImageView img_avatar;
+    private TextView tvName, tvLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -217,15 +223,15 @@ public class ProfileFragment extends Fragment {
 //            String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
             int userid = sharedPreferences.getInt(Config.KEY_ID, 0);
             RequestBody requestBodyImage = RequestBody.create(MediaType.parse("image/*"), file);
-            RequestBody sign = RequestBody.create(MediaType.parse("text/plain"), APICommon.getSign(APICommon.getApiKey(), "api/v1/files/postUploadFile"));
+            RequestBody sign = RequestBody.create(MediaType.parse("text/plain"), APICommon.getSign(APICommon.getApiKey(), "api/v1/users/postAvatarUploadFile"));
             RequestBody appid = RequestBody.create(MediaType.parse("text/plain"), APICommon.getAppId());
             RequestBody deviceType = RequestBody.create(MediaType.parse("text/plain"), APICommon.getDeviceType() + "");
             RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), userid + "");
             RequestBody token = RequestBody.create(MediaType.parse("text/plain"), sharedPreferences.getString(Config.KEY_TOKEN, ""));
 
             APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-            Log.d(TAG, "sign: " + APICommon.getSign(APICommon.getApiKey(), "api/v1/files/postUploadFile") + " appid: " + APICommon.getAppId() + " device_type: " + APICommon.getDeviceType() + " token: " + sharedPreferences.getString(Config.KEY_TOKEN, "") + " userid: " + userid);
-            Call<UploadFileResponse> call = service.postuploadFile(sign, appid,deviceType , token, userId, requestBodyImage);
+            Log.d(TAG, "sign: " + APICommon.getSign(APICommon.getApiKey(), "api/v1/users/postAvatarUploadFile") + " appid: " + APICommon.getAppId() + " device_type: " + APICommon.getDeviceType() + " token: " + sharedPreferences.getString(Config.KEY_TOKEN, "") + " userid: " + userid);
+            Call<UploadFileResponse> call = service.postuploadAvatar(sign, appid, deviceType, token, userId, requestBodyImage);
             call.enqueue(new Callback<UploadFileResponse>() {
                 @Override
                 public void onResponse(Response<UploadFileResponse> response, Retrofit retrofit) {
@@ -309,6 +315,37 @@ public class ProfileFragment extends Fragment {
                 getChildFragmentManager(), pages);
 
         viewPager.setAdapter(adapter);
+
+        loadUserDetail();
+    }
+
+    private void loadUserDetail() {
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int user_id = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<UserDetailResponse> call =
+                service.getUserDetail(APICommon.getSign(APICommon.getApiKey(),
+                                "api/v1/users/getUserDetail"),
+                        APICommon.getAppId(),
+                        APICommon.getDeviceType(), user_id, token, user_id);
+        call.enqueue(new Callback<UserDetailResponse>() {
+            @Override
+            public void onResponse(Response<UserDetailResponse> response, Retrofit retrofit) {
+                if (response.body() != null && response.body().code == 200) {
+                    if (response.body().result.avatar != null) {
+                        Picasso.with(getActivity()).load(response.body().result.avatar).into(img_avatar);
+                        tvName.setText(response.body().result.fullname);
+                        EventBus.getDefault().post(new BindProfileEvent(response.body().result));
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
     }
 
     private void initUI(View v) {
@@ -336,6 +373,9 @@ public class ProfileFragment extends Fragment {
         custom_text1 = (TextView) v.findViewById(R.id.custom_text1);
         custom_text2 = (TextView) v.findViewById(R.id.custom_text2);
         custom_text3 = (TextView) v.findViewById(R.id.custom_text3);
+
+        tvName = (TextView) v.findViewById(R.id.tvName);
+        tvLocation = (TextView) v.findViewById(R.id.tvLocation);
         img_avatar = (CircleImageView) v.findViewById(R.id.img_avatar);
     }
 
@@ -349,4 +389,18 @@ public class ProfileFragment extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
+
+//    @Override
+//    public void onAttach(Activity activity) {
+//        super.onAttach(activity);
+//        if (!EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().register(this);
+//    }
+//
+//    @Override
+//    public void onDetach() {
+//        if (EventBus.getDefault().isRegistered(this))
+//            EventBus.getDefault().unregister(this);
+//        super.onDetach();
+//    }
 }

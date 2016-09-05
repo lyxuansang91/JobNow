@@ -29,10 +29,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvEmail"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Ngoctrinh@gmail.com" />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 
@@ -70,10 +70,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvPhoneNumber"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="+65 12345678" />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 
@@ -111,10 +111,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Famale" />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 
@@ -152,10 +152,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvBirthday"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="12-5-1993" />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 
@@ -193,10 +193,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvCountry"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Singapore" />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 
@@ -234,10 +234,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvPostalCode"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="1234567" />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 
@@ -275,14 +275,10 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/tvDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:text="Lorem Ipsum is simply dummy text of the printing
-and typesetting industry. Lorem Ipsum has been
-the industry's standard dummy text ever since the
-1500s, when an unknown printer took a galley of type
-and scrambled it to make a type specimen book." />
+                    android:layout_marginTop="5dp" />
 
             </LinearLayout>
 

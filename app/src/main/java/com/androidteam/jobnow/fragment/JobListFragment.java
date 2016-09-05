@@ -83,11 +83,16 @@ public class JobListFragment extends Fragment {
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
-                if (response.body()!=null && response.body().code == 200) {
-                    if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
-                        adapter.addAll(response.body().result.data);
+                try {
+                    if (response.body() != null && response.body().code == 200) {
+                        if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
+                            adapter.addAll(response.body().result.data);
+                        }
                     }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
+
             }
 
             @Override
