@@ -35,17 +35,10 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
-import com.androidteam.jobnow.eventbus.BindProfile1Event;
-import com.androidteam.jobnow.eventbus.BindProfileEvent;
 import com.androidteam.jobnow.models.UploadFileResponse;
-import com.androidteam.jobnow.models.UserDetailResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.RequestBody;
-import com.squareup.picasso.Picasso;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -78,8 +71,8 @@ public class ProfileFragment extends Fragment {
     private ImageView ic_tab1, ic_tab2, ic_tab3;
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
-    private CircleImageView img_avatar;
-    private TextView tvName, tvLocation;
+    public static CircleImageView img_avatar;
+    public static TextView tvName, tvLocation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -317,7 +310,6 @@ public class ProfileFragment extends Fragment {
         MyPagerAdapter adapterViewPager = new MyPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(adapterViewPager);
         viewPager.setOffscreenPageLimit(3);
-        loadUserDetail();
     }
 
 
@@ -345,8 +337,7 @@ public class ProfileFragment extends Fragment {
                 case 2:
                     return new SkillsFragment();
                 default:
-                    new MyProfileFragment();
-                    return null;
+                    return new MyProfileFragment();
             }
         }
 
@@ -358,34 +349,6 @@ public class ProfileFragment extends Fragment {
 
     }
 
-    private void loadUserDetail() {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
-        int user_id = sharedPreferences.getInt(Config.KEY_ID, 0);
-        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
-        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-        Call<UserDetailResponse> call =
-                service.getUserDetail(APICommon.getSign(APICommon.getApiKey(),
-                                "api/v1/users/getUserDetail"),
-                        APICommon.getAppId(),
-                        APICommon.getDeviceType(), user_id, token, user_id);
-        call.enqueue(new Callback<UserDetailResponse>() {
-            @Override
-            public void onResponse(Response<UserDetailResponse> response, Retrofit retrofit) {
-                if (response.body() != null && response.body().code == 200) {
-                    if (response.body().result.avatar != null) {
-                        Picasso.with(getActivity()).load(response.body().result.avatar).into(img_avatar);
-                        tvName.setText(response.body().result.fullname);
-                        EventBus.getDefault().post(new BindProfileEvent(response.body().result));
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-
-            }
-        });
-    }
 
     private void initUI(View v) {
         CenteredToolbar toolbar = (CenteredToolbar) v.findViewById(R.id.toolbar);
@@ -429,22 +392,4 @@ public class ProfileFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onDetach() {
-        if (EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().unregister(this);
-        super.onDetach();
-    }
-
-    @Subscribe
-    public void onEvent(BindProfileEvent event) {
-        EventBus.getDefault().post(new BindProfile1Event(event.userModel));
-    }
 }
