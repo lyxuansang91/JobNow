@@ -58,9 +58,19 @@ public class UserModel implements Serializable {
     @SerializedName("CountryID")
     public String countryID;
 
+    @SerializedName("Gender")
+    public Integer gender;
+
+    @SerializedName("CurriculumVitae")
+    public String curriculumVitae;
+
     @SerializedName("Description")
     public String description;
 
-    @SerializedName("job_seeker")
-    public JobSeekerObject job_seeker;
+    @SerializedName("CountryName")
+    public String countryName;
+
+    @SerializedName("PostalCode")
+    public String postalCode;
+
 }

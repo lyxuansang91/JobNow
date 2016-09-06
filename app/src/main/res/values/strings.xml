@@ -140,4 +140,9 @@
     <string name="gallery">Gallery</string>
     <string name="addPhoto">Add photo</string>
     <string name="selectFile">Select file</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="other">Other</string>
+    <string name="loading">Loading, please wait...</string>
+    <string name="update">Update</string>
 </resources>
