@@ -75,7 +75,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
                     Log.d(TAG, "get login response: " + response.body().toString());
-                    int code = response.code();
+                    int code = response.body().code;
                     if (code == 200) {
                         SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -84,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
                         Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                         startActivity(intent);
                     }
-                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

@@ -1,6 +1,7 @@
 package com.androidteam.jobnow.acitvity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.Signature;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.androidteam.jobnow.BuildConfig;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.utils.Utils;
@@ -95,12 +97,16 @@ public class SplashScreen extends AppCompatActivity {
                                         @Override
                                         public void onResponse(Response<RegisterFBReponse> response, Retrofit retrofit) {
                                             Log.d(TAG, "get login response: " + response.body().toString());
-                                            int code = response.code();
+                                            int code = response.body().code;
                                             if (code == 200) {
+                                                SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putString(Config.KEY_TOKEN, response.body().result.apiToken).commit();
+                                                editor.putInt(Config.KEY_ID, response.body().result.id).commit();
                                                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                                                 startActivity(intent);
                                             }
-                                            Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override

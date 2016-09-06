@@ -77,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity {
                         @Override
                         public void onResponse(Response<RegisterResponse> response, Retrofit retrofit) {
                             Log.d(TAG, "get login response: " + response.body().toString());
-                            int code = response.code();
+                            int code = response.body().code;
                             if (code == 200) {
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivity(intent);

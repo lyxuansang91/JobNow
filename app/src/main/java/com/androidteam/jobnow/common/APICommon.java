@@ -2,6 +2,7 @@ package com.androidteam.jobnow.common;
 
 import android.util.Log;
 
+import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.IndustryResponse;
 import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobListRequest;
@@ -13,6 +14,7 @@ import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
 import com.androidteam.jobnow.models.SkillResponse;
+import com.androidteam.jobnow.models.UpdateProfileRequest;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.models.UserDetailResponse;
 import com.squareup.okhttp.RequestBody;
@@ -111,11 +113,11 @@ public class APICommon {
         @Multipart
         @POST("users/postAvatarUploadFile")
         Call<UploadFileResponse> postuploadAvatar(@Part("sign") RequestBody sign,
-                                                @Part("app_id") RequestBody app_id,
-                                                @Part("device_type") RequestBody device_type,
-                                                @Part("ApiToken") RequestBody ApiToken,
-                                                @Part("UserID") RequestBody userid,
-                                                @Part("Files\"; filename=\"avatar.jpg\"") RequestBody file);
+                                                  @Part("app_id") RequestBody app_id,
+                                                  @Part("device_type") RequestBody device_type,
+                                                  @Part("ApiToken") RequestBody ApiToken,
+                                                  @Part("UserID") RequestBody userid,
+                                                  @Part("Files\"; filename=\"avatar.jpg\"") RequestBody file);
 
         @GET("users/getUserDetail/{sign}/{app_id}/{device_type}/{user_id}/{token}")
         Call<UserDetailResponse> getUserDetail(@Path("sign") String sign,
@@ -124,5 +126,8 @@ public class APICommon {
                                                @Path("user_id") int user_id,
                                                @Path("token") String token,
                                                @Query("user_id") int user_id1);
+
+        @POST("users/postUpdateJobSeeker")
+        Call<BaseResponse> postUpdateDetail(@Body UpdateProfileRequest updateProfileRequest);
     }
 }
