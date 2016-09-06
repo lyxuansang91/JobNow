@@ -104,4 +104,20 @@ public class Utils {
         }
         return 0;
     }
+
+    public static String formatStringTime(int date, int month, int year) {
+        String sdate = "";
+        String smonth = "";
+        if (date >= 10) {
+            sdate = date + "";
+        } else {
+            sdate = "0" + date;
+        }
+        if (month >= 10) {
+            smonth = month + "";
+        } else {
+            smonth = "0" + month;
+        }
+        return year + "-" + smonth + "-" + sdate;
+    }
 }

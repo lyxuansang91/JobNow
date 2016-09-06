@@ -7,17 +7,31 @@ public class UpdateProfileRequest extends BaseRequest {
     public static final String PATH_URL = "api/v1/users/postRegisterSocialite";
     public String FullName;
     public String Email;
-    public String Avatar;
+    public String BirthDay;
+    public int Gender;
+    public int PostalCode;
+    public String Description;
+    public String PhoneNumber;
+    public String CountryID;
     public String FB_id;
     public String ApiToken;
     public Integer UserID;
 
-    public UpdateProfileRequest(String FullName, String Email, String FB_id, String ApiToken, Integer UserID) {
+
+    public UpdateProfileRequest(String fullName, String email, String birthDay, int gender,
+                                int postalCode, String description, String phoneNumber,
+                                String FB_id, String apiToken, Integer userID, String countryID) {
         super(PATH_URL);
-        this.FullName = FullName;
-        this.Email = Email;
+        FullName = fullName;
+        Email = email;
+        BirthDay = birthDay;
+        Gender = gender;
+        PostalCode = postalCode;
+        Description = description;
+        PhoneNumber = phoneNumber;
         this.FB_id = FB_id;
-        this.ApiToken = ApiToken;
-        this.UserID = UserID;
+        ApiToken = apiToken;
+        UserID = userID;
+        CountryID = countryID;
     }
 }
