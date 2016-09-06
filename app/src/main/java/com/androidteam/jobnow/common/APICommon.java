@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.androidteam.jobnow.models.IndustryResponse;
 import com.androidteam.jobnow.models.JobListReponse;
+import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
@@ -64,6 +65,14 @@ public class APICommon {
     }
 
     public interface JobNowService {
+
+        @GET("jobs/getSaveJob/{sign}/{app_id}/{device_type}/{user_id}/{ApiToken}")
+        Call<JobListReponse> getSaveListJob(@Path("sign") String sign,
+                                            @Path("app_id") String app_id,
+                                            @Path("device_type") int device_type,
+                                            @Path("user_id") int user_id,
+                                            @Path("ApiToken") String apiToken);
+
         @POST("users/postLogin")
         Call<LoginResponse> loginUser(@Body LoginRequest request);
 

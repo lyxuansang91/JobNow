@@ -9,6 +9,7 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.fragment.JobListFragment;
 import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
+import com.androidteam.jobnow.fragment.SaveJobListFragment;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -45,7 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
                     mFragments2.add(new MainFragment());
                     break;
                 case 1:
-                    mFragments2.add(JobListFragment.getInstance(true));
+                    mFragments2.add(SaveJobListFragment.getInstance());
                     break;
                 case 2:
                     mFragments2.add(JobListFragment.getInstance(true));
@@ -61,29 +62,11 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         tabbottom.setTabData(mTabEntities, this, R.id.fl_change, mFragments2);
-        tabbottom.showMsg(1, 10);
+        //tabbottom.showMsg(1, 10);
         tabbottom.setCurrentTab(0);
     }
 
     private void InitEvent() {
-        tabbottom.setOnTabSelectListener(new OnTabSelectListener() {
-            @Override
-            public void onTabSelect(int position) {
-//                mTabLayout_1.setCurrentTab(position);
-//                mTabLayout_2.setCurrentTab(position);
-//                mTabLayout_4.setCurrentTab(position);
-//                mTabLayout_5.setCurrentTab(position);
-//                mTabLayout_6.setCurrentTab(position);
-//                mTabLayout_7.setCurrentTab(position);
-//                mTabLayout_8.setCurrentTab(position);
-//                Toast.makeText(ProfileActivity.this, "Selected " + position, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onTabReselect(int position) {
-
-            }
-        });
     }
 
     private void InitUI() {
