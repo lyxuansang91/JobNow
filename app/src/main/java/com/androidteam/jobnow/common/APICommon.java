@@ -144,5 +144,11 @@ public class APICommon {
 
         @POST("jobseekerexperience/postUpdateJobSeekerExperience")
         Call<BaseResponse> postUpdateJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
+
+        @GET("skill/getListSkill/{sign}/{app_id}/{device_type}/{user_id}")
+        Call<SkillResponse> getSkill(@Path("sign") String sign,
+                                     @Path("app_id") String app_id,
+                                     @Path("device_type") int device_type,
+                                     @Path("user_id") int user_id);
     }
 }
