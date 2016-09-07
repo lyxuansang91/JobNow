@@ -96,7 +96,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            setProfileToUI();
+                            setProfileToUI(true);
                         }
                     });
 
@@ -111,13 +111,14 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
         });
     }
 
-    private void setProfileToUI() {
-        if (userModel.avatar != null) {
-            Picasso.with(getActivity()).load(userModel.avatar).
-                    placeholder(R.mipmap.default_avatar).
-                    error(R.mipmap.default_avatar).
-                    into(ProfileFragment.img_avatar);
-        }
+    private void setProfileToUI(boolean isUpdateAvatar) {
+        if (isUpdateAvatar)
+            if (userModel.avatar != null) {
+                Picasso.with(getActivity()).load(userModel.avatar).
+                        placeholder(R.mipmap.default_avatar).
+                        error(R.mipmap.default_avatar).
+                        into(ProfileFragment.img_avatar);
+            }
         ProfileFragment.tvName.setText(
                 userModel.fullname == null || userModel.fullname.isEmpty() ? userModel.email : userModel.fullname);
         ProfileFragment.tvLocation.setText(userModel.countryName);
@@ -226,7 +227,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                         if (response.body() != null) {
                             if (response.code() == 200) {
                                 userModel.birthDay = birthday;
-                                setProfileToUI();
+                                setProfileToUI(false);
                             }
                             Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
                         }
@@ -353,7 +354,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
 
                         if (response.body() != null) {
                             if (response.code() == 200) {
-                                setProfileToUI();
+                                setProfileToUI(false);
                             }
                             Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
                         }

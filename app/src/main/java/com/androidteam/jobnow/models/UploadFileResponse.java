@@ -8,5 +8,6 @@ public class UploadFileResponse extends BaseResponse {
 
     public static class UploadFileResult {
         public String img_url;
+        public String avatar;
     }
 }
