@@ -29,6 +29,7 @@
             <com.androidteam.jobnow.widget.CRecyclerView
                 android:id="@+id/rvSkill"
                 android:layout_width="match_parent"
+                android:padding="10dp"
                 android:layout_height="match_parent" />
 
 

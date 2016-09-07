@@ -35,9 +35,9 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:background="@drawable/bg_edittext"
+        android:gravity="left|top"
         android:hint="@string/description"
         android:inputType="textMultiLine"
-        android:gravity="left|top"
         android:minLines="5"
         android:textColor="@color/darkGray"
         android:textSize="14sp" />
@@ -47,7 +47,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
-        android:background="@color/colorBackGroundSignUp"
+        android:background="@drawable/bg_btn_signup"
         android:text="Save"
         android:textColor="@color/white" />
 
@@ -72,7 +72,7 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:background="@android:color/holo_red_light"
+            android:background="@drawable/bg_btn_remove"
             android:text="Remove"
             android:textColor="@color/white" />
 
