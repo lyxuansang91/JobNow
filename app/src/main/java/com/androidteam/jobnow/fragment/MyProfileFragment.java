@@ -267,6 +267,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT);
         final RadioGroup radioGroup = new RadioGroup(getActivity());
+
         if (type == Config.TYPE_EDIT_PHONE_NUMBER) {
             builder.setTitle(getString(R.string.phoneNumber));
             input.setInputType(InputType.TYPE_CLASS_PHONE);
@@ -284,11 +285,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
             builder.setView(radioGroup);
         } else if (type == Config.TYPE_EDIT_COUNTRY) {
             builder.setTitle(getString(R.string.country));
-            input.setInputType(InputType.TYPE_CLASS_PHONE);
-            input.setHint(getString(R.string.country));
-            input.setLayoutParams(lp);
-            input.setText(userModel.countryName);
-            builder.setView(input);
+
         } else if (type == Config.TYPE_EDIT_POSTALCODE) {
             builder.setTitle(getString(R.string.postalCode));
             input.setInputType(InputType.TYPE_CLASS_NUMBER);

@@ -62,7 +62,7 @@ public class ProfileFragment extends Fragment {
     public int[] tabs() {
         return new int[]{
                 R.string.myProfile,
-                R.string.exprience,
+                R.string.experience,
                 R.string.skills
         };
     }
@@ -304,7 +304,7 @@ public class ProfileFragment extends Fragment {
     private void bindData() {
 //        FragmentPagerItems pages = new FragmentPagerItems(getActivity());
 //        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
-//        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
+//        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExperienceFragment.class));
 //        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
 //        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
 //                getChildFragmentManager(), pages);
@@ -334,7 +334,7 @@ public class ProfileFragment extends Fragment {
                 case 0:
                     return new MyProfileFragment();
                 case 1:
-                    return new ExprienceFragment();
+                    return new ExperienceFragment();
                 case 2:
                     return new SkillsFragment();
                 default:

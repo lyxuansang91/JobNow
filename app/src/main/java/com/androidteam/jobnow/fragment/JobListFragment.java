@@ -94,7 +94,6 @@ public class JobListFragment extends Fragment {
                 jobListRequest.FromSalary,
                 jobListRequest.ToSalary,
                 jobListRequest.industryID);
-        //Call<JobListReponse> getJobList = service.getJobList(url);
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
