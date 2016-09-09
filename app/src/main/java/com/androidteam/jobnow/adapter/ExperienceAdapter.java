@@ -1,7 +1,6 @@
 package com.androidteam.jobnow.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,7 +8,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.androidteam.jobnow.R;
-import com.androidteam.jobnow.acitvity.DetailJobsActivity;
 import com.androidteam.jobnow.eventbus.EditExperienceEvent;
 import com.androidteam.jobnow.models.ExperienceResponse;
 import com.ocpsoft.pretty.time.PrettyTime;
@@ -66,8 +64,8 @@ public class ExperienceAdapter extends BaseRecyclerAdapter<ExperienceResponse.Ex
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(mContext, DetailJobsActivity.class);
-                    mContext.startActivity(intent);
+//                    Intent intent = new Intent(mContext, DetailJobsActivity.class);
+//                    mContext.startActivity(intent);
                 }
             });
         }

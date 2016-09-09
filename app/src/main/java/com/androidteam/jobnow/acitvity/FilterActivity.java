@@ -84,10 +84,10 @@ public class FilterActivity extends AppCompatActivity {
 
     private String getLocationParseFromLocations() {
         StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < jobLocationAdapter.getItemCount(); i++) {
+        for (int i = 0; i < jobLocationAdapter.getItemCount(); i++) {
             JobLocationResponse.JobLocation location = jobLocationAdapter.getItembyPostion(i);
-            if(location != null) {
-                if(location.isChecked) {
+            if (location != null) {
+                if (location.isChecked) {
                     if (sb.toString().equals("")) {
                         sb.append(location.id);
                     } else {
@@ -97,16 +97,16 @@ public class FilterActivity extends AppCompatActivity {
                 }
             }
         }
-        Log.d(TAG, "location : "+ sb.toString());
+        Log.d(TAG, "location : " + sb.toString());
         return null;
     }
 
     private String getSkillParseFromSkills() {
         StringBuilder sb = new StringBuilder("");
-        for(int i = 0; i < skillAdapter.getItemCount(); i++) {
+        for (int i = 0; i < skillAdapter.getItemCount(); i++) {
             SkillResponse.Skill skillItem = skillAdapter.getItembyPostion(i);
-            if(skillItem != null) {
-                if(skillItem.isSelected==1) {
+            if (skillItem != null) {
+                if (skillItem.isSelected == 1) {
                     if (sb.toString().equals("")) {
                         sb.append(skillItem.id);
                     } else {
@@ -140,13 +140,13 @@ public class FilterActivity extends AppCompatActivity {
             }
         });
 
-        btnFilter.setOnClickListener(new View.OnClickListener(){
+        btnFilter.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
                 String title = edtTitle.getText().toString();
-                if(title.equals(""))
+                if (title.equals(""))
                     title = null;
 
                 Integer minSalary = convertFromString(edtMinSalary.getText().toString());
@@ -162,7 +162,7 @@ public class FilterActivity extends AppCompatActivity {
 
                 String skill = getSkillParseFromSkills();
                 String location = getLocationParseFromLocations();
-                JobListRequest request = new JobListRequest(1, "ASC",title, location, skill,
+                JobListRequest request = new JobListRequest(1, "ASC", title, location, skill,
                         minSalary, fromSalary, toSalary, industryId);
 
                 Bundle bundle = new Bundle();
@@ -189,7 +189,13 @@ public class FilterActivity extends AppCompatActivity {
             public void onResponse(Response<SkillResponse> response, Retrofit retrofit) {
                 if (response.body() != null && response.body().code == 200) {
                     if (response.body().result != null && response.body().result.size() > 0) {
-                        skillAdapter.addAll(response.body().result);
+//                        skillAdapter.addAll(response.body().result);
+                        for (int i = 0; i < response.body().result.size(); i++) {
+                            if (response.body().result.get(i).isSelected == null) {
+                                response.body().result.get(i).isSelected = 0;
+                            }
+                            skillAdapter.add(response.body().result.get(i));
+                        }
                     }
                 }
             }
