@@ -10,17 +10,16 @@ import android.widget.CompoundButton;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.models.JobLocationResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by manhi on 1/6/2016.
  */
 
-public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.JobLocationResult, JobLocationAdapter.ViewHolder> {
+public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.JobLocation, JobLocationAdapter.ViewHolder> {
     public static final String TAG = JobLocationAdapter.class.getSimpleName();
 
-    public JobLocationAdapter(Context context, List<JobLocationResponse.JobLocationResult> list) {
+    public JobLocationAdapter(Context context, List<JobLocationResponse.JobLocation> list) {
         super(context, list);
     }
 
@@ -37,7 +36,7 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                JobLocationResponse.JobLocationResult result = getItembyPostion(position);
+                JobLocationResponse.JobLocation result = getItembyPostion(position);
                 if(result != null) {
                     result.isChecked = isChecked;
                     setData(position, result);
@@ -47,7 +46,7 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
     }
 
     @Override
-    public JobLocationResponse.JobLocationResult getItembyPostion(int position) {
+    public JobLocationResponse.JobLocation getItembyPostion(int position) {
         return super.getItembyPostion(position);
     }
 
@@ -63,7 +62,7 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
         }
 
-        public void bindData(JobLocationResponse.JobLocationResult locationResult) {
+        public void bindData(JobLocationResponse.JobLocation locationResult) {
             checkBox.setText(locationResult.Name);
         }
 

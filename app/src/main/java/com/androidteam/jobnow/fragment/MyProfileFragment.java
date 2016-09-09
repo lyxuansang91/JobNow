@@ -14,20 +14,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
+import com.androidteam.jobnow.adapter.LocationSpinnerAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.UpdateProfileRequest;
 import com.androidteam.jobnow.models.UserDetailResponse;
 import com.androidteam.jobnow.models.UserModel;
@@ -170,7 +174,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                 updateProfileBirthDay();
                 break;
             case R.id.imgEditCountry:
-                updateProfile(Config.TYPE_EDIT_COUNTRY);
+                updateCountry();
                 break;
             case R.id.imgEditPostalCode:
                 updateProfile(Config.TYPE_EDIT_POSTALCODE);
@@ -179,6 +183,109 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                 updateProfile(Config.TYPE_EDIT_DESCRIPTION);
                 break;
         }
+    }
+
+    Integer coutryId;
+    String countryName;
+
+    private void updateCountry() {
+        if (progressDialog != null && !progressDialog.isShowing())
+            progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        String url = APICommon.BASE_URL + "country/getAllCountry/" + APICommon.getSign(APICommon.getApiKey(), "api/v1/country/getAllCountry")
+                + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType();
+        Call<JobLocationResponse> jobLocationResponseCall = service.getJobLocation(url);
+        jobLocationResponseCall.enqueue(new Callback<JobLocationResponse>() {
+            @Override
+            public void onResponse(final Response<JobLocationResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
+                if (response.body() != null && response.body().code == 200) {
+                    if (response.body().result != null && response.body().result.size() > 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                        builder.setTitle(getString(R.string.country));
+                        Spinner spinner = new Spinner(getActivity());
+                        final LocationSpinnerAdapter locationSpinnerAdapter = new LocationSpinnerAdapter(getActivity(), response.body().result);
+                        spinner.setAdapter(locationSpinnerAdapter);
+                        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                            @Override
+                            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                coutryId = locationSpinnerAdapter.getItem(position).id;
+                                countryName = locationSpinnerAdapter.getItem(position).Name;
+                            }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> parent) {
+
+                            }
+                        });
+                        builder.setPositiveButton(getString(R.string.update), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+                                String phonenumber = userModel.phoneNumber;
+                                String fullname = userModel.fullname == null ? "" : userModel.fullname;
+                                String email = userModel.email;
+                                String fb_id = userModel.fb_id == null ? "" : userModel.fb_id;
+                                String birthday = userModel.birthDay;
+                                String description = userModel.description == null ? "" : userModel.description;
+                                int postalCode;
+                                try {
+                                    postalCode = Integer.parseInt(userModel.postalCode);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                    postalCode = 0;
+                                }
+//                                String coutryID = userModel.countryID == null ? "" : userModel.countryID;
+                                String coutryID = coutryId + "";
+                                userModel.countryID = coutryID;
+                                userModel.countryName = coutryID;
+                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+                                String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+                                int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+                                Call<BaseResponse> call =
+                                        service.postUpdateDetail(new UpdateProfileRequest(fullname, email, birthday, gender, postalCode, description, phonenumber, fb_id, token, userId, coutryID));
+                                call.enqueue(new Callback<BaseResponse>() {
+                                    @Override
+                                    public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+
+                                        if (response.body() != null) {
+                                            if (response.code() == 200) {
+                                                setProfileToUI(false);
+                                            }
+                                            Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Throwable t) {
+                                        Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+
+                            }
+                        });
+                        builder.setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+
+                            }
+                        });
+                        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                                LinearLayout.LayoutParams.MATCH_PARENT,
+                                LinearLayout.LayoutParams.WRAP_CONTENT);
+                        spinner.setLayoutParams(lp);
+                        builder.setView(spinner);
+                        builder.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void updateProfileBirthDay() {
@@ -261,7 +368,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
     }
 
     private void updateProfile(final int type) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         final EditText input = new EditText(getActivity());
         LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -283,9 +390,6 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
             addItemToRadioGroup(getString(R.string.female), 2, radioGroup);
             addItemToRadioGroup(getString(R.string.other), 3, radioGroup);
             builder.setView(radioGroup);
-        } else if (type == Config.TYPE_EDIT_COUNTRY) {
-            builder.setTitle(getString(R.string.country));
-
         } else if (type == Config.TYPE_EDIT_POSTALCODE) {
             builder.setTitle(getString(R.string.postalCode));
             input.setInputType(InputType.TYPE_CLASS_NUMBER);

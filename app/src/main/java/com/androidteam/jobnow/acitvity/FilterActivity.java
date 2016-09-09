@@ -60,7 +60,7 @@ public class FilterActivity extends AppCompatActivity {
         rvJobLocation.setLayoutManager(layoutManager);
         rvJobLocation.setHasFixedSize(true);
         rvJobLocation.setItemAnimator(new DefaultItemAnimator());
-        jobLocationAdapter = new JobLocationAdapter(FilterActivity.this, new ArrayList<JobLocationResponse.JobLocationResult>());
+        jobLocationAdapter = new JobLocationAdapter(FilterActivity.this, new ArrayList<JobLocationResponse.JobLocation>());
         rvJobLocation.setAdapter(jobLocationAdapter);
 
         rvSkill = (DisableScrollRecyclerView) findViewById(R.id.rvSkill);
@@ -85,7 +85,7 @@ public class FilterActivity extends AppCompatActivity {
     private String getLocationParseFromLocations() {
         StringBuilder sb = new StringBuilder();
         for(int i = 0; i < jobLocationAdapter.getItemCount(); i++) {
-            JobLocationResponse.JobLocationResult location = jobLocationAdapter.getItembyPostion(i);
+            JobLocationResponse.JobLocation location = jobLocationAdapter.getItembyPostion(i);
             if(location != null) {
                 if(location.isChecked) {
                     if (sb.toString().equals("")) {
@@ -223,7 +223,7 @@ public class FilterActivity extends AppCompatActivity {
         });
 
 //        for (int i = 0; i < 9; i++) {
-//            jobLocationAdapter.add(new JobLocationResponse.JobLocationResult());
+//            jobLocationAdapter.add(new JobLocationResponse.JobLocation());
 //        }
     }
 

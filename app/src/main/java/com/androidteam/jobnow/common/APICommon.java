@@ -3,6 +3,7 @@ package com.androidteam.jobnow.common;
 import android.util.Log;
 
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.ExperienceRequest;
 import com.androidteam.jobnow.models.ExperienceResponse;
 import com.androidteam.jobnow.models.IndustryResponse;
@@ -154,5 +155,12 @@ public class APICommon {
 
         @POST("skill/postEditSkill")
         Call<BaseResponse> postEditSkill(@Body SkillRequest skillRequest);
+
+        @GET("jobs/getJobDetail/{sign}/{app_id}/{device_type}/{user_id}/{job_id}")
+        Call<DetailJobResponse> getDetailJob(@Path("sign") String sign,
+                                             @Path("app_id") String app_id,
+                                             @Path("device_type") int device_type,
+                                             @Path("user_id") int user_id,
+                                             @Path("job_id") int job_id);
     }
 }
