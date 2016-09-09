@@ -162,5 +162,12 @@ public class APICommon {
                                              @Path("device_type") int device_type,
                                              @Path("user_id") int user_id,
                                              @Path("job_id") int job_id);
+
+        @GET("users/getLogout/{sign}/{app_id}/{device_type}/{user_id}/{ApiToken}")
+        Call<BaseResponse> getLogout(@Path("sign") String sign,
+                                          @Path("app_id") String app_id,
+                                          @Path("device_type") int device_type,
+                                          @Path("user_id") int user_id,
+                                          @Path("ApiToken") String token);
     }
 }
