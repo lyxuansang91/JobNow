@@ -14,6 +14,8 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.adapter.SkillAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.SkillRequest;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.widget.CRecyclerView;
 import com.androidteam.jobnow.widget.CenteredToolbar;
@@ -30,6 +32,7 @@ public class EditSkillActivity extends AppCompatActivity {
     private ProgressDialog progressDialog;
     private SkillAdapter adapter;
     private CRecyclerView rvSkill;
+    private int[] skillCheck;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,19 +47,26 @@ public class EditSkillActivity extends AppCompatActivity {
     private void bindData() {
         progressDialog = ProgressDialog.show(this, "", getString(R.string.loading), true, true);
         SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
         int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         Call<SkillResponse> call = service.getSkill(
                 APICommon.getSign(APICommon.getApiKey(), "api/v1/skill/getListSkill"),
-                APICommon.getAppId(), APICommon.getDeviceType(), 0);
+                APICommon.getAppId(), APICommon.getDeviceType(), userId);
         call.enqueue(new Callback<SkillResponse>() {
             @Override
             public void onResponse(Response<SkillResponse> response, Retrofit retrofit) {
                 progressDialog.dismiss();
                 if (response.body() != null && response.body().code == 200) {
                     adapter.clear();
-                    adapter.addAll(response.body().result);
+//                    adapter.addAll(response.body().result);
+                    if (response.body().result != null && response.body().result.size() > 0) {
+                        for (int i = 0; i < response.body().result.size(); i++) {
+                            if (response.body().result.get(i).isSelected == null) {
+                                response.body().result.get(i).isSelected = 0;
+                            }
+                            adapter.add(response.body().result.get(i));
+                        }
+                    }
                 }
             }
 
@@ -72,8 +82,8 @@ public class EditSkillActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(RESULT_OK);
-                finish();
+                save();
+
             }
         });
 
@@ -85,9 +95,57 @@ public class EditSkillActivity extends AppCompatActivity {
         });
     }
 
+    private void save() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<BaseResponse> call = service.postEditSkill(new SkillRequest(token, userId, getSkillCheck()));
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                if (response.body() != null) {
+                    Toast.makeText(EditSkillActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
+                    if (response.body().code == 200) {
+                        setResult(RESULT_OK);
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(EditSkillActivity.this, getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+            }
+        });
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    public int[] getSkillCheck() {
+        int count = 0;
+        int[] skills = new int[0];
+        for (int i = 0; i < adapter.getItemCount(); i++) {
+            if (adapter.getItembyPostion(i).isSelected != null && adapter.getItembyPostion(i).isSelected == 1) {
+                count++;
+            }
+        }
+        if (count > 0) {
+            skills = new int[count];
+            int k = 0;
+            for (int i = 0; i < adapter.getItemCount(); i++) {
+                if (adapter.getItembyPostion(i).isSelected != null && adapter.getItembyPostion(i).isSelected == 1) {
+                    skills[k] = adapter.getItembyPostion(i).id;
+                    k++;
+                }
+            }
+        }
+        return skills;
+    }
+
     private void initUI() {
         CenteredToolbar toolbar = (CenteredToolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Edit Skill");
+        toolbar.setTitle("Add Skill");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

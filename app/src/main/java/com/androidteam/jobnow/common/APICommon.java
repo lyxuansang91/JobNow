@@ -2,8 +2,8 @@ package com.androidteam.jobnow.common;
 
 import android.util.Log;
 
-import com.androidteam.jobnow.models.ExperienceRequest;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.ExperienceRequest;
 import com.androidteam.jobnow.models.ExperienceResponse;
 import com.androidteam.jobnow.models.IndustryResponse;
 import com.androidteam.jobnow.models.JobListReponse;
@@ -14,6 +14,7 @@ import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
+import com.androidteam.jobnow.models.SkillRequest;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.models.UpdateProfileRequest;
 import com.androidteam.jobnow.models.UploadFileResponse;
@@ -150,5 +151,8 @@ public class APICommon {
                                      @Path("app_id") String app_id,
                                      @Path("device_type") int device_type,
                                      @Path("user_id") int user_id);
+
+        @POST("skill/postEditSkill")
+        Call<BaseResponse> postEditSkill(@Body SkillRequest skillRequest);
     }
 }

@@ -106,7 +106,7 @@ public class FilterActivity extends AppCompatActivity {
         for(int i = 0; i < skillAdapter.getItemCount(); i++) {
             SkillResponse.Skill skillItem = skillAdapter.getItembyPostion(i);
             if(skillItem != null) {
-                if(skillItem.isChecked) {
+                if(skillItem.isSelected==1) {
                     if (sb.toString().equals("")) {
                         sb.append(skillItem.id);
                     } else {

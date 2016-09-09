@@ -11,7 +11,6 @@ import android.widget.CompoundButton;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.models.SkillResponse;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,8 +38,8 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 SkillResponse.Skill skill = getItembyPostion(position);
-                if(skill != null) {
-                    skill.isChecked = isChecked;
+                if (skill != null) {
+                    skill.isSelected = isChecked ? 1 : 0;
                     setData(position, skill);
                 }
                 if (isChecked) {
@@ -68,6 +67,11 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
 
         public void bindData(SkillResponse.Skill skill) {
             checkBox.setText(skill.Name);
+            if (skill.isSelected == 1) {
+                checkBox.setChecked(true);
+            } else {
+                checkBox.setChecked(false);
+            }
         }
 
     }

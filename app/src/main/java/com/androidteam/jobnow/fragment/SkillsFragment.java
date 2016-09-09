@@ -1,6 +1,7 @@
 package com.androidteam.jobnow.fragment;
 
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
@@ -37,6 +39,7 @@ public class SkillsFragment extends Fragment {
     private CRecyclerView rvSkill;
     private MySkillAdapter adapter;
     private ProgressDialog progressDialog;
+    private LinearLayout lnAddSkill;
 
     public SkillsFragment() {
         // Required empty public constructor
@@ -70,7 +73,13 @@ public class SkillsFragment extends Fragment {
                 progressDialog.dismiss();
                 if (response.body() != null && response.body().code == 200) {
                     adapter.clear();
-                    adapter.addAll(response.body().result);
+                    if (response.body().result != null && response.body().result.size() > 0) {
+                        for (int i = 0; i < response.body().result.size(); i++) {
+                            if (response.body().result.get(i).isSelected != null && response.body().result.get(i).isSelected == 1) {
+                                adapter.add(response.body().result.get(i));
+                            }
+                        }
+                    }
                 }
             }
 
@@ -83,7 +92,7 @@ public class SkillsFragment extends Fragment {
     }
 
     private void event() {
-        imgEdit.setOnClickListener(new View.OnClickListener() {
+        lnAddSkill.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), EditSkillActivity.class);
@@ -94,9 +103,19 @@ public class SkillsFragment extends Fragment {
 
     private void initUI(View view) {
         imgEdit = (ImageView) view.findViewById(R.id.imgEdit);
+        lnAddSkill = (LinearLayout) view.findViewById(R.id.lnAddSkill);
         rvSkill = (CRecyclerView) view.findViewById(R.id.rvSkill);
         adapter = new MySkillAdapter(getActivity(), new ArrayList<SkillResponse.Skill>());
         rvSkill.setAdapter(adapter);
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == 2) {
+                bindData();
+            }
+        }
+    }
 }
