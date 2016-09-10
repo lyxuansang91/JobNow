@@ -68,6 +68,15 @@ public class APICommon {
 
     public interface JobNowService {
 
+
+        @GET("jobs/getAppliedJob/{sign}/{app_id}/{device_type}/{user_id}/{ApiToken}")
+        Call<JobListReponse> getAppliedListJob(@Path("sign") String sign,
+                                               @Path("app_id") String app_id,
+                                               @Path("device_type") int device_type,
+                                               @Path("user_id") int user_id,
+                                               @Path("ApiToken") String apiToken,
+                                               @Query("page") Integer page);
+
         @GET("jobs/getSaveJob/{sign}/{app_id}/{device_type}/{user_id}/{ApiToken}")
         Call<JobListReponse> getSaveListJob(@Path("sign") String sign,
                                             @Path("app_id") String app_id,

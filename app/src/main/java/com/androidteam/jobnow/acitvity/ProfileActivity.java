@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.fragment.AppliedJobListFragment;
 import com.androidteam.jobnow.fragment.JobListFragment;
 import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
@@ -49,7 +50,7 @@ public class ProfileActivity extends AppCompatActivity {
                     mFragments2.add(SaveJobListFragment.getInstance());
                     break;
                 case 2:
-                    mFragments2.add(JobListFragment.getInstance(true));
+                    mFragments2.add(AppliedJobListFragment.getInstance());
                     break;
                 case 3:
                     mFragments2.add(new ProfileFragment());
