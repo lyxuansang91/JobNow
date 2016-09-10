@@ -32,4 +32,10 @@ public class JobObject implements Serializable {
     public String LocationName;
     public String CompanyName;
     public String CompanyLogo;
+    public String IndustryName;
+    public String CurrencyName;
+    public Integer CountUserApplyJob;
+    public boolean IsApplyJob;
+    public boolean IsSaveJob;
+    public String ShareUrl;
 }

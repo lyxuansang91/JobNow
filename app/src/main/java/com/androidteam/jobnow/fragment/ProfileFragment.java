@@ -2,6 +2,7 @@ package com.androidteam.jobnow.fragment;
 
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,8 +34,10 @@ import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
+import com.androidteam.jobnow.acitvity.SplashScreen;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.squareup.okhttp.MediaType;
@@ -62,17 +65,18 @@ public class ProfileFragment extends Fragment {
     public int[] tabs() {
         return new int[]{
                 R.string.myProfile,
-                R.string.exprience,
+                R.string.experience,
                 R.string.skills
         };
     }
 
     private LinearLayout tab1, tab2, tab3;
-    private ImageView ic_tab1, ic_tab2, ic_tab3;
+    private ImageView ic_tab1, ic_tab2, ic_tab3, imgLogout;
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
     public static CircleImageView img_avatar;
     public static TextView tvName, tvLocation;
+    private ProgressDialog progressDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -132,6 +136,45 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 changeAvatar();
+            }
+        });
+
+        imgLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
+                final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+                int userID = sharedPreferences.getInt(Config.KEY_ID, 0);
+                String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+
+                APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+                Call<BaseResponse> call = service.getLogout(APICommon.getSign(APICommon.getApiKey(), "api/v1/users/getLogout"), APICommon.getAppId(), APICommon.getDeviceType(), userID, token);
+                call.enqueue(new Callback<BaseResponse>() {
+                    @Override
+                    public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                        progressDialog.dismiss();
+                        if (response.body() != null) {
+                            if (response.body().code == 200) {
+                                Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.clear();
+                                editor.commit();
+                                Intent intent = new Intent(getActivity(), SplashScreen.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                                getActivity().finish(); // call this to f
+                            } else {
+                                Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Throwable t) {
+                        progressDialog.dismiss();
+                        Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -231,6 +274,7 @@ public class ProfileFragment extends Fragment {
                 public void onResponse(Response<UploadFileResponse> response, Retrofit retrofit) {
                     if (response.body() != null) {
                         Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+
                     }
                 }
 
@@ -303,7 +347,7 @@ public class ProfileFragment extends Fragment {
     private void bindData() {
 //        FragmentPagerItems pages = new FragmentPagerItems(getActivity());
 //        pages.add(FragmentPagerItem.of(getString(tabs()[0]), MyProfileFragment.class));
-//        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExprienceFragment.class));
+//        pages.add(FragmentPagerItem.of(getString(tabs()[1]), ExperienceFragment.class));
 //        pages.add(FragmentPagerItem.of(getString(tabs()[2]), SkillsFragment.class));
 //        FragmentPagerItemAdapter adapter = new FragmentPagerItemAdapter(
 //                getChildFragmentManager(), pages);
@@ -333,7 +377,7 @@ public class ProfileFragment extends Fragment {
                 case 0:
                     return new MyProfileFragment();
                 case 1:
-                    return new ExprienceFragment();
+                    return new ExperienceFragment();
                 case 2:
                     return new SkillsFragment();
                 default:
@@ -371,6 +415,8 @@ public class ProfileFragment extends Fragment {
         ic_tab1 = (ImageView) v.findViewById(R.id.ic_tab1);
         ic_tab2 = (ImageView) v.findViewById(R.id.ic_tab2);
         ic_tab3 = (ImageView) v.findViewById(R.id.ic_tab3);
+
+        imgLogout = (ImageView) v.findViewById(R.id.imgLogout);
 
         custom_text1 = (TextView) v.findViewById(R.id.custom_text1);
         custom_text2 = (TextView) v.findViewById(R.id.custom_text2);

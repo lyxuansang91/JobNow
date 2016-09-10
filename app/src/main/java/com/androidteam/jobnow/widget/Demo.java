@@ -22,7 +22,7 @@ public enum Demo {
         public int[] tabs() {
             return new int[]{
                     R.string.myProfile,
-                    R.string.exprience,
+                    R.string.experience,
                     R.string.skills
             };
         }
@@ -82,7 +82,7 @@ public enum Demo {
     public static int[] tab10() {
         return new int[]{
                 R.string.myProfile,
-                R.string.exprience,
+                R.string.experience,
                 R.string.skills
         };
     }

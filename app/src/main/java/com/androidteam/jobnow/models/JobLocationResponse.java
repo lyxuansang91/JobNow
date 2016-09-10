@@ -7,9 +7,9 @@ import java.util.List;
  */
 
 public class JobLocationResponse extends BaseResponse {
-    public List<JobLocationResult> result;
+    public List<JobLocation> result;
 
-    public static class JobLocationResult {
+    public static class JobLocation {
         public Integer id;
         public String Name;
         public String ZipCode;

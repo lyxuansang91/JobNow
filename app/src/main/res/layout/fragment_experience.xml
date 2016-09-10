@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="com.androidteam.jobnow.fragment.SkillsFragment">
+    tools:context=".fragment.ExperienceFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,7 +11,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/lnAddSkill"
+            android:id="@+id/lnAddExp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -27,7 +27,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="@string/addSkill"
+                android:text="@string/addExprience"
                 android:textColor="@color/colorPrimary" />
         </LinearLayout>
 
@@ -36,26 +36,12 @@
             android:layout_height="1dp"
             android:background="@color/colorGray" />
 
-        <RelativeLayout
+        <com.androidteam.jobnow.widget.CRecyclerView
+            android:id="@+id/rvExperience"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="10dp">
+            android:layout_height="wrap_content" />
 
-            <ImageView
-                android:id="@+id/imgEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_edit_blue"
-                android:visibility="gone" />
 
-            <com.androidteam.jobnow.widget.CRecyclerView
-                android:id="@+id/rvSkill"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@+id/imgEdit" />
-
-        </RelativeLayout>
     </LinearLayout>
 
 </ScrollView>

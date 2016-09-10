@@ -68,6 +68,8 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, DetailJobsActivity.class);
+                    intent.putExtra("jobId", list.get(getAdapterPosition()).id);
+                    intent.putExtra("jobObject", list.get(getAdapterPosition()));
                     mContext.startActivity(intent);
                 }
             });
@@ -75,9 +77,9 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
 
         public void bindData(JobObject jobObject) {
             tvName.setText(jobObject.Title);
-            tvLocation.setText(jobObject.LocationName);
+            tvLocation.setText(jobObject.Position);
             tvPrice.setText(jobObject.FromSalary + " - " + jobObject.ToSalary + " (USD)");
-            tvTime.setText(p.format(new Date(Utils.getLongTime(jobObject.created_at))));
+            tvTime.setText(mContext.getString(R.string.posted)+" "+p.format(new Date(Utils.getLongTime(jobObject.created_at))));
             tvCompanyName.setText(jobObject.CompanyName);
             Picasso.with(mContext).load(jobObject.CompanyLogo).placeholder(R.mipmap.img_logo_company).error(R.mipmap.img_logo_company).into(imgLogo);
         }

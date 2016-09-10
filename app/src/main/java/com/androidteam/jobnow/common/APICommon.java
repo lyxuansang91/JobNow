@@ -3,9 +3,11 @@ package com.androidteam.jobnow.common;
 import android.util.Log;
 
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.DetailJobResponse;
+import com.androidteam.jobnow.models.ExperienceRequest;
+import com.androidteam.jobnow.models.ExperienceResponse;
 import com.androidteam.jobnow.models.IndustryResponse;
 import com.androidteam.jobnow.models.JobListReponse;
-import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
@@ -13,6 +15,7 @@ import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
+import com.androidteam.jobnow.models.SkillRequest;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.models.UpdateProfileRequest;
 import com.androidteam.jobnow.models.UploadFileResponse;
@@ -138,5 +141,42 @@ public class APICommon {
 
         @POST("users/postUpdateJobSeeker")
         Call<BaseResponse> postUpdateDetail(@Body UpdateProfileRequest updateProfileRequest);
+
+        @GET("jobseekerexperience/getAllJobSeekerExperience/{sign}/{app_id}/{device_type}/{user_id}/{token}")
+        Call<ExperienceResponse> getExperience(@Path("sign") String sign,
+                                               @Path("app_id") String app_id,
+                                               @Path("device_type") int device_type,
+                                               @Path("user_id") int user_id,
+                                               @Path("token") String token,
+                                               @Query("user_id") int user_id1);
+
+        @POST("jobseekerexperience/postAddJobSeekerExperience")
+        Call<BaseResponse> postAddJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
+
+        @POST("jobseekerexperience/postUpdateJobSeekerExperience")
+        Call<BaseResponse> postUpdateJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
+
+        @GET("skill/getListSkill/{sign}/{app_id}/{device_type}/{user_id}")
+        Call<SkillResponse> getSkill(@Path("sign") String sign,
+                                     @Path("app_id") String app_id,
+                                     @Path("device_type") int device_type,
+                                     @Path("user_id") int user_id);
+
+        @POST("skill/postEditSkill")
+        Call<BaseResponse> postEditSkill(@Body SkillRequest skillRequest);
+
+        @GET("jobs/getJobDetail/{sign}/{app_id}/{device_type}/{user_id}/{job_id}")
+        Call<DetailJobResponse> getDetailJob(@Path("sign") String sign,
+                                             @Path("app_id") String app_id,
+                                             @Path("device_type") int device_type,
+                                             @Path("user_id") int user_id,
+                                             @Path("job_id") int job_id);
+
+        @GET("users/getLogout/{sign}/{app_id}/{device_type}/{user_id}/{ApiToken}")
+        Call<BaseResponse> getLogout(@Path("sign") String sign,
+                                          @Path("app_id") String app_id,
+                                          @Path("device_type") int device_type,
+                                          @Path("user_id") int user_id,
+                                          @Path("ApiToken") String token);
     }
 }
