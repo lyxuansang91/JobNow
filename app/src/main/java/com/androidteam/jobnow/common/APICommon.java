@@ -2,6 +2,7 @@ package com.androidteam.jobnow.common;
 
 import android.util.Log;
 
+import com.androidteam.jobnow.models.ApplyJobRequest;
 import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.ExperienceRequest;
@@ -15,6 +16,7 @@ import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
 import com.androidteam.jobnow.models.RegisterResponse;
+import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.models.SkillRequest;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.models.UpdateProfileRequest;
@@ -71,6 +73,11 @@ public class APICommon {
 
     public interface JobNowService {
 
+        @POST("jobs/postSaveJob")
+        Call<BaseResponse> saveJob(@Body SaveJobRequest request);
+
+        @POST("jobs/postAppliedJob")
+        Call<BaseResponse> applyJob(@Body ApplyJobRequest request);
 
         @GET("jobs/getAppliedJob/{sign}/{app_id}/{device_type}/{user_id}/{ApiToken}")
         Call<JobListReponse> getAppliedListJob(@Path("sign") String sign,

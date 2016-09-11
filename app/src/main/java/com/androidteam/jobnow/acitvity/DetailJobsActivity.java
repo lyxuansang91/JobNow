@@ -8,15 +8,20 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.ApplyJobRequest;
+import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.JobObject;
+import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.utils.Utils;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.squareup.picasso.Picasso;
@@ -28,10 +33,11 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
-public class DetailJobsActivity extends AppCompatActivity {
+public class DetailJobsActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView tvName, tvLocation, tvPrice, tvTime, tvCompanyName, tvDescription,
             tvRequirement, tvYearOfExperience, tvPosition,tvCountUserApplyJob;
     private ImageView imgLogo;
+    private LinearLayout lnSaveJob, lnApplyJob;
     private ProgressDialog progressDialog;
     private int jobId;
     private JobObject jobObject;
@@ -121,6 +127,11 @@ public class DetailJobsActivity extends AppCompatActivity {
         tvRequirement = (TextView) findViewById(R.id.tvRequirement);
         tvYearOfExperience = (TextView) findViewById(R.id.tvYearOfExperience);
         tvCountUserApplyJob = (TextView) findViewById(R.id.tvCountUserApplyJob);
+        //apply job and save job
+        lnSaveJob = (LinearLayout) findViewById(R.id.lnSaveJob);
+        lnApplyJob = (LinearLayout) findViewById(R.id.lnApplyJob);
+        lnSaveJob.setOnClickListener(this);
+        lnApplyJob.setOnClickListener(this);
 
     }
 
@@ -135,5 +146,67 @@ public class DetailJobsActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void handleSaveJob(){
+
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<BaseResponse> call = service.saveJob(new SaveJobRequest(jobId, userId, userId, token));
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+               if(response.body() != null) {
+                   BaseResponse baseResponse = response.body();
+                   Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
+                           .show();
+               }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_connect),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void handleApplyJob() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<BaseResponse> call = service.applyJob(new ApplyJobRequest(jobId, userId, userId, token));
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                if(response.body() != null) {
+                    BaseResponse baseResponse = response.body();
+                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), getString(R.string.error_connect),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.lnSaveJob:
+                handleSaveJob();
+                break;
+            case R.id.lnApplyJob:
+                handleApplyJob();
+                break;
+        }
     }
 }

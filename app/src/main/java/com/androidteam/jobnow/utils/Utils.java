@@ -99,7 +99,7 @@ public class Utils {
             Date date = sdf.parse(dateString);
 
             return date.getTime();
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
