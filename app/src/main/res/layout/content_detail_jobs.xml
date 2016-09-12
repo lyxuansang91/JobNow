@@ -293,6 +293,7 @@
                 android:src="@mipmap/ic_star" />
 
             <Button
+                android:id="@+id/btnSaveJob"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
@@ -318,6 +319,7 @@
                 android:src="@mipmap/ic_apply_job" />
 
             <Button
+                android:id="@+id/btnApplyJob"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"

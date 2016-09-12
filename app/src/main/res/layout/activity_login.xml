@@ -17,7 +17,7 @@
         android:gravity="left|center_vertical"
         android:hint="@string/email"
         android:imeOptions="actionNext"
-        android:text="Manh.it.it.it@gmail.com"
+        android:text="tronghieudev@gmail.com"
         android:inputType="textEmailAddress"
         android:padding="10dp"
         android:singleLine="true"
@@ -31,10 +31,10 @@
         android:background="@drawable/bg_btn_info"
         android:gravity="left|center_vertical"
         android:hint="@string/password"
-        android:text="123456"
+        android:text="12345678"
         android:imeOptions="actionDone"
         android:padding="10dp"
-        android:password="true"
+        android:inputType="textPassword"
         android:singleLine="true"
         android:textSize="16sp" />
 

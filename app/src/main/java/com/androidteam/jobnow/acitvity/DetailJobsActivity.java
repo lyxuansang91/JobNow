@@ -1,6 +1,8 @@
 package com.androidteam.jobnow.acitvity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +20,8 @@ import android.widget.Toast;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.eventbus.ApplyJobEvent;
+import com.androidteam.jobnow.eventbus.SaveJobEvent;
 import com.androidteam.jobnow.models.ApplyJobRequest;
 import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.DetailJobResponse;
@@ -25,6 +30,8 @@ import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.utils.Utils;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 
@@ -162,6 +169,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                    BaseResponse baseResponse = response.body();
                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                            .show();
+                   if(baseResponse.code == 200) {
+                       EventBus.getDefault().post(new SaveJobEvent());
+                   }
                }
             }
 
@@ -187,6 +197,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     BaseResponse baseResponse = response.body();
                     Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                             .show();
+                    if(baseResponse.code == 200) {
+                        EventBus.getDefault().post(new ApplyJobEvent());
+                    }
                 }
             }
 

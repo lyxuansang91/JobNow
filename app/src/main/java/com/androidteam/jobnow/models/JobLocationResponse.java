@@ -1,13 +1,13 @@
 package com.androidteam.jobnow.models;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by manhi on 26/8/2016.
  */
 
 public class JobLocationResponse extends BaseResponse {
-    public List<JobLocation> result;
+    public ArrayList<JobLocation> result;
 
     public static class JobLocation {
         public Integer id;

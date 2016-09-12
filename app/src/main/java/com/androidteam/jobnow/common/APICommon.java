@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.androidteam.jobnow.models.ApplyJobRequest;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.ExperienceRequest;
 import com.androidteam.jobnow.models.ExperienceResponse;
@@ -72,6 +73,12 @@ public class APICommon {
     }
 
     public interface JobNowService {
+
+        @POST("jobs/postDeleteSaveJob")
+        Call<BaseResponse> deleteSaveJob(@Body DeleteJobRequest request);
+
+        @POST("jobs/postDeleteAppliedJob")
+        Call<BaseResponse> deleteAppliedJob(@Body DeleteJobRequest request);
 
         @POST("jobs/postSaveJob")
         Call<BaseResponse> saveJob(@Body SaveJobRequest request);

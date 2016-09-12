@@ -3,18 +3,23 @@ package com.androidteam.jobnow.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.DetailJobsActivity;
+import com.androidteam.jobnow.eventbus.DeleteJobEvent;
 import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.utils.Utils;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.squareup.picasso.Picasso;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
 import java.util.List;
@@ -24,13 +29,26 @@ import java.util.List;
  */
 
 public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapter.ViewHolder> {
+
     public static final String TAG = JobListAdapter.class.getSimpleName();
+    public static final int NORMAL_TYPE = 0;
+    public static final int SAVE_TYPE = 1;
+    public static final int APPLY_TYPE = 2;
     private PrettyTime p;
+    private int type;
+
+    public JobListAdapter(Context context, List<JobObject> list, int type) {
+        super(context, list);
+        this.p = new PrettyTime();
+        this.type = type;
+    }
 
     public JobListAdapter(Context context, List<JobObject> list) {
         super(context, list);
         this.p = new PrettyTime();
+        this.type = 0;
     }
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -53,6 +71,7 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
         private LinearLayout lnFeautured, lnJob;
         private TextView tvName, tvLocation, tvPrice, tvTime, tvCompanyName;
         private ImageView imgLogo;
+        private ImageButton btnRemove;
 
         public ViewHolder(View view) {
             super(view);
@@ -64,13 +83,24 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
             tvTime = (TextView) view.findViewById(R.id.tvTime);
             tvCompanyName = (TextView) view.findViewById(R.id.tvCompanyName);
             imgLogo = (ImageView) view.findViewById(R.id.imgLogo);
+            btnRemove = (ImageButton) view.findViewById(R.id.btnRemove);
+            btnRemove.setVisibility(type == 0 ? View.GONE : View.VISIBLE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(mContext, DetailJobsActivity.class);
-                    intent.putExtra("jobId", list.get(getAdapterPosition()).id);
+                    int job_id = (type == NORMAL_TYPE ? list.get(getAdapterPosition()).id :
+                            list.get(getAdapterPosition()).job_id);
+                    intent.putExtra("jobId", job_id);
                     intent.putExtra("jobObject", list.get(getAdapterPosition()));
                     mContext.startActivity(intent);
+                }
+            });
+
+            btnRemove.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EventBus.getDefault().post(new DeleteJobEvent(getAdapterPosition(), type));
                 }
             });
         }

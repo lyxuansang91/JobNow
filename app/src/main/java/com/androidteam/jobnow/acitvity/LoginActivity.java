@@ -27,7 +27,6 @@ import retrofit.Retrofit;
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = LoginActivity.class.getSimpleName();
-    long key_pressed;
     private EditText edtPassword;
     private EditText edtEmail;
     private Button btnLogin;

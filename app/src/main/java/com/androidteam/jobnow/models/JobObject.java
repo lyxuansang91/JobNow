@@ -35,7 +35,16 @@ public class JobObject implements Serializable {
     public String IndustryName;
     public String CurrencyName;
     public Integer CountUserApplyJob;
-    public boolean IsApplyJob;
-    public boolean IsSaveJob;
+    @SerializedName("IsApplyJob")
+    public boolean isApplyJob;
+
+    @SerializedName("IsSaveJob")
+    public boolean isSaveJob;
     public String ShareUrl;
+    @SerializedName("Latitude")
+    public Double latitude;
+
+    @SerializedName("Longitude")
+    public Double longtitude;
+
 }

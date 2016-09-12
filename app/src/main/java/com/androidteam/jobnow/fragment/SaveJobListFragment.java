@@ -18,11 +18,18 @@ import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.eventbus.DeleteJobEvent;
+import com.androidteam.jobnow.eventbus.SaveJobEvent;
+import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.CRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -104,10 +111,60 @@ public class SaveJobListFragment extends Fragment {
         rlSearchBar = (RelativeLayout) view.findViewById(R.id.rlSearchBar);
         rvListJob = (CRecyclerView) view.findViewById(R.id.rvListJob);
         rvListJob.setDivider();
-        adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>());
+        adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>(), JobListAdapter.SAVE_TYPE);
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
         Utils.closeKeyboard(getActivity());
     }
 
+    @Subscribe
+    public void onEvent(SaveJobEvent event) {
+        adapter.clear();
+        bindData();
+    }
+
+    @Subscribe
+    public void onEvent(DeleteJobEvent event) {
+        int type = event.type;
+        if(type == JobListAdapter.SAVE_TYPE) {
+            int job_id = adapter.getItembyPostion(event.position).job_id;
+            final int position = event.position;
+            APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
+                    Config.Pref, Context.MODE_PRIVATE);
+            String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+            int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+            Call<BaseResponse> call = service.deleteSaveJob(new DeleteJobRequest(userId, job_id,
+                    token, userId, type));
+            call.enqueue(new Callback<BaseResponse>() {
+                @Override
+                public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                    if(response.body() != null && response.body().code == 200) {
+                        adapter.remove(position);
+                        tvNumberJob.setText(adapter.getItemCount() + " saved job");
+                    }
+                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
+                            .show();
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onDetach() {
+        EventBus.getDefault().unregister(this);
+        super.onDetach();
+    }
 }
