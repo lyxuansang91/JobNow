@@ -1,9 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorPrimary">#026dbb</color>
+    <color name="colorPrimaryDark">#026dbb</color>
     <color name="colorAccent">#FF4081</color>
     <color name="colorBackGroundSignUp">#ff8344</color>
     <color name="colorBackGroundLogin">#3ba7eb</color>
     <color name="colorGray">#e0e0e0</color>
+    <color name="darkGray">#7d7d7d</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="backgroudTab">#f8f8f8</color>
+    <color name="colorMoney">#f96145</color>
+    <color name="colorBgApplyJob">#fa603c</color>
+    <color name="colorBgSaveJob">#026dbb</color>
+    <color name="bg_jobFeatured">#f1faff</color>
+
 </resources>

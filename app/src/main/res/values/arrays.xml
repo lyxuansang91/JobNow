@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="item_Specializations">
+        <item>All Specializations</item>
+        <item>All Specializations</item>
+    </string-array>
+    <string-array name="item_sortBy">
+        <item>by Date</item>
+        <item>by Salary</item>
+    </string-array>
+</resources>
