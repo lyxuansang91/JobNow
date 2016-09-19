@@ -12,18 +12,21 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.eventbus.ApplyJobEvent;
 import com.androidteam.jobnow.eventbus.SaveJobEvent;
 import com.androidteam.jobnow.models.ApplyJobRequest;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.models.SaveJobRequest;
@@ -43,12 +46,15 @@ import retrofit.Retrofit;
 public class DetailJobsActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView tvName, tvLocation, tvPrice, tvTime, tvCompanyName, tvDescription,
             tvRequirement, tvYearOfExperience, tvPosition,tvCountUserApplyJob;
-    private ImageView imgLogo;
+    private ImageView imgLogo, ivSaveJob;
     private LinearLayout lnSaveJob, lnApplyJob;
     private ProgressDialog progressDialog;
     private int jobId;
     private JobObject jobObject;
     private PrettyTime p;
+    private boolean savedJob = false;
+    private boolean appliedJob = false;
+    private Button btnSaveJob, btnApplyJob;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +108,12 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     Picasso.with(DetailJobsActivity.this).load(jobObject.CompanyLogo).placeholder(R.mipmap.img_logo_company).error(R.mipmap.img_logo_company).into(imgLogo);
                     tvDescription.setText(jobObject.Description);
                     tvRequirement.setText(jobObject.Requirement);
+                    appliedJob = response.body().result.isApplyJob;
+                    savedJob = response.body().result.isSaveJob;
+                    ivSaveJob.setImageResource(savedJob ? R.mipmap.ic_saved_job : R.mipmap.ic_unsaved_job);
+                    btnSaveJob.setText(savedJob ? "Unsaved" : "Save job");
+                    btnApplyJob.setText(appliedJob ? "Unapplied" : "Apply job");
+
                     tvYearOfExperience.setText(jobObject.YearOfExperience);
                     tvCountUserApplyJob.setText(jobObject.CountUserApplyJob+" Applications");
                 }
@@ -137,9 +149,11 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         //apply job and save job
         lnSaveJob = (LinearLayout) findViewById(R.id.lnSaveJob);
         lnApplyJob = (LinearLayout) findViewById(R.id.lnApplyJob);
+        btnSaveJob = (Button) findViewById(R.id.btnSaveJob);
+        btnApplyJob = (Button) findViewById(R.id.btnApplyJob);
+        ivSaveJob = (ImageView) findViewById(R.id.ivSaveJob);
         lnSaveJob.setOnClickListener(this);
         lnApplyJob.setOnClickListener(this);
-
     }
 
     @Override
@@ -170,6 +184,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                            .show();
                    if(baseResponse.code == 200) {
+                       ivSaveJob.setImageResource(R.mipmap.ic_saved_job);
+                       btnSaveJob.setText("Unsaved");
+                       savedJob = true;
                        EventBus.getDefault().post(new SaveJobEvent());
                    }
                }
@@ -181,7 +198,65 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void handleUnsavedJob() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<BaseResponse> call = service.deleteSaveJob(new DeleteJobRequest(userId, jobId, token, userId,
+                JobListAdapter.SAVE_TYPE));
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                if(response.body() != null) {
+                    BaseResponse baseResponse = response.body();
+                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
+                            .show();
+                    if(baseResponse.code == 200) {
+                        ivSaveJob.setImageResource(R.mipmap.ic_unsaved_job);
+                        btnSaveJob.setText("Save Job");
+                        savedJob = false;
+                        EventBus.getDefault().post(new SaveJobEvent());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
+    }
+
+    private void handleUnappliedJob() {
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<BaseResponse> call = service.deleteAppliedJob(new DeleteJobRequest(userId, jobId, token, userId,
+                JobListAdapter.APPLY_TYPE));
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                if(response.body() != null) {
+                    BaseResponse baseResponse = response.body();
+                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
+                            .show();
+                    if(baseResponse.code == 200) {
+                        btnApplyJob.setText("Apply Job");
+                        appliedJob = false;
+                        EventBus.getDefault().post(new ApplyJobEvent());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+
+            }
+        });
     }
 
     private void handleApplyJob() {
@@ -198,6 +273,8 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                             .show();
                     if(baseResponse.code == 200) {
+                        btnApplyJob.setText("Applied");
+                        appliedJob = true;
                         EventBus.getDefault().post(new ApplyJobEvent());
                     }
                 }
@@ -215,10 +292,16 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.lnSaveJob:
-                handleSaveJob();
+                if(savedJob) {
+                    handleUnsavedJob();
+                } else
+                    handleSaveJob();
                 break;
             case R.id.lnApplyJob:
-                handleApplyJob();
+                if(appliedJob) {
+                    handleUnappliedJob();
+                } else
+                    handleApplyJob();
                 break;
         }
     }

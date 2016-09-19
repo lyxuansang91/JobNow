@@ -84,7 +84,7 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
             tvCompanyName = (TextView) view.findViewById(R.id.tvCompanyName);
             imgLogo = (ImageView) view.findViewById(R.id.imgLogo);
             btnRemove = (ImageButton) view.findViewById(R.id.btnRemove);
-            btnRemove.setVisibility(type == 0 ? View.GONE : View.VISIBLE);
+            btnRemove.setVisibility(type == 0 ? View.INVISIBLE : View.VISIBLE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

@@ -2,8 +2,15 @@ package com.androidteam.jobnow.fragment;
 
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -14,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.acitvity.DetailJobsActivity;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.models.JobListReponse;
@@ -27,8 +35,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit.Call;
@@ -39,14 +50,11 @@ import retrofit.Retrofit;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MapListFragment extends Fragment implements OnMapReadyCallback {
+public class MapListFragment extends Fragment implements OnMapReadyCallback, LocationListener {
 
-
-    private static final LatLng PERTH = new LatLng(-31.952854, 115.857342);
-    private static final LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
-    private static final LatLng BRISBANE = new LatLng(-27.47093, 153.0235);
     private static final String TAG = MapListFragment.class.getSimpleName();
     private GoogleMap mMap;
+    private HashMap<Marker, Integer> lstMarker = new HashMap<>();
 
     public MapListFragment() {
         // Required empty public constructor
@@ -133,11 +141,114 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         if (mMap == null) {
             mMap = googleMap;
+            LocationManager locationManager = (LocationManager) getContext().getSystemService(
+                    Context.LOCATION_SERVICE);
+            Criteria criteria = new Criteria();
+            String bestProvider = locationManager.getBestProvider(criteria, true);
+
+
+            if (ActivityCompat.checkSelfPermission(MyApplication.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MyApplication.getInstance(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
+            Location location = locationManager.getLastKnownLocation(bestProvider);
+            Log.d(TAG, "location: " + location);
+            if (location != null) {
+                onLocationChanged(location);
+            }
+
+            locationManager.requestLocationUpdates(bestProvider, 20000, 0, this);
             mMap.getUiSettings().setZoomControlsEnabled(true);
             mMap.getUiSettings().setZoomGesturesEnabled(true);
             mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            initData();
+            //initData();
+            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                @Override
+                public boolean onMarkerClick(Marker marker) {
+                    Intent intent = new Intent(getActivity(), DetailJobsActivity.class);
+                    Log.d(TAG, "job id: " + lstMarker.get(marker));
+                    intent.putExtra("jobId", lstMarker.get(marker));
+//                    startActivity(intent);
+//                    return true;
+                    return false;
+                }
+            });
         }
+    }
 
+
+
+    @Override
+    public void onLocationChanged(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        LatLng latLng = new LatLng(latitude, longitude);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+        getListJobInLocation(latitude, longitude);
+    }
+
+    private void getListJobInLocation(double lat, double lng) {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<JobListReponse> call = service.getListJobInLocation(
+                APICommon.getSign(APICommon.getApiKey(), "api/v1/jobs/getListJobInLocation"),
+                APICommon.getAppId(),
+                APICommon.getDeviceType(),
+                lat,
+                lng);
+        call.enqueue(new Callback<JobListReponse>() {
+            @Override
+            public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
+                if(response.body() != null && response.body().code == 200) {
+                    //success
+                    if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
+                        List<JobObject> lstJobs = response.body().result.data;
+
+                        for (JobObject jobObject : lstJobs) {
+                            MarkerOptions markerOptions = new MarkerOptions()
+                                    .position(new LatLng(jobObject.latitude, jobObject.longtitude))
+                                    .title(jobObject.Title)
+                                    .icon(BitmapDescriptorFactory.fromResource(R.mipmap.ic_marker))
+                                    .snippet(jobObject.FromSalary + "-" + jobObject.ToSalary + " USD");
+
+                            Marker marker = mMap.addMarker(markerOptions);
+                            lstMarker.put(marker, jobObject.id);
+                        }
+                    }
+                } else
+                    Toast.makeText(getContext(), response.body().message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getContext(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String provider) {
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

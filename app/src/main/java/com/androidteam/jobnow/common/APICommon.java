@@ -74,6 +74,13 @@ public class APICommon {
 
     public interface JobNowService {
 
+
+        @GET("jobs/getListJobInLocation/{sign}/{app_id}/{device_type}/{lat}/{lng}")
+        Call<JobListReponse> getListJobInLocation(@Path("sign") String sign,
+                                                  @Path("app_id") String app_id,
+                                                  @Path("device_type") int device_type,
+                                                  @Path("lat") Double lat,
+                                                  @Path("lng") Double lng);
         @POST("jobs/postDeleteSaveJob")
         Call<BaseResponse> deleteSaveJob(@Body DeleteJobRequest request);
 
