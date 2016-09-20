@@ -15,5 +15,5 @@
     <color name="colorBgSaveJob">#026dbb</color>
     <color name="bg_jobFeatured">#f1faff</color>
     <color name="red">#e33e3e</color>
-
+    <color name="deleted_background">#ff9a12</color>
 </resources>

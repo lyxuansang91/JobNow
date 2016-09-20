@@ -1,16 +1,17 @@
 package com.androidteam.jobnow.acitvity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.app.usage.UsageEvents;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -45,7 +46,7 @@ import retrofit.Retrofit;
 
 public class DetailJobsActivity extends AppCompatActivity implements View.OnClickListener {
     private TextView tvName, tvLocation, tvPrice, tvTime, tvCompanyName, tvDescription,
-            tvRequirement, tvYearOfExperience, tvPosition,tvCountUserApplyJob;
+            tvRequirement, tvYearOfExperience, tvPosition, tvCountUserApplyJob;
     private ImageView imgLogo, ivSaveJob;
     private LinearLayout lnSaveJob, lnApplyJob;
     private ProgressDialog progressDialog;
@@ -115,7 +116,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     btnApplyJob.setText(appliedJob ? "Unapplied" : "Apply job");
 
                     tvYearOfExperience.setText(jobObject.YearOfExperience);
-                    tvCountUserApplyJob.setText(jobObject.CountUserApplyJob+" Applications");
+                    tvCountUserApplyJob.setText(jobObject.CountUserApplyJob + " Applications");
                 }
             }
 
@@ -169,7 +170,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         return super.onOptionsItemSelected(item);
     }
 
-    private void handleSaveJob(){
+    private void handleSaveJob() {
 
         SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
         String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
@@ -179,17 +180,30 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-               if(response.body() != null) {
-                   BaseResponse baseResponse = response.body();
-                   Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
-                           .show();
-                   if(baseResponse.code == 200) {
-                       ivSaveJob.setImageResource(R.mipmap.ic_saved_job);
-                       btnSaveJob.setText("Unsaved");
-                       savedJob = true;
-                       EventBus.getDefault().post(new SaveJobEvent());
-                   }
-               }
+                if (response.body() != null) {
+                    BaseResponse baseResponse = response.body();
+                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
+                            .show();
+                    if (baseResponse.code == 200) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
+                        LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.dialog_success, null);
+                        builder.setView(dialogView);
+                        AlertDialog dialog = builder.create();
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        dialog.setCancelable(true);
+                        TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+                        TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
+                        tvTitle.setText("UNSAVED!");
+                        tvMessage.setText(jobObject.Title + " " + response.body().message);
+
+                        ivSaveJob.setImageResource(R.mipmap.ic_saved_job);
+                        btnSaveJob.setText("Unsaved");
+                        savedJob = true;
+                        EventBus.getDefault().post(new SaveJobEvent());
+                    }
+                }
             }
 
             @Override
@@ -210,11 +224,25 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
                     Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                             .show();
-                    if(baseResponse.code == 200) {
+                    if (baseResponse.code == 200) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
+                        LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.dialog_success, null);
+                        builder.setView(dialogView);
+                        AlertDialog dialog = builder.create();
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        dialog.setCancelable(true);
+                        TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+                        TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
+                        tvTitle.setText("SAVED!");
+                        tvMessage.setText(jobObject.Title + " " + response.body().message);
+
+
                         ivSaveJob.setImageResource(R.mipmap.ic_unsaved_job);
                         btnSaveJob.setText("Save Job");
                         savedJob = false;
@@ -240,11 +268,24 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
                     Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                             .show();
-                    if(baseResponse.code == 200) {
+                    if (baseResponse.code == 200) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
+                        LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.dialog_success, null);
+                        builder.setView(dialogView);
+                        AlertDialog dialog = builder.create();
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        dialog.setCancelable(true);
+                        TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+                        TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
+                        tvTitle.setText("Unapplied!".toUpperCase());
+                        tvMessage.setText(jobObject.Title + " " + response.body().message);
+
                         btnApplyJob.setText("Apply Job");
                         appliedJob = false;
                         EventBus.getDefault().post(new ApplyJobEvent());
@@ -268,11 +309,25 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-                if(response.body() != null) {
+                if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
                     Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
                             .show();
-                    if(baseResponse.code == 200) {
+                    if (baseResponse.code == 200) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
+                        LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
+                        View dialogView = inflater.inflate(R.layout.dialog_success, null);
+                        builder.setView(dialogView);
+                        AlertDialog dialog = builder.create();
+                        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                        dialog.show();
+                        dialog.setCancelable(true);
+                        TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
+                        TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
+                        tvTitle.setText("Applied!".toUpperCase());
+                        tvMessage.setText(jobObject.Title + " " + response.body().message);
+
+
                         btnApplyJob.setText("Applied");
                         appliedJob = true;
                         EventBus.getDefault().post(new ApplyJobEvent());
@@ -290,15 +345,15 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.lnSaveJob:
-                if(savedJob) {
+                if (savedJob) {
                     handleUnsavedJob();
                 } else
                     handleSaveJob();
                 break;
             case R.id.lnApplyJob:
-                if(appliedJob) {
+                if (appliedJob) {
                     handleUnappliedJob();
                 } else
                     handleApplyJob();
