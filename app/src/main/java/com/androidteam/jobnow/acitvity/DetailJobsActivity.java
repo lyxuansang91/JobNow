@@ -4,8 +4,12 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,6 +27,7 @@ import android.widget.Toast;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.common.FunctionCommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.eventbus.ApplyJobEvent;
 import com.androidteam.jobnow.eventbus.SaveJobEvent;
@@ -32,12 +38,14 @@ import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.utils.Utils;
+import com.facebook.share.ShareApi;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.squareup.picasso.Picasso;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.Date;
+import java.util.List;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -56,6 +64,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     private boolean savedJob = false;
     private boolean appliedJob = false;
     private Button btnSaveJob, btnApplyJob;
+    private ImageButton btnShareFacebook, btnShareTwitter, btnShareGooglePlus, btnShareLinkedIn,
+    btnSharePinterest, btnShareRSS;
+    private String shareUrl = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +125,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     ivSaveJob.setImageResource(savedJob ? R.mipmap.ic_saved_job : R.mipmap.ic_unsaved_job);
                     btnSaveJob.setText(savedJob ? "Unsaved" : "Save job");
                     btnApplyJob.setText(appliedJob ? "Unapplied" : "Apply job");
-
+                    shareUrl = response.body().result.ShareUrl;
                     tvYearOfExperience.setText(jobObject.YearOfExperience);
                     tvCountUserApplyJob.setText(jobObject.CountUserApplyJob + " Applications");
                 }
@@ -155,6 +166,18 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         ivSaveJob = (ImageView) findViewById(R.id.ivSaveJob);
         lnSaveJob.setOnClickListener(this);
         lnApplyJob.setOnClickListener(this);
+        btnShareFacebook = (ImageButton) findViewById(R.id.btnShareFacebook);
+        btnShareTwitter = (ImageButton) findViewById(R.id.btnShareTwitter);
+        btnShareGooglePlus = (ImageButton) findViewById(R.id.btnShareGoogle);
+        btnShareLinkedIn = (ImageButton) findViewById(R.id.btnShareLinkedIn);
+        btnSharePinterest = (ImageButton) findViewById(R.id.btnSharePinterest);
+        btnShareRSS = (ImageButton) findViewById(R.id.btnShareRSS);
+        btnShareFacebook.setOnClickListener(this);
+        btnShareTwitter.setOnClickListener(this);
+        btnShareGooglePlus.setOnClickListener(this);
+        btnShareLinkedIn.setOnClickListener(this);
+        btnSharePinterest.setOnClickListener(this);
+        btnShareRSS.setOnClickListener(this);
     }
 
     @Override
@@ -343,6 +366,115 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
+    private boolean verificaTwitter() {
+        boolean installed = false;
+
+        try {
+            ApplicationInfo info = getPackageManager().getApplicationInfo("com.twitter.android", 0);
+            installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            installed = false;
+        }
+        return installed;
+    }
+
+    private boolean verificaFacebook() {
+        boolean installed = false;
+        try {
+            ApplicationInfo info = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
+            installed = true;
+        } catch (PackageManager.NameNotFoundException e) {
+            installed = false;
+        }
+        return installed;
+    }
+
+    private void shareTwitter() {
+        String tweetUrl = String.format("https://twitter.com/intent/tweet?url=%s",
+                FunctionCommon.urlEncode(shareUrl));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(tweetUrl));
+
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info : matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.twitter")) {
+                intent.setPackage(info.activityInfo.packageName);
+                break;
+            }
+        }
+
+        startActivity(intent);
+
+    }
+
+    private void shareFacebook() {
+
+        String facebookUrl = String.format("http://www.facebook.com/sharer/sharer.php?u=%s",
+                FunctionCommon.urlEncode(shareUrl));
+        Intent shareIntent = new Intent(Intent.ACTION_VIEW);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.ACTION_VIEW, Uri.parse(facebookUrl));
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(shareIntent, 0);
+        for (ResolveInfo info : matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
+                shareIntent.setPackage(info.activityInfo.packageName);
+                break;
+            }
+        }
+        startActivity(shareIntent);
+    }
+
+    private void sharePinterest() {
+        String url = String.format(
+                "https://www.pinterest.com/pin/create/button/?url=%s",
+                FunctionCommon.urlEncode(shareUrl));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info : matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.pinterest")) {
+                intent.setPackage(info.activityInfo.packageName);
+                break;
+            }
+        }
+        startActivity(intent);
+    }
+
+    private void shareGooglePlus() {
+        String url = String.format(
+                "https://plus.google.com/share?url=%s",
+                FunctionCommon.urlEncode(shareUrl));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info : matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.google.android.apps.plus")) {
+                intent.setPackage(info.activityInfo.packageName);
+                break;
+            }
+        }
+        startActivity(intent);
+    }
+
+    private void shareLinkedIn() {
+        String linkedInUrl = String.format("https://www.linkedin.com/cws/share?url=%s",
+                FunctionCommon.urlEncode(shareUrl));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(linkedInUrl));
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo info : matches) {
+            if (info.activityInfo.packageName.toLowerCase().startsWith("com.linkedin.android")) {
+                intent.setPackage(info.activityInfo.packageName);
+                break;
+            }
+        }
+        startActivity(intent);
+
+    }
+
+    private void shareSNS() {
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareUrl);
+        startActivity(Intent.createChooser(sharingIntent, "Share via"));
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -357,6 +489,24 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     handleUnappliedJob();
                 } else
                     handleApplyJob();
+                break;
+            case R.id.btnShareFacebook:
+                shareFacebook();
+                break;
+            case R.id.btnShareTwitter:
+                shareTwitter();
+                break;
+            case R.id.btnShareGoogle:
+                shareGooglePlus();
+                break;
+            case R.id.btnShareLinkedIn:
+                shareLinkedIn();
+                break;
+            case R.id.btnSharePinterest:
+                sharePinterest();
+                break;
+            case R.id.btnShareRSS:
+                shareSNS();
                 break;
         }
     }

@@ -193,6 +193,7 @@
                 android:orientation="horizontal">
 
                 <ImageButton
+                    android:id="@+id/btnShareFacebook"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_margin="5dp"
@@ -201,6 +202,7 @@
                     android:src="@mipmap/ic_facebook500" />
 
                 <ImageButton
+                    android:id="@+id/btnShareTwitter"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_margin="5dp"
@@ -209,6 +211,7 @@
                     android:src="@mipmap/ic_twitter" />
 
                 <ImageButton
+                    android:id="@+id/btnShareGoogle"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_margin="5dp"
@@ -217,6 +220,7 @@
                     android:src="@mipmap/ic_googleplus" />
 
                 <ImageButton
+                    android:id="@+id/btnShareLinkedIn"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_margin="5dp"
@@ -225,6 +229,7 @@
                     android:src="@mipmap/ic_linkedin" />
 
                 <ImageButton
+                    android:id="@+id/btnSharePinterest"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_margin="5dp"
@@ -233,6 +238,7 @@
                     android:src="@mipmap/ic_pinterest" />
 
                 <ImageButton
+                    android:id="@+id/btnShareRSS"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
                     android:layout_margin="5dp"

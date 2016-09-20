@@ -1,5 +1,9 @@
 package com.androidteam.jobnow.common;
 
+import android.util.Log;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -7,6 +11,8 @@ import java.security.NoSuchAlgorithmException;
  * Created by SANG on 8/21/2016.
  */
 public class FunctionCommon {
+    private static final String TAG = FunctionCommon.class.getSimpleName();
+
     public static String hashString(String original) {
         MessageDigest md = null;
         try {
@@ -23,6 +29,16 @@ public class FunctionCommon {
         } catch (Exception e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    public static String urlEncode(String s) {
+        try {
+            return URLEncoder.encode(s, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e) {
+            Log.d(TAG, "UTF-8 should always be supported", e);
+            return "";
         }
     }
 }

@@ -13,6 +13,7 @@ import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.MapJobListReponse;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
@@ -76,11 +77,11 @@ public class APICommon {
 
 
         @GET("jobs/getListJobInLocation/{sign}/{app_id}/{device_type}/{lat}/{lng}")
-        Call<JobListReponse> getListJobInLocation(@Path("sign") String sign,
-                                                  @Path("app_id") String app_id,
-                                                  @Path("device_type") int device_type,
-                                                  @Path("lat") Double lat,
-                                                  @Path("lng") Double lng);
+        Call<MapJobListReponse> getListJobInLocation(@Path("sign") String sign,
+                                                     @Path("app_id") String app_id,
+                                                     @Path("device_type") int device_type,
+                                                     @Path("lat") Double lat,
+                                                     @Path("lng") Double lng);
         @POST("jobs/postDeleteSaveJob")
         Call<BaseResponse> deleteSaveJob(@Body DeleteJobRequest request);
 
