@@ -157,4 +157,7 @@
     <string name="workLocation">Work Location</string>
     <string name="shareThisJob">Share this job</string>
     <string name="removeAll">Remove All</string>
+    <string name="permission_require">Permission require</string>
+    <string name="permission_confirm">Cofirm</string>
+    <string name="title_activity_maps">Map</string>
 </resources>

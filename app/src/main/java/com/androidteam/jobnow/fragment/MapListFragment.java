@@ -2,7 +2,6 @@ package com.androidteam.jobnow.fragment;
 
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
@@ -32,13 +31,11 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -46,6 +43,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static android.content.Context.LOCATION_SERVICE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,6 +54,7 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback, Loc
     private static final String TAG = MapListFragment.class.getSimpleName();
     private GoogleMap mMap;
     private HashMap<Marker, Integer> lstMarker = new HashMap<>();
+    private int PERMISSION_REQUEST_MAP = 111;
 
     public MapListFragment() {
         // Required empty public constructor
@@ -77,7 +77,9 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback, Loc
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_map_list, container, false);
+
         initUI();
+//        initData();
         return rootView;
     }
 
@@ -136,52 +138,71 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback, Loc
         });
     }
 
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         if (mMap == null) {
-            mMap = googleMap;
-            LocationManager locationManager = (LocationManager) getContext().getSystemService(
-                    Context.LOCATION_SERVICE);
-            Criteria criteria = new Criteria();
-            String bestProvider = locationManager.getBestProvider(criteria, true);
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+//                        Manifest.permission.ACCESS_FINE_LOCATION) || ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
+//                        Manifest.permission.ACCESS_COARSE_LOCATION)) {
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                    builder.setTitle(getString(R.string.permission_require));
+//                    builder.setPositiveButton(android.R.string.ok, null);
+//                    builder.setMessage(getString(R.string.permission_confirm));
+//
+//                    builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+//                        @TargetApi(Build.VERSION_CODES.M)
+//                        @Override
+//                        public void onDismiss(DialogInterface dialog) {
+//                            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_REQUEST_MAP);
+//                        }
+//                    });
+//                    builder.show();
+//                } else {
+//                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_REQUEST_MAP);
+//                }
+                ActivityCompat.requestPermissions(getActivity(),
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
+                        PERMISSION_REQUEST_MAP);
+            } else {
+                mMap = googleMap;
+                LocationManager locationManager = (LocationManager) getContext().getSystemService(
+                        LOCATION_SERVICE);
+                Criteria criteria = new Criteria();
+                String bestProvider = locationManager.getBestProvider(criteria, true);
 
+                Location location = locationManager.getLastKnownLocation(bestProvider);
+                Log.d(TAG, "location: " + location);
+                if (location != null) {
+//                    onLocationChanged(location);
+                    double latitude = location.getLatitude();
+                    double longitude = location.getLongitude();
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                    mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
+                    getListJobInLocation(latitude, longitude);
+                }
 
-            if (ActivityCompat.checkSelfPermission(MyApplication.getInstance(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MyApplication.getInstance(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
-            }
-            Location location = locationManager.getLastKnownLocation(bestProvider);
-            Log.d(TAG, "location: " + location);
-            if (location != null) {
-                onLocationChanged(location);
-            }
-
-            locationManager.requestLocationUpdates(bestProvider, 20000, 0, this);
-            mMap.getUiSettings().setZoomControlsEnabled(true);
-            mMap.getUiSettings().setZoomGesturesEnabled(true);
-            mMap.getUiSettings().setMyLocationButtonEnabled(true);
-            //initData();
-            mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-                @Override
-                public boolean onMarkerClick(Marker marker) {
-                    Intent intent = new Intent(getActivity(), DetailJobsActivity.class);
-                    Log.d(TAG, "job id: " + lstMarker.get(marker));
-                    intent.putExtra("jobId", lstMarker.get(marker));
+                locationManager.requestLocationUpdates(bestProvider, 20000, 0, this);
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+                mMap.getUiSettings().setZoomGesturesEnabled(true);
+                mMap.getUiSettings().setMyLocationButtonEnabled(true);
+                //initData();
+                mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker) {
+                        Intent intent = new Intent(getActivity(), DetailJobsActivity.class);
+                        Log.d(TAG, "job id: " + lstMarker.get(marker));
+                        intent.putExtra("jobId", lstMarker.get(marker));
 //                    startActivity(intent);
 //                    return true;
-                    return false;
-                }
-            });
+                        return false;
+                    }
+                });
+            }
+
         }
     }
-
 
 
     @Override
@@ -205,7 +226,7 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback, Loc
         call.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
-                if(response.body() != null && response.body().code == 200) {
+                if (response.body() != null && response.body().code == 200) {
                     //success
                     if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
                         List<JobObject> lstJobs = response.body().result.data;
@@ -250,5 +271,14 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback, Loc
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_MAP) {
+            if (grantResults.length == 1
+                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                // Permission was denied or request was cancelled
+            }
+        }
+
     }
 }
