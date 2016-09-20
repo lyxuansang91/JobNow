@@ -14,5 +14,6 @@
     <color name="colorBgApplyJob">#fa603c</color>
     <color name="colorBgSaveJob">#026dbb</color>
     <color name="bg_jobFeatured">#f1faff</color>
+    <color name="red">#e33e3e</color>
 
 </resources>

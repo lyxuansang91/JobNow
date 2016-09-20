@@ -238,7 +238,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
 //                                String coutryID = userModel.countryID == null ? "" : userModel.countryID;
                                 String coutryID = coutryId + "";
                                 userModel.countryID = coutryID;
-                                userModel.countryName = coutryID;
+                                userModel.countryName = countryName;
                                 SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
                                 String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
                                 int userId = sharedPreferences.getInt(Config.KEY_ID, 0);

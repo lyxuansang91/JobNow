@@ -156,4 +156,5 @@
     <string name="jobRequirement">Job Requirement</string>
     <string name="workLocation">Work Location</string>
     <string name="shareThisJob">Share this job</string>
+    <string name="removeAll">Remove All</string>
 </resources>
