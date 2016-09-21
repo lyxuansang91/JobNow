@@ -1,16 +1,9 @@
 package com.androidteam.jobnow.acitvity;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.fragment.AppliedJobListFragment;
@@ -20,9 +13,6 @@ import com.androidteam.jobnow.fragment.SaveJobListFragment;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 
 import java.util.ArrayList;
 

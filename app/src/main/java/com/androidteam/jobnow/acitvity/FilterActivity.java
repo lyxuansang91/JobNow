@@ -44,8 +44,7 @@ public class FilterActivity extends AppCompatActivity {
     private SkillAdapter skillAdapter;
     private RelativeLayout imgBack;
     private Button btnFilter;
-    private EditText edMin, edMax, edtTitle, edtMinSalary;
-
+    private EditText edtTitle, edtMinSalary;
 
     private void initUI() {
         imgBack = (RelativeLayout) findViewById(R.id.imgBack);
@@ -53,8 +52,6 @@ public class FilterActivity extends AppCompatActivity {
         rvJobLocation = (DisableScrollRecyclerView) findViewById(R.id.rvJobLocation);
         btnFilter = (Button) findViewById(R.id.btnFilter);
         edtTitle = (EditText) findViewById(R.id.edtTitle);
-        edMin = (EditText) findViewById(R.id.edMin);
-        edMax = (EditText) findViewById(R.id.edMax);
         edtMinSalary = (EditText) findViewById(R.id.edtMinimumSalary);
         GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
         rvJobLocation.setLayoutManager(layoutManager);
@@ -151,10 +148,6 @@ public class FilterActivity extends AppCompatActivity {
 
                 Integer minSalary = convertFromString(edtMinSalary.getText().toString());
 
-                Integer fromSalary = convertFromString(edMin.getText().toString());
-
-                Integer toSalary = convertFromString(edMax.getText().toString());
-
                 IndustryObject industry = industryAdapter.getItem(
                         spnIndustry.getSelectedItemPosition());
 
@@ -163,7 +156,7 @@ public class FilterActivity extends AppCompatActivity {
                 String skill = getSkillParseFromSkills();
                 String location = getLocationParseFromLocations();
                 JobListRequest request = new JobListRequest(1, "ASC", title, location, skill,
-                        minSalary, fromSalary, toSalary, industryId);
+                        minSalary, null, null, industryId);
 
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(SearchResultActivity.KEY_JOB, request);

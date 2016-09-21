@@ -1,5 +1,7 @@
 package com.androidteam.jobnow.acitvity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
@@ -11,14 +13,17 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.BuildConfig;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.CountJobResponse;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
+import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -44,6 +49,7 @@ public class SplashScreen extends AppCompatActivity {
     private Button btnLogin;
     private Button btnSignUp;
     private Button btnLoginFacebook;
+    private TextView tvNumberJob;
     private CallbackManager callbackManager;
 
     @Override
@@ -64,6 +70,7 @@ public class SplashScreen extends AppCompatActivity {
         }
         setupView();
         initData();
+        getCountJob();
     }
 
     private void initData() {
@@ -78,14 +85,6 @@ public class SplashScreen extends AppCompatActivity {
                             public void onCompleted(final JSONObject object,
                                                     GraphResponse response) {
                                 if (object != null) {
-//                                    CLog.d(TAG, " register fb: " + object.optString("id") + " " + object.optString("email"));
-//                                    editor.putString(Configruation.KEY_IDFB, object.optString("id"));
-//                                    editor.putString(Configruation.KEY_NAME, object.optString("name"));
-//                                    editor.commit();
-//                                    CLog.d(TAG, "token fb: " + loginResult.getAccessToken().getToken());
-//                                    EventBus.getDefault().post(new LoginSuccessEvent(LoginSuccessEvent.TYPE_FACEBOOK));
-//                                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-//                                    startActivity(intent);
                                     String email = object.optString("email");
                                     String name = object.optString("name");
                                     String fbid = object.optString("id");
@@ -137,10 +136,38 @@ public class SplashScreen extends AppCompatActivity {
         });
     }
 
+    private void getCountJob() {
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.loading), true, true);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<CountJobResponse> call = service.getCountJob(
+                APICommon.getSign(APICommon.getApiKey(), "api/v1/jobs/getCountJob"),
+                APICommon.getAppId(), APICommon.getDeviceType(), 0);
+        call.enqueue(new Callback<CountJobResponse>() {
+            @Override
+            public void onResponse(Response<CountJobResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
+                Log.d(TAG, "response:" + response.body());
+                if(response.body() != null && response.body().code == 200) {
+                    tvNumberJob.setText(getString(R.string.number_job, response.body().result));
+                }
+                Toast.makeText(getApplicationContext(), response.body().message,Toast.LENGTH_SHORT)
+                        .show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_connect), Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
     private void setupView() {
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
         btnLoginFacebook = (Button) findViewById(R.id.btnLoginFacebook);
+        tvNumberJob = (TextView) findViewById(R.id.tvNumberJob);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

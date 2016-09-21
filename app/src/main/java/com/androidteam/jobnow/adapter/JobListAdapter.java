@@ -107,7 +107,7 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
 
         public void bindData(JobObject jobObject) {
             tvName.setText(jobObject.Title);
-            tvLocation.setText(jobObject.Position);
+            tvLocation.setText(jobObject.LocationName);
             tvPrice.setText(jobObject.FromSalary + " - " + jobObject.ToSalary + " (USD)");
             tvTime.setText(mContext.getString(R.string.posted)+" "+p.format(new Date(Utils.getLongTime(jobObject.created_at))));
             tvCompanyName.setText(jobObject.CompanyName);

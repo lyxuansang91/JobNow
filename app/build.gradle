@@ -6,7 +6,6 @@ android {
 
     defaultConfig {
         applicationId "com.androidteam.jobnow"
-        multiDexEnabled true
         minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
@@ -20,9 +19,6 @@ android {
     }
 
     dexOptions {
-        incremental true
-        preDexLibraries false
-        javaMaxHeapSize "4g"
     }
 }
 
@@ -30,12 +26,13 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     //    compile 'com.google.android.gms:play-services:9.4.0'
     compile 'com.android.support:appcompat-v7:23.4.0'
+    compile 'com.google.android.gms:play-services-location:9.4.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
     compile 'com.squareup.okhttp:okhttp:2.0.0'
     compile 'com.squareup.okio:okio:1.6.0'
     compile 'com.squareup.okhttp:logging-interceptor:2.6.0'
-    compile 'com.android.support:multidex:1.0.1'
+
     compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha1'
     compile 'com.android.support:design:23.4.0'
     compile 'de.hdodenhof:circleimageview:1.3.0'
@@ -50,6 +47,5 @@ dependencies {
     compile 'com.ocpsoft:ocpsoft-pretty-time:1.0.6'
     compile 'org.greenrobot:eventbus:3.0.0'
     compile 'com.jude:easyrecyclerview:4.0.6'
-    compile 'com.google.android.gms:play-services:9.4.0'
     testCompile 'junit:junit:4.12'
 }

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.androidteam.jobnow.models.ApplyJobRequest;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.CountJobResponse;
 import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.ExperienceRequest;
@@ -75,6 +76,11 @@ public class APICommon {
 
     public interface JobNowService {
 
+        @GET("jobs/getCountJob/{sign}/{app_id}/{device_type}/{location_id}")
+        Call<CountJobResponse> getCountJob(@Path("sign") String sign,
+                                           @Path("app_id") String app_id,
+                                           @Path("device_type") int device_type,
+                                           @Path("location_id") int location_id);
 
         @GET("jobs/getListJobInLocation/{sign}/{app_id}/{device_type}/{lat}/{lng}")
         Call<MapJobListReponse> getListJobInLocation(@Path("sign") String sign,

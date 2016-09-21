@@ -166,6 +166,8 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         ivSaveJob = (ImageView) findViewById(R.id.ivSaveJob);
         lnSaveJob.setOnClickListener(this);
         lnApplyJob.setOnClickListener(this);
+        btnSaveJob.setOnClickListener(this);
+        btnApplyJob.setOnClickListener(this);
         btnShareFacebook = (ImageButton) findViewById(R.id.btnShareFacebook);
         btnShareTwitter = (ImageButton) findViewById(R.id.btnShareTwitter);
         btnShareGooglePlus = (ImageButton) findViewById(R.id.btnShareGoogle);
@@ -479,12 +481,14 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.lnSaveJob:
+            case R.id.btnSaveJob:
                 if (savedJob) {
                     handleUnsavedJob();
                 } else
                     handleSaveJob();
                 break;
             case R.id.lnApplyJob:
+            case R.id.btnApplyJob:
                 if (appliedJob) {
                     handleUnappliedJob();
                 } else

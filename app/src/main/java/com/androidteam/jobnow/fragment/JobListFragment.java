@@ -1,6 +1,7 @@
 package com.androidteam.jobnow.fragment;
 
 
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
@@ -57,6 +59,7 @@ public class JobListFragment extends Fragment {
     private RelativeLayout rlSearchBar;
     private CRecyclerView rvListJob;
     private JobListAdapter adapter;
+    private TextView tvNumberJob;
 
 
     @Override
@@ -70,6 +73,8 @@ public class JobListFragment extends Fragment {
     }
 
     private void bindData() {
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "", true, false);
+
         JobListRequest jobListRequest = null;
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -98,9 +103,11 @@ public class JobListFragment extends Fragment {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
                 try {
+                    progressDialog.dismiss();
                     if (response.body() != null && response.body().code == 200) {
                         if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
                             adapter.addAll(response.body().result.data);
+                            tvNumberJob.setText(getString(R.string.number_job, response.body().result.total));
                         }
                     }
                 } catch (Exception e) {
@@ -111,6 +118,7 @@ public class JobListFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
+                progressDialog.dismiss();
                 Log.d(TAG, "(on failed): " + t.toString());
                 Toast.makeText(getActivity(), getActivity().getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
             }
@@ -125,6 +133,7 @@ public class JobListFragment extends Fragment {
         rvListJob.setDivider();
         adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>());
         rvListJob.setAdapter(adapter);
+        tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
         Utils.closeKeyboard(getActivity());
     }
 
