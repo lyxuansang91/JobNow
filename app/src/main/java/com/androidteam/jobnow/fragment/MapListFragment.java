@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
@@ -184,6 +185,33 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback,
                         startActivity(intent);
                     }
                 });
+
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Override
+                    public View getInfoWindow(Marker marker) {
+                        JobObject jobObject = (JobObject) marker.getTag();
+                        View view = getActivity().getLayoutInflater().inflate(R.layout.custom_info_window, null);
+                        if(view != null) {
+                            TextView tvInfowWindowTitle = (TextView)view.findViewById(R.id.tvInfoWindowTitle);
+                            String title = jobObject.Title;
+                            tvInfowWindowTitle.setText(title);
+
+                            TextView tvInfoWindowLocation = (TextView) view.findViewById(R.id.tvInfoWindowLocation);
+                            String location = jobObject.LocationName;
+                            tvInfoWindowLocation.setText(location);
+
+                            TextView tvInfoWindowMoney = (TextView) view.findViewById(R.id.tvInfoWindowSalary);
+                            String money = jobObject.FromSalary + "-" + jobObject.ToSalary + " USD";
+                            tvInfoWindowMoney.setText(money);
+                        }
+                        return view;
+                    }
+
+                    @Override
+                    public View getInfoContents(Marker marker) {
+                        return null;
+                    }
+                });
             }
 
         }
@@ -214,6 +242,7 @@ public class MapListFragment extends Fragment implements OnMapReadyCallback,
                                     .snippet(jobObject.FromSalary + "-" + jobObject.ToSalary + " USD");
 
                             Marker marker = mMap.addMarker(markerOptions);
+                            marker.setTag(jobObject);
                             lstMarker.put(marker, jobObject.id);
                         }
                     }

@@ -39,6 +39,7 @@ import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.utils.Utils;
 import com.facebook.share.ShareApi;
+import com.google.android.gms.maps.model.LatLng;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.squareup.picasso.Picasso;
 
@@ -53,6 +54,11 @@ import retrofit.Response;
 import retrofit.Retrofit;
 
 public class DetailJobsActivity extends AppCompatActivity implements View.OnClickListener {
+
+    public static final String TAG = DetailJobsActivity.class.getSimpleName();
+    public static final String KEY_LAT = "lattitude";
+    public static final String KEY_LNG = "longtitude";
+
     private TextView tvName, tvLocation, tvPrice, tvTime, tvCompanyName, tvDescription,
             tvRequirement, tvYearOfExperience, tvPosition, tvCountUserApplyJob;
     private ImageView imgLogo, ivSaveJob;
@@ -66,7 +72,10 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     private Button btnSaveJob, btnApplyJob;
     private ImageButton btnShareFacebook, btnShareTwitter, btnShareGooglePlus, btnShareLinkedIn,
     btnSharePinterest, btnShareRSS;
+    private TextView tvViewLargerMap;
     private String shareUrl = null;
+    private Double latitude, longtitude;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,6 +135,8 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     btnSaveJob.setText(savedJob ? "Unsaved" : "Save job");
                     btnApplyJob.setText(appliedJob ? "Unapplied" : "Apply job");
                     shareUrl = response.body().result.ShareUrl;
+                    latitude = response.body().result.latitude;
+                    longtitude = response.body().result.longtitude;
                     tvYearOfExperience.setText(jobObject.YearOfExperience);
                     tvCountUserApplyJob.setText(jobObject.CountUserApplyJob + " Applications");
                 }
@@ -158,6 +169,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         tvRequirement = (TextView) findViewById(R.id.tvRequirement);
         tvYearOfExperience = (TextView) findViewById(R.id.tvYearOfExperience);
         tvCountUserApplyJob = (TextView) findViewById(R.id.tvCountUserApplyJob);
+        tvViewLargerMap = (TextView) findViewById(R.id.tvViewLargerMap);
         //apply job and save job
         lnSaveJob = (LinearLayout) findViewById(R.id.lnSaveJob);
         lnApplyJob = (LinearLayout) findViewById(R.id.lnApplyJob);
@@ -180,6 +192,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         btnShareLinkedIn.setOnClickListener(this);
         btnSharePinterest.setOnClickListener(this);
         btnShareRSS.setOnClickListener(this);
+        tvViewLargerMap.setOnClickListener(this);
     }
 
     @Override
@@ -477,6 +490,14 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         startActivity(Intent.createChooser(sharingIntent, "Share via"));
     }
 
+    private void goToMap() {
+        Intent intent = new Intent(getApplicationContext(), MapsActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putInt(MapsActivity.KEY_JOB_ID, jobId);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -511,6 +532,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                 break;
             case R.id.btnShareRSS:
                 shareSNS();
+                break;
+            case R.id.tvViewLargerMap:
+                goToMap();
                 break;
         }
     }

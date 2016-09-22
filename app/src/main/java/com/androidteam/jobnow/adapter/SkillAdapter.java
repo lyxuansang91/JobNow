@@ -19,6 +19,7 @@ import java.util.List;
 
 public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, SkillAdapter.ViewHolder> {
     public static final String TAG = SkillAdapter.class.getSimpleName();
+    private boolean onBind;
 
     public SkillAdapter(Context context, List<SkillResponse.Skill> list) {
         super(context, list);
@@ -33,22 +34,10 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        super.onBindViewHolder(holder, position);
+        onBind = true;
         holder.bindData(list.get(position));
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                SkillResponse.Skill skill = getItembyPostion(position);
-                if (skill != null) {
-                    skill.isSelected = isChecked ? 1 : 0;
-                    setData(position, skill);
-                }
-                if (isChecked) {
-                    holder.checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-                } else {
-                    holder.checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.black));
-                }
-            }
-        });
+        onBind = false;
+
     }
 
     @Override
@@ -62,7 +51,24 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
         public ViewHolder(View view) {
             super(view);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(!onBind) {
+                        SkillResponse.Skill skill = getItembyPostion(getAdapterPosition());
+                        if (skill != null) {
+                            skill.isSelected = isChecked ? 1 : 0;
+                            setData(getAdapterPosition(), skill);
+                        }
+                        if (isChecked) {
+                            checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
+                        } else {
+                            checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.black));
+                        }
+                    }
 
+                }
+            });
         }
 
         public void bindData(SkillResponse.Skill skill) {
@@ -72,6 +78,7 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
             } else {
                 checkBox.setChecked(false);
             }
+            //onBind = false;
         }
 
     }
