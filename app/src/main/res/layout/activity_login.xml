@@ -17,7 +17,7 @@
         android:gravity="left|center_vertical"
         android:hint="@string/email"
         android:imeOptions="actionNext"
-        android:text="tronghieudev@gmail.com"
+        android:text="Manh.it.it.it@gmail.com"
         android:inputType="textEmailAddress"
         android:padding="10dp"
         android:singleLine="true"

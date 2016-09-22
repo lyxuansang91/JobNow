@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,14 +38,17 @@ public class JobListFragment extends Fragment {
     private String TAG = JobListFragment.class.getSimpleName();
     public static String KEY_SEACH = "hasSearch";
     public static String KEY_JOB = "key_job";
+    private String ASC = "ASC";
+    private String DESC = "DESC";
+    private Spinner spnSortBy;
+    private String sort = ASC;
 
     public JobListFragment() {
         // Required empty public constructor
     }
 
     public static Fragment getInstance(boolean hasSearch) {
-        Fragment fragment = getInstance(hasSearch, null);
-        return fragment;
+        return getInstance(hasSearch, null);
     }
 
     public static Fragment getInstance(boolean hasSearch, JobListRequest request) {
@@ -69,7 +74,30 @@ public class JobListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_job_list, container, false);
         initUI(rootView);
         bindData();
+        event();
         return rootView;
+    }
+
+    private void event() {
+        spnSortBy.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position == 0) {
+                    sort = ASC;
+                } else {
+                    sort = DESC;
+                }
+                adapter.clear();
+                bindData();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                sort = ASC;
+                adapter.clear();
+                bindData();
+            }
+        });
     }
 
     private void bindData() {
@@ -77,12 +105,12 @@ public class JobListFragment extends Fragment {
 
         JobListRequest jobListRequest = null;
         Bundle bundle = getArguments();
-        if(bundle != null) {
+        if (bundle != null) {
             jobListRequest = (JobListRequest) bundle.getSerializable(KEY_JOB);
         }
         Log.d(TAG, "job list request: " + jobListRequest);
-        if(jobListRequest == null)
-            jobListRequest = new JobListRequest(1, "ASC", null, null, null, null,
+        if (jobListRequest == null)
+            jobListRequest = new JobListRequest(1, sort, null, null, null, null,
                     null, null, null);
 
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
@@ -134,7 +162,9 @@ public class JobListFragment extends Fragment {
         adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>());
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
+        spnSortBy = (Spinner) view.findViewById(R.id.spnSortBy);
         Utils.closeKeyboard(getActivity());
+
     }
 
 }

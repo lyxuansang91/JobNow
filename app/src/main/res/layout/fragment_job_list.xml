@@ -76,7 +76,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/spnSortBy"
-                android:text="1234 Jobs in Singapore"
                 android:textColor="@color/darkGray" />
 
             <Spinner
