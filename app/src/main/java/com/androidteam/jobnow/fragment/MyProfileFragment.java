@@ -249,7 +249,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                                     public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
 
                                         if (response.body() != null) {
-                                            if (response.code() == 200) {
+                                            if (response.body().code == 200) {
                                                 setProfileToUI(false);
                                             }
                                             Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
@@ -332,7 +332,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                     public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
 
                         if (response.body() != null) {
-                            if (response.code() == 200) {
+                            if (response.body().code == 200) {
                                 userModel.birthDay = birthday;
                                 setProfileToUI(false);
                             }
@@ -454,7 +454,7 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                     public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
 
                         if (response.body() != null) {
-                            if (response.code() == 200) {
+                            if (response.body().code == 200) {
                                 setProfileToUI(false);
                             }
                             Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
