@@ -71,7 +71,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private LinearLayout tab1, tab2, tab3;
-    private ImageView ic_tab1, ic_tab2, ic_tab3, imgLogout;
+    private ImageView ic_tab1, ic_tab2, ic_tab3, imgLogout, ivEditProfile;
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
     public static CircleImageView img_avatar;
@@ -85,7 +85,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_profile, null);
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
         initUI(v);
         bindData();
         initEvent();
@@ -133,6 +133,13 @@ public class ProfileFragment extends Fragment {
         });
 
         img_avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeAvatar();
+            }
+        });
+
+        ivEditProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeAvatar();
@@ -425,6 +432,7 @@ public class ProfileFragment extends Fragment {
         tvName = (TextView) v.findViewById(R.id.tvName);
         tvLocation = (TextView) v.findViewById(R.id.tvLocation);
         img_avatar = (CircleImageView) v.findViewById(R.id.img_avatar);
+        ivEditProfile = (ImageView) v.findViewById(R.id.ivEditProfile);
     }
 
     @Override
