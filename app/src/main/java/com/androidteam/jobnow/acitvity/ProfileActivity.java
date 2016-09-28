@@ -2,6 +2,7 @@ package com.androidteam.jobnow.acitvity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -34,7 +35,6 @@ public class ProfileActivity extends AppCompatActivity {
             R.mipmap.ic_applied_bottom_selected, R.mipmap.ic_profile_bottom_selected};
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private ArrayList<Fragment> mFragments2 = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void bindData() {
+
         String[] mTitles = {getString(R.string.home), getString(R.string.saved), getString(R.string.applied), getString(R.string.profile)};
         for (int i = 0; i < mTitles.length; i++) {
             switch (i) {
@@ -122,4 +123,12 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     static long key_pressed;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onRequestPermissionsResult(requestCode,permissions,grantResults);
+        }
+    }
 }
