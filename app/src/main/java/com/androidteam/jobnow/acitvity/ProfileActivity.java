@@ -4,15 +4,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.eventbus.SaveJobListEvent;
 import com.androidteam.jobnow.fragment.AppliedJobListFragment;
 import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
 import com.androidteam.jobnow.fragment.SaveJobListFragment;
+import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 
@@ -35,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
         InitUI();
         bindData();
         InitEvent();
+        Utils.closeKeyboard(ProfileActivity.this);
     }
 
     private void bindData() {
@@ -80,4 +88,38 @@ public class ProfileActivity extends AppCompatActivity {
             fragment.onActivityResult(requestCode, resultCode, data);
         }
     }
+
+    @Subscribe
+    public void onEvent(SaveJobListEvent event) {
+        Log.d(TAG, "total: " + event.total);
+        int total = event.total;
+        if (total != 0) {
+            tabbottom.showMsg(1, total);
+        } else
+            tabbottom.hideMsg(1);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - key_pressed < 2000) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(getApplicationContext(), "Back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        key_pressed = System.currentTimeMillis();
+    }
+
+    static long key_pressed;
 }

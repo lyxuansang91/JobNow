@@ -1,5 +1,6 @@
 package com.androidteam.jobnow.common;
 
+import android.app.Notification;
 import android.util.Log;
 
 import com.androidteam.jobnow.models.ApplyJobRequest;
@@ -15,6 +16,7 @@ import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
 import com.androidteam.jobnow.models.MapJobListReponse;
+import com.androidteam.jobnow.models.NotificationResponse;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
@@ -75,6 +77,13 @@ public class APICommon {
     }
 
     public interface JobNowService {
+
+        @GET("notification/getListNotification/{sign}/{app_id}/{device_type}/{user_id}/{api_token}")
+        Call<NotificationResponse> getListNotification(@Path("sign") String sign,
+                                                       @Path("app_id") String app_id,
+                                                       @Path("device_type") int device_type,
+                                                       @Path("user_id") int user_id,
+                                                       @Path("api_token") String api_token);
 
         @GET("jobs/getCountJob/{sign}/{app_id}/{device_type}/{location_id}")
         Call<CountJobResponse> getCountJob(@Path("sign") String sign,
@@ -180,6 +189,9 @@ public class APICommon {
 
         @POST("jobseekerexperience/postAddJobSeekerExperience")
         Call<BaseResponse> postAddJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
+
+        @POST("jobseekerexperience/postDeleteJobSeekerExperience")
+        Call<BaseResponse> postDeleteJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
 
         @POST("jobseekerexperience/postUpdateJobSeekerExperience")
         Call<BaseResponse> postUpdateJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);

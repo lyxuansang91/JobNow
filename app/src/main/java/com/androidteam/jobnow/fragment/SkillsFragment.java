@@ -84,6 +84,11 @@ public class SkillsFragment extends Fragment {
                             }
                         }
                     }
+
+                    if(response.body().result.size() == 0)
+                        lnRemoveSkill.setVisibility(View.GONE);
+                    else
+                        lnRemoveSkill.setVisibility(View.VISIBLE);
                 }
             }
 

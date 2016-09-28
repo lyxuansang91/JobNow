@@ -81,8 +81,10 @@ public class RegisterActivity extends AppCompatActivity {
                             if (code == 200) {
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivity(intent);
+                            } else {
+                                Toast.makeText(getApplicationContext(), response.body().message,
+                                        Toast.LENGTH_SHORT).show();
                             }
-                            Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                         }
 
                         @Override

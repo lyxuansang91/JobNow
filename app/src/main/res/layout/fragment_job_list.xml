@@ -11,10 +11,14 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:id="@+id/rlSearchBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary">
+
+            <requestFocus />
 
             <RelativeLayout
                 android:id="@+id/imgRing"
@@ -50,6 +54,8 @@
             <com.androidteam.jobnow.widget.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:layout_centerVertical="true"
                 android:layout_toLeftOf="@+id/imgFilter"
                 android:layout_toRightOf="@+id/imgRing"
@@ -61,7 +67,7 @@
                 android:hint="@string/search_hint"
                 android:imeOptions="actionSearch"
                 android:padding="5dp"
-                android:singleLine="true" />
+                android:maxLines="1" />
         </RelativeLayout>
 
         <RelativeLayout

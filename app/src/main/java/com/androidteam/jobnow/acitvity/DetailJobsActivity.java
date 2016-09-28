@@ -11,6 +11,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -58,6 +59,8 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     public static final String TAG = DetailJobsActivity.class.getSimpleName();
     public static final String KEY_LAT = "lattitude";
     public static final String KEY_LNG = "longtitude";
+
+    private Handler mHandler = new Handler();
 
     private TextView tvName, tvLocation, tvPrice, tvTime, tvCompanyName, tvDescription,
             tvRequirement, tvYearOfExperience, tvPosition, tvCountUserApplyJob;
@@ -209,7 +212,6 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void handleSaveJob() {
-
         SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
         String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
         int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
@@ -220,26 +222,35 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
                 if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
-                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
-                            .show();
+
                     if (baseResponse.code == 200) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
                         LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog_success, null);
                         builder.setView(dialogView);
-                        AlertDialog dialog = builder.create();
+                        final AlertDialog dialog = builder.create();
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog.show();
                         dialog.setCancelable(true);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(dialog.isShowing())
+                                    dialog.dismiss();
+                            }
+                        }, 1000);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
-                        tvTitle.setText("UNSAVED!");
+                        tvTitle.setText("SAVED!");
                         tvMessage.setText(jobObject.Title + " " + response.body().message);
 
                         ivSaveJob.setImageResource(R.mipmap.ic_saved_job);
                         btnSaveJob.setText("Unsaved");
                         savedJob = true;
                         EventBus.getDefault().post(new SaveJobEvent());
+                    } else {
+                        Toast.makeText(getApplicationContext(), baseResponse.message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -264,20 +275,25 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
                 if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
-                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
-                            .show();
                     if (baseResponse.code == 200) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
                         LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog_success, null);
                         builder.setView(dialogView);
-                        AlertDialog dialog = builder.create();
+                        final AlertDialog dialog = builder.create();
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog.show();
                         dialog.setCancelable(true);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(dialog.isShowing())
+                                    dialog.dismiss();
+                            }
+                        }, 1000);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
-                        tvTitle.setText("SAVED!");
+                        tvTitle.setText("UNSAVED!");
                         tvMessage.setText(jobObject.Title + " " + response.body().message);
 
 
@@ -285,6 +301,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                         btnSaveJob.setText("Save Job");
                         savedJob = false;
                         EventBus.getDefault().post(new SaveJobEvent());
+                    } else {
+                        Toast.makeText(getApplicationContext(), baseResponse.message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -308,17 +327,23 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
                 if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
-                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
-                            .show();
+
                     if (baseResponse.code == 200) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
                         LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog_success, null);
                         builder.setView(dialogView);
-                        AlertDialog dialog = builder.create();
+                        final AlertDialog dialog = builder.create();
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog.show();
                         dialog.setCancelable(true);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(dialog.isShowing())
+                                    dialog.dismiss();
+                            }
+                        }, 1000);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
                         tvTitle.setText("Unapplied!".toUpperCase());
@@ -327,6 +352,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                         btnApplyJob.setText("Apply Job");
                         appliedJob = false;
                         EventBus.getDefault().post(new ApplyJobEvent());
+                    } else {
+                        Toast.makeText(getApplicationContext(), baseResponse.message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -349,17 +377,22 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
                 if (response.body() != null) {
                     BaseResponse baseResponse = response.body();
-                    Toast.makeText(getApplicationContext(), baseResponse.message, Toast.LENGTH_SHORT)
-                            .show();
                     if (baseResponse.code == 200) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(DetailJobsActivity.this);
                         LayoutInflater inflater = DetailJobsActivity.this.getLayoutInflater();
                         View dialogView = inflater.inflate(R.layout.dialog_success, null);
                         builder.setView(dialogView);
-                        AlertDialog dialog = builder.create();
+                        final AlertDialog dialog = builder.create();
                         dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                         dialog.show();
                         dialog.setCancelable(true);
+                        mHandler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(dialog.isShowing())
+                                    dialog.dismiss();
+                            }
+                        }, 1000);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
                         tvTitle.setText("Applied!".toUpperCase());
@@ -369,6 +402,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                         btnApplyJob.setText("Applied");
                         appliedJob = true;
                         EventBus.getDefault().post(new ApplyJobEvent());
+                    } else {
+                        Toast.makeText(getApplicationContext(), baseResponse.message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -381,28 +417,6 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         });
     }
 
-    private boolean verificaTwitter() {
-        boolean installed = false;
-
-        try {
-            ApplicationInfo info = getPackageManager().getApplicationInfo("com.twitter.android", 0);
-            installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            installed = false;
-        }
-        return installed;
-    }
-
-    private boolean verificaFacebook() {
-        boolean installed = false;
-        try {
-            ApplicationInfo info = getPackageManager().getApplicationInfo("com.facebook.katana", 0);
-            installed = true;
-        } catch (PackageManager.NameNotFoundException e) {
-            installed = false;
-        }
-        return installed;
-    }
 
     private void shareTwitter() {
         String tweetUrl = String.format("https://twitter.com/intent/tweet?url=%s",
@@ -416,26 +430,22 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                 break;
             }
         }
-
         startActivity(intent);
-
     }
 
     private void shareFacebook() {
 
         String facebookUrl = String.format("http://www.facebook.com/sharer/sharer.php?u=%s",
                 FunctionCommon.urlEncode(shareUrl));
-        Intent shareIntent = new Intent(Intent.ACTION_VIEW);
-        shareIntent.setType("text/plain");
-        shareIntent.putExtra(Intent.ACTION_VIEW, Uri.parse(facebookUrl));
-        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(shareIntent, 0);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(facebookUrl));
+        List<ResolveInfo> matches = getPackageManager().queryIntentActivities(intent, 0);
         for (ResolveInfo info : matches) {
             if (info.activityInfo.packageName.toLowerCase().startsWith("com.facebook.katana")) {
-                shareIntent.setPackage(info.activityInfo.packageName);
+                intent.setPackage(info.activityInfo.packageName);
                 break;
             }
         }
-        startActivity(shareIntent);
+        startActivity(intent);
     }
 
     private void sharePinterest() {

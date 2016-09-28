@@ -27,9 +27,10 @@
         <com.flyco.tablayout.CommonTabLayout
             android:id="@+id/tabbottom"
             android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
             android:layout_height="54dp"
             android:layout_alignParentBottom="true"
-            android:background="@color/backgroudTab"
+            android:background="@color/white"
             tl:tl_indicator_color="@color/colorPrimary"
             tl:tl_textSelectColor="@color/colorPrimary"
             tl:tl_textUnselectColor="#7d7d7d"

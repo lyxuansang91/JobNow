@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.FilterActivity;
+import com.androidteam.jobnow.acitvity.NotificationActivity;
 import com.androidteam.jobnow.utils.Utils;
 
 import java.util.ArrayList;
@@ -51,7 +52,9 @@ public class MainFragment extends Fragment {
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
+                Intent intent = new Intent(getActivity(), NotificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
         imgFilter.setOnClickListener(new View.OnClickListener() {

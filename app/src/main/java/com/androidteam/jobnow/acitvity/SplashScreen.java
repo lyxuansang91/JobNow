@@ -55,6 +55,7 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "(on create)");
         setContentView(R.layout.activity_splash_screen);
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
@@ -67,6 +68,15 @@ public class SplashScreen extends AppCompatActivity {
             }
         } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
             e.printStackTrace();
+        }
+
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        if(token != null && !token.isEmpty()) {
+            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+            startActivity(intent);
+            finish();
         }
         setupView();
         initData();
@@ -104,8 +114,12 @@ public class SplashScreen extends AppCompatActivity {
                                                 editor.putInt(Config.KEY_ID, response.body().result.id).commit();
                                                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                                                 startActivity(intent);
+                                                finish();
+                                            } else {
+                                                Toast.makeText(getApplicationContext(),
+                                                        response.body().message, Toast.LENGTH_SHORT)
+                                                        .show();
                                             }
-                                            Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override
@@ -149,9 +163,10 @@ public class SplashScreen extends AppCompatActivity {
                 Log.d(TAG, "response:" + response.body());
                 if(response.body() != null && response.body().code == 200) {
                     tvNumberJob.setText(getString(R.string.number_job, response.body().result));
+                } else {
+                    Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT)
+                            .show();
                 }
-                Toast.makeText(getApplicationContext(), response.body().message,Toast.LENGTH_SHORT)
-                        .show();
             }
 
             @Override

@@ -138,9 +138,10 @@ public class AppliedJobListFragment extends Fragment {
                     if (response.body() != null && response.body().code == 200) {
                         adapter.remove(position);
                         tvNumberJob.setText(adapter.getItemCount() +  " applied job");
+                    } else {
+                        Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
+                                .show();
                     }
-                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
-                            .show();
                 }
 
                 @Override

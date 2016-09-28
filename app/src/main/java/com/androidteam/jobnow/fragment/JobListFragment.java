@@ -73,7 +73,7 @@ public class JobListFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_job_list, container, false);
         initUI(rootView);
-        bindData();
+        //bindData();
         event();
         return rootView;
     }
