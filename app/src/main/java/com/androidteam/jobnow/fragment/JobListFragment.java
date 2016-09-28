@@ -6,14 +6,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -24,13 +22,11 @@ import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.acitvity.SearchResultActivity;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
-import com.androidteam.jobnow.models.IndustryObject;
 import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.CRecyclerView;
-import com.androidteam.jobnow.widget.CustomEditText;
 
 import java.util.ArrayList;
 
@@ -52,6 +48,9 @@ public class JobListFragment extends Fragment {
     private String DESC = "DESC";
     private Spinner spnSortBy;
     private String sort = ASC;
+    private int page = 1;
+    private boolean isCanNext = false;
+    private boolean isProgessingLoadMore = false;
 
     public JobListFragment() {
         // Required empty public constructor
@@ -98,6 +97,7 @@ public class JobListFragment extends Fragment {
                     sort = DESC;
                 }
                 adapter.clear();
+                page = 1;
                 bindData();
             }
 
@@ -105,6 +105,7 @@ public class JobListFragment extends Fragment {
             public void onNothingSelected(AdapterView<?> parent) {
                 sort = ASC;
                 adapter.clear();
+                page = 1;
                 bindData();
             }
         });
@@ -117,12 +118,27 @@ public class JobListFragment extends Fragment {
                 bindData();
             }
         });
+
+        rvListJob.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (Utils.isReadyForPullEnd(recyclerView) && isCanNext && !isProgessingLoadMore) {
+                    bindData();
+                }
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
     }
 
     private void bindData() {
 
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "", true, false);
-
+        isProgessingLoadMore = true;
         JobListRequest jobListRequest = null;
         Bundle bundle = getArguments();
         if (bundle != null) {
@@ -130,7 +146,7 @@ public class JobListFragment extends Fragment {
         }
         Log.d(TAG, "job list request: " + jobListRequest);
         if (jobListRequest == null)
-            jobListRequest = new JobListRequest(1, sort, null, null, null, null,
+            jobListRequest = new JobListRequest(page, sort, null, null, null, null,
                     null, null, null);
 
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
@@ -150,13 +166,23 @@ public class JobListFragment extends Fragment {
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
+                isProgessingLoadMore = false;
                 refresh.setRefreshing(false);
                 try {
                     progressDialog.dismiss();
                     if (response.body() != null && response.body().code == 200) {
-                        if (response.body().result != null && response.body().result.data != null && response.body().result.data.size() > 0) {
+                        if (response.body().result != null && response.body().result.data != null
+                                && response.body().result.data.size() > 0) {
                             adapter.addAll(response.body().result.data);
                             tvNumberJob.setText(getString(R.string.number_job, response.body().result.total));
+                            if (page < response.body().result.last_page) {
+                                page++;
+                                isCanNext = true;
+                            } else {
+                                isCanNext = false;
+                            }
+                        } else {
+                            isCanNext = false;
                         }
                     }
                 } catch (Exception e) {
@@ -168,6 +194,7 @@ public class JobListFragment extends Fragment {
             @Override
             public void onFailure(Throwable t) {
                 refresh.setRefreshing(false);
+                isProgessingLoadMore = false;
                 progressDialog.dismiss();
                 Log.d(TAG, "(on failed): " + t.toString());
                 Toast.makeText(getActivity(), getActivity().getString(R.string.error_connect), Toast.LENGTH_SHORT).show();

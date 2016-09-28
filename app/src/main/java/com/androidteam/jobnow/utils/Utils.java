@@ -2,16 +2,14 @@ package com.androidteam.jobnow.utils;
 
 import android.app.Activity;
 import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-
-import com.ocpsoft.pretty.time.PrettyTime;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.regex.Matcher;
@@ -135,5 +133,20 @@ public class Utils {
             smonth = "0" + month;
         }
         return year + "-" + smonth + "-" + sdate;
+    }
+
+    public static boolean isReadyForPullEnd(RecyclerView recyclerView) {
+        View lastView = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
+        int lastPosition = recyclerView.getChildAdapterPosition(lastView);
+
+        if (lastPosition >= recyclerView.getAdapter().getItemCount() - 1) {
+            try {
+                return recyclerView.getChildAt(recyclerView.getChildCount() - 1).getBottom() <= recyclerView.getBottom();
+            } catch (Exception e) {
+
+            }
+
+        }
+        return false;
     }
 }
