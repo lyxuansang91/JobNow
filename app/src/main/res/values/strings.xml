@@ -135,7 +135,7 @@
     <string name="error_connect">please check your network connection</string>
     <string name="AllSpecializations">All Specializations</string>
     <string name="price">Price</string>
-    <string name="search_result">Kết quả tìm kiếm</string>
+    <string name="search_result">Search Result</string>
     <string name="takephoto">Take photo</string>
     <string name="gallery">Gallery</string>
     <string name="addPhoto">Add photo</string>
@@ -162,4 +162,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="number_job">%1$d Jobs in Job Now</string>
     <string name="notification">Notification</string>
+    <string name="filter">Filter</string>
 </resources>

@@ -1,7 +1,9 @@
 package com.androidteam.jobnow.acitvity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -13,6 +15,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
@@ -29,6 +32,7 @@ import com.androidteam.jobnow.widget.DisableScrollRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Filter;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -42,12 +46,17 @@ public class FilterActivity extends AppCompatActivity {
     private DisableScrollRecyclerView rvJobLocation, rvSkill;
     private JobLocationAdapter jobLocationAdapter;
     private SkillAdapter skillAdapter;
-    private RelativeLayout imgBack;
     private Button btnFilter;
+    private TextView tvReset;
     private EditText edtTitle, edtMinSalary;
 
     private void initUI() {
-        imgBack = (RelativeLayout) findViewById(R.id.imgBack);
+
+        ActionBar ab = getSupportActionBar();
+        if(ab != null) {
+            ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
+        }
         spnIndustry = (Spinner) findViewById(R.id.spnIndustry);
         rvJobLocation = (DisableScrollRecyclerView) findViewById(R.id.rvJobLocation);
         btnFilter = (Button) findViewById(R.id.btnFilter);
@@ -67,6 +76,7 @@ public class FilterActivity extends AppCompatActivity {
         rvSkill.setItemAnimator(new DefaultItemAnimator());
         skillAdapter = new SkillAdapter(FilterActivity.this, new ArrayList<SkillResponse.Skill>());
         rvSkill.setAdapter(skillAdapter);
+        tvReset = (TextView) findViewById(R.id.tvReset);
     }
 
     @Override
@@ -129,14 +139,26 @@ public class FilterActivity extends AppCompatActivity {
         }
     }
 
-    private void initevent() {
-        imgBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+    private void clearSelectData() {
+        //skill
+        for(int i = 0; i < skillAdapter.getItemCount(); i++) {
+            SkillResponse.Skill skillItem = skillAdapter.getItembyPostion(i);
+            if(skillItem.isSelected == 1) {
+                skillItem.isSelected = 0;
+                skillAdapter.setData(i, skillItem);
             }
-        });
+        }
+        //location
+        for(int i = 0; i < jobLocationAdapter.getItemCount(); i++) {
+            JobLocationResponse.JobLocation jobLocation = jobLocationAdapter.getItembyPostion(i);
+            if(jobLocation.isChecked) {
+                jobLocation.isChecked = false;
+                jobLocationAdapter.setData(i, jobLocation);
+            }
+        }
+    }
 
+    private void initevent() {
         btnFilter.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -164,6 +186,13 @@ public class FilterActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        tvReset.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                clearSelectData();
+            }
+        });
     }
 
     private void bindData() {
@@ -173,6 +202,8 @@ public class FilterActivity extends AppCompatActivity {
     }
 
     private void getSkill() {
+        final ProgressDialog progressDialog = ProgressDialog.show(FilterActivity.this,
+                "Loading", "Please wait..", true, false);
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         String url = APICommon.BASE_URL + "skill/getListSkill/" + APICommon.getSign(APICommon.getApiKey(), "api/v1/skill/getListSkill")
                 + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType() + "/0";
@@ -180,6 +211,7 @@ public class FilterActivity extends AppCompatActivity {
         jobLocationResponseCall.enqueue(new Callback<SkillResponse>() {
             @Override
             public void onResponse(Response<SkillResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
                 if (response.body() != null && response.body().code == 200) {
                     if (response.body().result != null && response.body().result.size() > 0) {
 //                        skillAdapter.addAll(response.body().result);
@@ -195,12 +227,15 @@ public class FilterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(FilterActivity.this, getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     private void getJobLocation() {
+        final ProgressDialog progressDialog = ProgressDialog.show(FilterActivity.this,
+                "Loading", "Please wait..", true, false);
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         String url = APICommon.BASE_URL + "country/getAllCountry/" + APICommon.getSign(APICommon.getApiKey(), "api/v1/country/getAllCountry")
                 + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType();
@@ -208,6 +243,7 @@ public class FilterActivity extends AppCompatActivity {
         jobLocationResponseCall.enqueue(new Callback<JobLocationResponse>() {
             @Override
             public void onResponse(Response<JobLocationResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
                 if (response.body() != null && response.body().code == 200) {
                     if (response.body().result != null && response.body().result.size() > 0) {
                         jobLocationAdapter.addAll(response.body().result);
@@ -217,16 +253,15 @@ public class FilterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(FilterActivity.this, getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
             }
         });
-
-//        for (int i = 0; i < 9; i++) {
-//            jobLocationAdapter.add(new JobLocationResponse.JobLocation());
-//        }
     }
 
     private void getIndustry() {
+        final ProgressDialog progressDialog = ProgressDialog.show(FilterActivity.this,
+                "Loading", "Please wait..", true, false);
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         String url = APICommon.BASE_URL + "industry/getListIndustry/" + APICommon.getSign(APICommon.getApiKey(), "api/v1/industry/getListIndustry")
                 + "/" + APICommon.getAppId() + "/" + APICommon.getDeviceType();
@@ -234,6 +269,7 @@ public class FilterActivity extends AppCompatActivity {
         industryResponseCall.enqueue(new Callback<IndustryResponse>() {
             @Override
             public void onResponse(Response<IndustryResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
                 if (response.body() != null && response.body().code == 200) {
                     List<IndustryObject> industryObjects = new ArrayList<>();
                     IndustryObject industryObject = new IndustryObject();
@@ -249,6 +285,7 @@ public class FilterActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Throwable t) {
+                progressDialog.dismiss();
                 Toast.makeText(FilterActivity.this, getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
             }
         });

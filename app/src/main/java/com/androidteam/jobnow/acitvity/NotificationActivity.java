@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.util.Log;
 import android.view.View;
 import android.widget.RelativeLayout;
@@ -97,6 +98,9 @@ public class NotificationActivity extends AppCompatActivity {
 
             }
         });
+
+        rvNotification.setHasFixedSize(true);
+        rvNotification.setItemAnimator(new DefaultItemAnimator());
 
         adapter = new NotificationAdapter(NotificationActivity.this,
                 new ArrayList<NotificationObject>());

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.androidteam.jobnow">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -68,14 +69,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".acitvity.FilterActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/filter" />
         <activity android:name=".acitvity.EditExperienceActivity" />
         <activity android:name=".acitvity.AddExperienceActivity" />
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            tools:replace="android:theme" />
         <activity android:name=".acitvity.SearchResultActivity" />
         <!-- <meta-data android:name="com.google.android.geo.API_KEY" -->
         <!-- android:value="@string/google_maps_key" /> -->
@@ -83,7 +85,8 @@
         <activity
             android:name=".acitvity.MapsActivity"
             android:label="Maps" />
-        <activity android:name=".acitvity.NotificationActivity"
+        <activity
+            android:name=".acitvity.NotificationActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

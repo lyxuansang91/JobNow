@@ -93,7 +93,6 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     }
 
     private void bindData() {
-
         if (jobObject != null) {
             tvName.setText(jobObject.Title);
             tvPosition.setText(jobObject.Position);
