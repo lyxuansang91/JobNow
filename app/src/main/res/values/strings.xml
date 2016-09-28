@@ -163,4 +163,5 @@
     <string name="number_job">%1$d Jobs in Job Now</string>
     <string name="notification">Notification</string>
     <string name="filter">Filter</string>
+    <string name="no_data">No data found!</string>
 </resources>

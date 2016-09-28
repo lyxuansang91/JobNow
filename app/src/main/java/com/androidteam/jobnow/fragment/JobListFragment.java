@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -51,6 +52,8 @@ public class JobListFragment extends Fragment {
     private int page = 1;
     private boolean isCanNext = false;
     private boolean isProgessingLoadMore = false;
+    private JobListRequest jobListRequest = null;
+    private LinearLayout lnErrorView;
 
     public JobListFragment() {
         // Required empty public constructor
@@ -119,7 +122,7 @@ public class JobListFragment extends Fragment {
             }
         });
 
-        rvListJob.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        rvListJob.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -137,9 +140,9 @@ public class JobListFragment extends Fragment {
 
     private void bindData() {
 
-        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "", true, false);
+        final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "Loading...", "Please wait", true, false);
         isProgessingLoadMore = true;
-        JobListRequest jobListRequest = null;
+
         Bundle bundle = getArguments();
         if (bundle != null) {
             jobListRequest = (JobListRequest) bundle.getSerializable(KEY_JOB);
@@ -154,7 +157,7 @@ public class JobListFragment extends Fragment {
                 APICommon.getSign(APICommon.getApiKey(), JobListRequest.PATH_URL),
                 APICommon.getAppId(),
                 APICommon.getDeviceType(),
-                jobListRequest.page,
+                page,
                 jobListRequest.Order,
                 jobListRequest.Title,
                 jobListRequest.Location,
@@ -184,6 +187,14 @@ public class JobListFragment extends Fragment {
                         } else {
                             isCanNext = false;
                         }
+                    }
+
+                    if(adapter.getItemCount() == 0) {
+                        lnErrorView.setVisibility(View.VISIBLE);
+                        rvListJob.setVisibility(View.GONE);
+                    } else {
+                        lnErrorView.setVisibility(View.GONE);
+                        rvListJob.setVisibility(View.VISIBLE);
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -222,6 +233,9 @@ public class JobListFragment extends Fragment {
         adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>());
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
+        lnErrorView = (LinearLayout) view.findViewById(R.id.lnErrorView);
+
+
         spnSortBy = (Spinner) view.findViewById(R.id.spnSortBy);
         refresh = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         Utils.closeKeyboard(getActivity());

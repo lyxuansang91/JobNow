@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,10 +43,10 @@ import retrofit.Retrofit;
 public class AppliedJobListFragment extends Fragment {
     public static final String TAG = AppliedJobListFragment.class.getSimpleName();
     //    private LinearLayout lnJob1, lnJob2, lnJob3;
-    private RelativeLayout rlSearchBar;
     private CRecyclerView rvListJob;
     private JobListAdapter adapter;
     private TextView tvNumberJob;
+    private LinearLayout lnErrorView;
     public AppliedJobListFragment() {
         // Required empty public constructor
     }
@@ -58,7 +59,7 @@ public class AppliedJobListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_applied_job_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_job_list, container, false);
         initUI(rootView);
         bindData();
         return rootView;
@@ -87,6 +88,14 @@ public class AppliedJobListFragment extends Fragment {
                         if (result != null) {
                             tvNumberJob.setText(result.total + " applied job");
                             adapter.addAll(result.data);
+
+                            if(result.total == 0) {
+                                lnErrorView.setVisibility(View.VISIBLE);
+                                rvListJob.setVisibility(View.GONE);
+                            } else {
+                                lnErrorView.setVisibility(View.GONE);
+                                rvListJob.setVisibility(View.VISIBLE);
+                            }
                         }
                     } else {
                         Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
@@ -103,8 +112,8 @@ public class AppliedJobListFragment extends Fragment {
     }
 
     private void initUI(View view) {
-        rlSearchBar = (RelativeLayout) view.findViewById(R.id.rlSearchBar);
         rvListJob = (CRecyclerView) view.findViewById(R.id.rvListJob);
+        lnErrorView = (LinearLayout) view.findViewById(R.id.lnErrorView);
         rvListJob.setDivider();
         adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>(),
                 JobListAdapter.APPLY_TYPE);
@@ -138,6 +147,14 @@ public class AppliedJobListFragment extends Fragment {
                     if (response.body() != null && response.body().code == 200) {
                         adapter.remove(position);
                         tvNumberJob.setText(adapter.getItemCount() +  " applied job");
+
+                        if(adapter.getItemCount() == 0) {
+                            lnErrorView.setVisibility(View.VISIBLE);
+                            rvListJob.setVisibility(View.GONE);
+                        } else {
+                            lnErrorView.setVisibility(View.GONE);
+                            rvListJob.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
                                 .show();

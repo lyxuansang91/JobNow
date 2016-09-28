@@ -101,11 +101,46 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#73befc" />
-
-            <com.androidteam.jobnow.widget.CRecyclerView
-                android:id="@+id/rvListJob"
+            
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:id="@+id/lnErrorView"
+                    android:layout_width="match_parent"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_height="wrap_content">
+
+                    <ImageView
+                        android:id="@+id/ivNodata"
+                        android:src="@mipmap/no_data"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp" />
+
+                    <TextView
+                        android:text="@string/no_data"
+                        android:maxLines="1"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+
+                <com.androidteam.jobnow.widget.CRecyclerView
+                    android:id="@+id/rvListJob"
+                    android:visibility="visible"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </RelativeLayout>
+
+
 
         </LinearLayout>
 

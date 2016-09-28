@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -56,17 +57,17 @@ public class SaveJobListFragment extends Fragment {
     }
 
     //    private LinearLayout lnJob1, lnJob2, lnJob3;
-    private RelativeLayout rlSearchBar;
     private CRecyclerView rvListJob;
     private JobListAdapter adapter;
     private TextView tvNumberJob;
+    private LinearLayout lnErrorView;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_save_job_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_job_list, container, false);
         initUI(rootView);
         bindData();
         return rootView;
@@ -90,7 +91,6 @@ public class SaveJobListFragment extends Fragment {
                 JobListReponse jobList = response.body();
                 if(jobList != null) {
                     if(jobList.code == 200) {
-
                         JobListReponse.JobListResult result = jobList.result;
                         if(result != null) {
                             tvNumberJob.setText(result.total + " saved job");
@@ -98,11 +98,18 @@ public class SaveJobListFragment extends Fragment {
                             Log.d(TAG, "save job list total:" + result.total);
                             saved_job = result.total;
                             EventBus.getDefault().post(new SaveJobListEvent(saved_job));
-
+                            if(result.total == 0) {
+                                lnErrorView.setVisibility(View.VISIBLE);
+                                rvListJob.setVisibility(View.GONE);
+                            } else {
+                                lnErrorView.setVisibility(View.GONE);
+                                rvListJob.setVisibility(View.VISIBLE);
+                            }
                         }
                     } else {
                         Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
                     }
+
                 }
             }
 
@@ -115,12 +122,12 @@ public class SaveJobListFragment extends Fragment {
     }
 
     private void initUI(View view) {
-        rlSearchBar = (RelativeLayout) view.findViewById(R.id.rlSearchBar);
         rvListJob = (CRecyclerView) view.findViewById(R.id.rvListJob);
         rvListJob.setDivider();
         adapter = new JobListAdapter(getActivity(), new ArrayList<JobObject>(), JobListAdapter.SAVE_TYPE);
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
+        lnErrorView = (LinearLayout) view.findViewById(R.id.lnErrorView);
         Utils.closeKeyboard(getActivity());
     }
 
@@ -150,6 +157,13 @@ public class SaveJobListFragment extends Fragment {
                         adapter.remove(position);
                         tvNumberJob.setText(adapter.getItemCount() + " saved job");
                         EventBus.getDefault().post(new SaveJobListEvent(adapter.getItemCount()));
+                        if(adapter.getItemCount() == 0) {
+                            lnErrorView.setVisibility(View.VISIBLE);
+                            rvListJob.setVisibility(View.GONE);
+                        } else {
+                            lnErrorView.setVisibility(View.GONE);
+                            rvListJob.setVisibility(View.VISIBLE);
+                        }
                     }
                     Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
                             .show();

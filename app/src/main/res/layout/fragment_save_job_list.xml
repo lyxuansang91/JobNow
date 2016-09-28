@@ -10,60 +10,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/rlSearchBar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:visibility="gone"
-            android:background="@color/colorPrimary">
-
-            <RelativeLayout
-                android:id="@+id/imgRing"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginLeft="10dp"
-                    android:src="@mipmap/ic_ring" />
-            </RelativeLayout>
-
-
-            <RelativeLayout
-                android:id="@+id/imgFilter"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true">
-
-                <ImageView
-
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginRight="10dp"
-                    android:src="@mipmap/ic_filter" />
-
-            </RelativeLayout>
-
-            <com.androidteam.jobnow.widget.CustomEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/imgFilter"
-                android:layout_toRightOf="@+id/imgRing"
-                android:background="@drawable/bg_search"
-                android:drawableLeft="@mipmap/ic_search"
-                android:drawablePadding="5dp"
-                android:ellipsize="start"
-                android:gravity="center_vertical"
-                android:hint="@string/search_hint"
-                android:imeOptions="actionSearch"
-                android:padding="5dp"
-                android:singleLine="true" />
-        </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"

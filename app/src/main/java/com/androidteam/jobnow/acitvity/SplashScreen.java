@@ -155,7 +155,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     private void getCountJob() {
-        final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.loading), true, true);
+        final ProgressDialog progressDialog = ProgressDialog.show(SplashScreen.this, "", getString(R.string.loading), true, true);
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         Call<CountJobResponse> call = service.getCountJob(
                 APICommon.getSign(APICommon.getApiKey(), "api/v1/jobs/getCountJob"),
@@ -254,7 +254,7 @@ public class SplashScreen extends AppCompatActivity {
     }
 
 
-    private class InitProject extends AsyncTask<Void, Void, Void> {
+    private class InitProject extends AsyncTask<Void, Void, Boolean> {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -262,24 +262,31 @@ public class SplashScreen extends AppCompatActivity {
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Boolean doInBackground(Void... params) {
             SharedPreferences sharedPreferences = getSharedPreferences(
                     Config.Pref, Context.MODE_PRIVATE);
             String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+            Boolean result = false;
             if (token != null && !token.isEmpty()) {
-                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-                startActivity(intent);
-                finish();
+              result = true;
             }
             initData();
 
-            return null;
+            return result;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
+        protected void onPostExecute(Boolean aVoid) {
             super.onPostExecute(aVoid);
-            getCountJob();
+            if(!aVoid) {
+                getCountJob();
+            } else {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+                finish();
+            }
+
         }
 
 
