@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -74,8 +75,7 @@ public class JobListFragment extends Fragment {
     private CRecyclerView rvListJob;
     private JobListAdapter adapter;
     private TextView tvNumberJob;
-    private CustomEditText edtSearchTitle;
-
+    private SwipeRefreshLayout refresh;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -108,9 +108,19 @@ public class JobListFragment extends Fragment {
                 bindData();
             }
         });
+
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh.setRefreshing(true);
+                adapter.clear();
+                bindData();
+            }
+        });
     }
 
     private void bindData() {
+
         final ProgressDialog progressDialog = ProgressDialog.show(getActivity(), "", "", true, false);
 
         JobListRequest jobListRequest = null;
@@ -140,6 +150,7 @@ public class JobListFragment extends Fragment {
         getJobList.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
+                refresh.setRefreshing(false);
                 try {
                     progressDialog.dismiss();
                     if (response.body() != null && response.body().code == 200) {
@@ -156,6 +167,7 @@ public class JobListFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
+                refresh.setRefreshing(false);
                 progressDialog.dismiss();
                 Log.d(TAG, "(on failed): " + t.toString());
                 Toast.makeText(getActivity(), getActivity().getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
@@ -184,7 +196,7 @@ public class JobListFragment extends Fragment {
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
         spnSortBy = (Spinner) view.findViewById(R.id.spnSortBy);
-
+        refresh = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         Utils.closeKeyboard(getActivity());
 
     }

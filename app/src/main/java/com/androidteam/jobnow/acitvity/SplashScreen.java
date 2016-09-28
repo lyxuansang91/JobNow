@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -47,7 +48,6 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(TAG, "(on create)");
         setContentView(R.layout.activity_splash_screen);
 //        try {
 //            PackageInfo info = getPackageManager().getPackageInfo(
@@ -63,17 +63,10 @@ public class SplashScreen extends AppCompatActivity {
 //        }
 
 
-        setupView();
-        SharedPreferences sharedPreferences = getSharedPreferences(
-                Config.Pref, Context.MODE_PRIVATE);
-        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
-        if (token != null && !token.isEmpty()) {
-            Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-            startActivity(intent);
-            finish();
-        }
-        initData();
-        getCountJob();
+
+        InitProject initProject = new InitProject();
+        initProject.execute();
+
     }
 
     private void initData() {
@@ -97,7 +90,7 @@ public class SplashScreen extends AppCompatActivity {
                                             service.registerFB(new RegisterFBRequest(name, email, avatar, fbid));
                                     registerFBReponseCall.enqueue(new Callback<RegisterFBReponse>() {
                                         @Override
-                                        public void onResponse(Response<RegisterFBReponse> response, Retrofit retrofit) {
+                                        public void onResponse(final Response<RegisterFBReponse> response, Retrofit retrofit) {
                                             Log.d(TAG, "get login response: " + response.body().toString());
                                             int code = response.body().code;
                                             if (code == 200) {
@@ -109,9 +102,15 @@ public class SplashScreen extends AppCompatActivity {
                                                 startActivity(intent);
                                                 finish();
                                             } else {
-                                                Toast.makeText(getApplicationContext(),
-                                                        response.body().message, Toast.LENGTH_SHORT)
-                                                        .show();
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Toast.makeText(getApplicationContext(),
+                                                                response.body().message, Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    }
+                                                });
+
                                             }
                                         }
 
@@ -133,12 +132,24 @@ public class SplashScreen extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(SplashScreen.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SplashScreen.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
 
             @Override
-            public void onError(FacebookException error) {
-                Toast.makeText(SplashScreen.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            public void onError(final FacebookException error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SplashScreen.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
         });
     }
@@ -151,7 +162,7 @@ public class SplashScreen extends AppCompatActivity {
                 APICommon.getAppId(), APICommon.getDeviceType(), 0);
         call.enqueue(new Callback<CountJobResponse>() {
             @Override
-            public void onResponse(Response<CountJobResponse> response, Retrofit retrofit) {
+            public void onResponse(final Response<CountJobResponse> response, Retrofit retrofit) {
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -161,24 +172,33 @@ public class SplashScreen extends AppCompatActivity {
                                 progressDialog.dismiss();
                         } catch (Exception e) {
                             e.printStackTrace();
+                        } finally {
+                            Log.d(TAG, "response:" + response.body());
+                            if (response.body() != null && response.body().code == 200) {
+                                tvNumberJob.setText(getString(R.string.number_job, response.body().result));
+                            } else {
+                                Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT)
+                                        .show();
+                            }
                         }
                     }
                 });
 
-                Log.d(TAG, "response:" + response.body());
-                if (response.body() != null && response.body().code == 200) {
-                    tvNumberJob.setText(getString(R.string.number_job, response.body().result));
-                } else {
-                    Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT)
-                            .show();
-                }
+
             }
 
             @Override
             public void onFailure(Throwable t) {
-                progressDialog.dismiss();
-                Toast.makeText(getApplicationContext(), getString(R.string.error_connect), Toast.LENGTH_SHORT)
-                        .show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.error_connect), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+
             }
         });
     }
@@ -231,5 +251,37 @@ public class SplashScreen extends AppCompatActivity {
 
     private void loginFacebook() {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+    }
+
+
+    private class InitProject extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setupView();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            SharedPreferences sharedPreferences = getSharedPreferences(
+                    Config.Pref, Context.MODE_PRIVATE);
+            String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+            if (token != null && !token.isEmpty()) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            initData();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            getCountJob();
+        }
+
+
     }
 }
