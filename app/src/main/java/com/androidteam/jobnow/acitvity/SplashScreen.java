@@ -1,22 +1,22 @@
 package com.androidteam.jobnow.acitvity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.BuildConfig;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.CountJobResponse;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.utils.Utils;
@@ -30,8 +30,6 @@ import com.facebook.login.LoginResult;
 
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import retrofit.Call;
@@ -44,26 +42,31 @@ public class SplashScreen extends AppCompatActivity {
     private Button btnLogin;
     private Button btnSignUp;
     private Button btnLoginFacebook;
+    private TextView tvNumberJob;
     private CallbackManager callbackManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    BuildConfig.APPLICATION_ID,
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        setupView();
-        initData();
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    BuildConfig.APPLICATION_ID,
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
+
+
+
+        InitProject initProject = new InitProject();
+        initProject.execute();
+
     }
 
     private void initData() {
@@ -78,14 +81,6 @@ public class SplashScreen extends AppCompatActivity {
                             public void onCompleted(final JSONObject object,
                                                     GraphResponse response) {
                                 if (object != null) {
-//                                    CLog.d(TAG, " register fb: " + object.optString("id") + " " + object.optString("email"));
-//                                    editor.putString(Configruation.KEY_IDFB, object.optString("id"));
-//                                    editor.putString(Configruation.KEY_NAME, object.optString("name"));
-//                                    editor.commit();
-//                                    CLog.d(TAG, "token fb: " + loginResult.getAccessToken().getToken());
-//                                    EventBus.getDefault().post(new LoginSuccessEvent(LoginSuccessEvent.TYPE_FACEBOOK));
-//                                    Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
-//                                    startActivity(intent);
                                     String email = object.optString("email");
                                     String name = object.optString("name");
                                     String fbid = object.optString("id");
@@ -95,7 +90,7 @@ public class SplashScreen extends AppCompatActivity {
                                             service.registerFB(new RegisterFBRequest(name, email, avatar, fbid));
                                     registerFBReponseCall.enqueue(new Callback<RegisterFBReponse>() {
                                         @Override
-                                        public void onResponse(Response<RegisterFBReponse> response, Retrofit retrofit) {
+                                        public void onResponse(final Response<RegisterFBReponse> response, Retrofit retrofit) {
                                             Log.d(TAG, "get login response: " + response.body().toString());
                                             int code = response.body().code;
                                             if (code == 200) {
@@ -105,8 +100,18 @@ public class SplashScreen extends AppCompatActivity {
                                                 editor.putInt(Config.KEY_ID, response.body().result.id).commit();
                                                 Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
                                                 startActivity(intent);
+                                                finish();
+                                            } else {
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        Toast.makeText(getApplicationContext(),
+                                                                response.body().message, Toast.LENGTH_SHORT)
+                                                                .show();
+                                                    }
+                                                });
+
                                             }
-                                            Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override
@@ -127,12 +132,73 @@ public class SplashScreen extends AppCompatActivity {
 
             @Override
             public void onCancel() {
-                Toast.makeText(SplashScreen.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SplashScreen.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+                });
+
             }
 
             @Override
-            public void onError(FacebookException error) {
-                Toast.makeText(SplashScreen.this, error.getMessage(), Toast.LENGTH_LONG).show();
+            public void onError(final FacebookException error) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(SplashScreen.this, error.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
+            }
+        });
+    }
+
+    private void getCountJob() {
+        final ProgressDialog progressDialog = ProgressDialog.show(this, "", getString(R.string.loading), true, true);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<CountJobResponse> call = service.getCountJob(
+                APICommon.getSign(APICommon.getApiKey(), "api/v1/jobs/getCountJob"),
+                APICommon.getAppId(), APICommon.getDeviceType(), 0);
+        call.enqueue(new Callback<CountJobResponse>() {
+            @Override
+            public void onResponse(final Response<CountJobResponse> response, Retrofit retrofit) {
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        } finally {
+                            Log.d(TAG, "response:" + response.body());
+                            if (response.body() != null && response.body().code == 200) {
+                                tvNumberJob.setText(getString(R.string.number_job, response.body().result));
+                            } else {
+                                Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        }
+                    }
+                });
+
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (progressDialog.isShowing())
+                            progressDialog.dismiss();
+                        Toast.makeText(getApplicationContext(), getString(R.string.error_connect), Toast.LENGTH_SHORT)
+                                .show();
+                    }
+                });
+
             }
         });
     }
@@ -141,6 +207,7 @@ public class SplashScreen extends AppCompatActivity {
         btnLogin = (Button) findViewById(R.id.btnLogin);
         btnSignUp = (Button) findViewById(R.id.btnSignUp);
         btnLoginFacebook = (Button) findViewById(R.id.btnLoginFacebook);
+        tvNumberJob = (TextView) findViewById(R.id.tvNumberJob);
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -184,5 +251,37 @@ public class SplashScreen extends AppCompatActivity {
 
     private void loginFacebook() {
         LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile", "user_friends", "email"));
+    }
+
+
+    private class InitProject extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            setupView();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            SharedPreferences sharedPreferences = getSharedPreferences(
+                    Config.Pref, Context.MODE_PRIVATE);
+            String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+            if (token != null && !token.isEmpty()) {
+                Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                startActivity(intent);
+                finish();
+            }
+            initData();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            getCountJob();
+        }
+
+
     }
 }

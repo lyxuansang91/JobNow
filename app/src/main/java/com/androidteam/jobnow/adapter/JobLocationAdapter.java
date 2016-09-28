@@ -18,6 +18,7 @@ import java.util.List;
 
 public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.JobLocation, JobLocationAdapter.ViewHolder> {
     public static final String TAG = JobLocationAdapter.class.getSimpleName();
+    private boolean onBind;
 
     public JobLocationAdapter(Context context, List<JobLocationResponse.JobLocation> list) {
         super(context, list);
@@ -32,17 +33,10 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 //        super.onBindViewHolder(holder, position);
+        onBind = true;
         holder.bindData(list.get(position));
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                JobLocationResponse.JobLocation result = getItembyPostion(position);
-                if(result != null) {
-                    result.isChecked = isChecked;
-                    setData(position, result);
-                }
-            }
-        });
+        onBind = false;
+
     }
 
     @Override
@@ -60,10 +54,27 @@ public class JobLocationAdapter extends BaseRecyclerAdapter<JobLocationResponse.
         public ViewHolder(View view) {
             super(view);
             checkBox = (CheckBox) view.findViewById(R.id.checkbox);
+            checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    if(!onBind) {
+                        int position = getAdapterPosition();
+                        JobLocationResponse.JobLocation result = getItembyPostion(position);
+                        if (result != null) {
+                            result.isChecked = isChecked;
+                            setData(position, result);
+                        }
+                    }
+                }
+            });
         }
 
         public void bindData(JobLocationResponse.JobLocation locationResult) {
             checkBox.setText(locationResult.Name);
+            if(locationResult.isChecked)
+                checkBox.setChecked(true);
+            else
+                checkBox.setChecked(false);
         }
 
     }

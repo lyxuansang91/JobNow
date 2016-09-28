@@ -47,7 +47,6 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:gravity="center"
-                            android:text="12.345 Job in Job now"
                             android:textColor="@android:color/white"
                             android:textSize="24sp"
                             android:textStyle="bold" />

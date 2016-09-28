@@ -5,69 +5,6 @@
     android:layout_height="match_parent"
     tools:context="com.androidteam.jobnow.fragment.FilterFragment">
 
-    <android.support.design.widget.AppBarLayout
-        style="@style/AppTheme.AppBarOverlay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:orientation="vertical"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:id="@+id/imgBack"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginLeft="10dp"
-                        android:src="@mipmap/ic_back" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:id="@+id/imgFilter"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_alignParentRight="true"
-                    android:visibility="visible"
-                    android:layout_centerVertical="true">
-
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_marginRight="10dp"
-                        android:src="@mipmap/ic_filter" />
-
-                </RelativeLayout>
-
-                <com.androidteam.jobnow.widget.CustomEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_toLeftOf="@+id/imgFilter"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/imgBack"
-                    android:background="@drawable/bg_search"
-                    android:drawableLeft="@mipmap/ic_search"
-                    android:drawablePadding="5dp"
-                    android:ellipsize="start"
-                    android:hint="@string/search_hint"
-                    android:imeOptions="actionSearch"
-                    android:padding="5dp"
-                    android:singleLine="true" />
-            </RelativeLayout>
-
-        </LinearLayout>
-    </android.support.design.widget.AppBarLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -115,6 +52,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:inputType="numberDecimal"
                     android:background="@drawable/bg_edittext"
                     android:hint="Minimum Salary (SGD)" />
 
@@ -156,83 +94,7 @@
                     android:textColor="@color/colorPrimary"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Salary"
-                    android:textColor="@color/black"
-                    android:textStyle="bold" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/bg_salary"
-                    android:orientation="horizontal">
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_salary_left">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:text="@string/price" />
-                    </RelativeLayout>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="#d5d6d4" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
-
-                        <EditText
-                            android:id="@+id/edMin"
-                            android:layout_width="0dip"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="#d5d6d4" />
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:background="#e7e7e7">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:paddingLeft="5dp"
-                                android:paddingRight="5dp"
-                                android:text="-"
-                                android:textColor="@color/black" />
-                        </RelativeLayout>
-
-                        <View
-                            android:layout_width="1dp"
-                            android:layout_height="match_parent"
-                            android:background="#d5d6d4" />
-
-                        <EditText
-                            android:id="@+id/edMax"
-                            android:layout_width="0dip"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1" />
-                    </LinearLayout>
-                </LinearLayout>
             </LinearLayout>
-
 
         </ScrollView>
 

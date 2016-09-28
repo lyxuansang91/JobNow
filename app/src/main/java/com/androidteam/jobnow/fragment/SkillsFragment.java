@@ -21,6 +21,8 @@ import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.adapter.MySkillAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.SkillRequest;
 import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.widget.CRecyclerView;
 
@@ -40,6 +42,7 @@ public class SkillsFragment extends Fragment {
     private MySkillAdapter adapter;
     private ProgressDialog progressDialog;
     private LinearLayout lnAddSkill;
+    private LinearLayout lnRemoveSkill;
 
     public SkillsFragment() {
         // Required empty public constructor
@@ -57,6 +60,7 @@ public class SkillsFragment extends Fragment {
 
         return view;
     }
+
 
     private void bindData() {
         progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
@@ -80,6 +84,11 @@ public class SkillsFragment extends Fragment {
                             }
                         }
                     }
+
+                    if(response.body().result.size() == 0)
+                        lnRemoveSkill.setVisibility(View.GONE);
+                    else
+                        lnRemoveSkill.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -87,6 +96,37 @@ public class SkillsFragment extends Fragment {
             public void onFailure(Throwable t) {
                 progressDialog.dismiss();
                 Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    private void removeAllSkill() {
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
+        SharedPreferences sharedPreferences = getContext().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        int[] skills = new int[0];
+        Call<BaseResponse> call = service.postEditSkill(new SkillRequest(token, userId, skills));
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
+                if (response.body() != null) {
+                    Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                    if (response.body().code == 200) {
+                        bindData();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT)
+                        .show();
+
             }
         });
     }
@@ -99,12 +139,20 @@ public class SkillsFragment extends Fragment {
                 startActivityForResult(intent, 2);
             }
         });
+
+        lnRemoveSkill.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                removeAllSkill();
+            }
+        });
     }
 
     private void initUI(View view) {
         imgEdit = (ImageView) view.findViewById(R.id.imgEdit);
         lnAddSkill = (LinearLayout) view.findViewById(R.id.lnAddSkill);
         rvSkill = (CRecyclerView) view.findViewById(R.id.rvSkill);
+        lnRemoveSkill = (LinearLayout) view.findViewById(R.id.lnRemoveSkill);
         adapter = new MySkillAdapter(getActivity(), new ArrayList<SkillResponse.Skill>());
         rvSkill.setAdapter(adapter);
     }

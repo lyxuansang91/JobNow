@@ -5,6 +5,8 @@ import android.content.Context;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
+import com.ocpsoft.pretty.time.PrettyTime;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -103,6 +105,20 @@ public class Utils {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public static String getDate(String dateString) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            Date date = sdf.parse(dateString);
+
+
+            return formatStringTime(date.getDate(), date.getMonth(), date.getYear());
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
     public static String formatStringTime(int date, int month, int year) {

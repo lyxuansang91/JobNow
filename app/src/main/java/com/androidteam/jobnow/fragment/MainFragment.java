@@ -2,22 +2,32 @@ package com.androidteam.jobnow.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.FilterActivity;
+import com.androidteam.jobnow.acitvity.NotificationActivity;
+import com.androidteam.jobnow.acitvity.SearchResultActivity;
+import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,6 +38,7 @@ public class MainFragment extends Fragment {
     private ViewPagerAdapter viewPagerAdapter;
     private ViewPager viewpager;
     private RelativeLayout imgFilter, imgBack;
+    private EditText edtSearch;
 
     public MainFragment() {
         // Required empty public constructor
@@ -43,15 +54,40 @@ public class MainFragment extends Fragment {
         return view;
     }
 
+    void search(String title) {
+        Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+        if (title.equals(""))
+            title = null;
+        JobListRequest request = new JobListRequest(1, "ASC", title, null, null,
+                null, null, null, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SearchResultActivity.KEY_JOB, request);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
+
     private void InitUI(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.tabs);
         viewpager = (ViewPager) view.findViewById(R.id.viewpager);
         imgFilter = (RelativeLayout) view.findViewById(R.id.imgFilter);
         imgBack = (RelativeLayout) view.findViewById(R.id.imgRing);
+        edtSearch = (EditText) view.findViewById(R.id.edSearch);
+        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search(v.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
         imgBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().finish();
+                Intent intent = new Intent(getActivity(), NotificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
             }
         });
         imgFilter.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +138,18 @@ public class MainFragment extends Fragment {
         @Override
         public CharSequence getPageTitle(int position) {
             return mFragmentTitleList.get(position);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grants) {
+        List<Fragment> fragments = getChildFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment != null) {
+                    fragment.onRequestPermissionsResult(requestCode, permissions, grants);
+                }
+            }
         }
     }
 }

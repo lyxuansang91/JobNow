@@ -80,10 +80,13 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(Config.KEY_TOKEN, response.body().result.apiToken).commit();
                         editor.putInt(Config.KEY_ID, response.body().result.id).commit();
-                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
+                        finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                     }
-                    Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

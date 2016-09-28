@@ -20,6 +20,7 @@ import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.eventbus.DeleteJobEvent;
 import com.androidteam.jobnow.eventbus.SaveJobEvent;
+import com.androidteam.jobnow.eventbus.SaveJobListEvent;
 import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.JobListReponse;
@@ -43,6 +44,8 @@ import retrofit.Retrofit;
  */
 public class SaveJobListFragment extends Fragment {
     public static final String TAG = SaveJobListFragment.class.getSimpleName();
+
+    public static int saved_job = 0;
 
     public SaveJobListFragment() {
         // Required empty public constructor
@@ -92,6 +95,9 @@ public class SaveJobListFragment extends Fragment {
                         if(result != null) {
                             tvNumberJob.setText(result.total + " saved job");
                             adapter.addAll(result.data);
+                            Log.d(TAG, "save job list total:" + result.total);
+                            EventBus.getDefault().post(new SaveJobListEvent(saved_job));
+                            saved_job = result.total;
                         }
                     } else {
                         Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
@@ -142,6 +148,7 @@ public class SaveJobListFragment extends Fragment {
                     if(response.body() != null && response.body().code == 200) {
                         adapter.remove(position);
                         tvNumberJob.setText(adapter.getItemCount() + " saved job");
+                        EventBus.getDefault().post(new SaveJobListEvent(adapter.getItemCount()));
                     }
                     Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
                             .show();
@@ -159,11 +166,13 @@ public class SaveJobListFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+        Log.d(TAG, "on attach");
         EventBus.getDefault().register(this);
     }
 
     @Override
     public void onDetach() {
+        Log.d(TAG, "on detach");
         EventBus.getDefault().unregister(this);
         super.onDetach();
     }

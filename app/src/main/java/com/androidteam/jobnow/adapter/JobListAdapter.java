@@ -84,7 +84,7 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
             tvCompanyName = (TextView) view.findViewById(R.id.tvCompanyName);
             imgLogo = (ImageView) view.findViewById(R.id.imgLogo);
             btnRemove = (ImageButton) view.findViewById(R.id.btnRemove);
-            btnRemove.setVisibility(type == 0 ? View.GONE : View.VISIBLE);
+            btnRemove.setVisibility(type == 0 ? View.INVISIBLE : View.VISIBLE);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -107,7 +107,7 @@ public class JobListAdapter extends BaseRecyclerAdapter<JobObject, JobListAdapte
 
         public void bindData(JobObject jobObject) {
             tvName.setText(jobObject.Title);
-            tvLocation.setText(jobObject.Position);
+            tvLocation.setText(jobObject.LocationName);
             tvPrice.setText(jobObject.FromSalary + " - " + jobObject.ToSalary + " (USD)");
             tvTime.setText(mContext.getString(R.string.posted)+" "+p.format(new Date(Utils.getLongTime(jobObject.created_at))));
             tvCompanyName.setText(jobObject.CompanyName);

@@ -2,21 +2,30 @@ package com.androidteam.jobnow.acitvity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.eventbus.SaveJobListEvent;
 import com.androidteam.jobnow.fragment.AppliedJobListFragment;
 import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
 import com.androidteam.jobnow.fragment.SaveJobListFragment;
+import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = ProfileActivity.class.getSimpleName();
     private CommonTabLayout tabbottom;
     private int[] mIconUnselectIds = {
             R.mipmap.ic_home_bottom, R.mipmap.ic_saved_bottom,
@@ -26,7 +35,6 @@ public class ProfileActivity extends AppCompatActivity {
             R.mipmap.ic_applied_bottom_selected, R.mipmap.ic_profile_bottom_selected};
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
     private ArrayList<Fragment> mFragments2 = new ArrayList<>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,10 +42,11 @@ public class ProfileActivity extends AppCompatActivity {
         InitUI();
         bindData();
         InitEvent();
-
+        Utils.closeKeyboard(ProfileActivity.this);
     }
 
     private void bindData() {
+
         String[] mTitles = {getString(R.string.home), getString(R.string.saved), getString(R.string.applied), getString(R.string.profile)};
         for (int i = 0; i < mTitles.length; i++) {
             switch (i) {
@@ -78,6 +87,48 @@ public class ProfileActivity extends AppCompatActivity {
 
         for (Fragment fragment : getSupportFragmentManager().getFragments()) {
             fragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    @Subscribe
+    public void onEvent(SaveJobListEvent event) {
+        Log.d(TAG, "total: " + event.total);
+        int total = event.total;
+        if (total != 0) {
+            tabbottom.showMsg(1, total);
+        } else
+            tabbottom.hideMsg(1);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() - key_pressed < 2000) {
+            super.onBackPressed();
+        } else {
+            Toast.makeText(getApplicationContext(), "Back again to exit", Toast.LENGTH_SHORT).show();
+        }
+        key_pressed = System.currentTimeMillis();
+    }
+
+    static long key_pressed;
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+            fragment.onRequestPermissionsResult(requestCode,permissions,grantResults);
         }
     }
 }

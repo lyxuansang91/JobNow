@@ -81,8 +81,6 @@ public class AddExperienceActivity extends AppCompatActivity {
                         setResult(RESULT_OK);
                         finish();
                     }
-
-
                 }
 
             }

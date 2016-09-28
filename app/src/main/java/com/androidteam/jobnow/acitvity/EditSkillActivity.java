@@ -83,7 +83,6 @@ public class EditSkillActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 save();
-
             }
         });
 

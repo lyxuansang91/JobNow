@@ -1,19 +1,23 @@
 package com.androidteam.jobnow.fragment;
 
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -71,7 +75,7 @@ public class ProfileFragment extends Fragment {
     }
 
     private LinearLayout tab1, tab2, tab3;
-    private ImageView ic_tab1, ic_tab2, ic_tab3, imgLogout;
+    private ImageView ic_tab1, ic_tab2, ic_tab3, imgLogout, ivEditProfile;
     private TextView custom_text1, custom_text2, custom_text3;
     private int tabSelected = 0;
     public static CircleImageView img_avatar;
@@ -85,7 +89,7 @@ public class ProfileFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_profile, null);
+        View v = inflater.inflate(R.layout.fragment_profile, container, false);
         initUI(v);
         bindData();
         initEvent();
@@ -135,6 +139,27 @@ public class ProfileFragment extends Fragment {
         img_avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (!Settings.System.canWrite(getActivity())) {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE}, 2909);
+                    } else {
+                        // continue with your code
+                        changeAvatar();
+                    }
+                } else {
+                    // continue with your code
+                    changeAvatar();
+                }
+
+
+
+            }
+        });
+
+        ivEditProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 changeAvatar();
             }
         });
@@ -178,7 +203,20 @@ public class ProfileFragment extends Fragment {
             }
         });
     }
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        switch (requestCode) {
+            case 2909: {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("Permission", "Granted");
+                    changeAvatar();
+                } else {
+                    Log.e("Permission", "Denied");
+                }
+                return;
+            }
+        }
+    }
     private void changeAvatar() {
         final CharSequence[] items = {getString(R.string.takephoto), getString(R.string.gallery), getString(R.string.cancel)};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -425,6 +463,7 @@ public class ProfileFragment extends Fragment {
         tvName = (TextView) v.findViewById(R.id.tvName);
         tvLocation = (TextView) v.findViewById(R.id.tvLocation);
         img_avatar = (CircleImageView) v.findViewById(R.id.img_avatar);
+        ivEditProfile = (ImageView) v.findViewById(R.id.ivEditProfile);
     }
 
     @Override

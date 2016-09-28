@@ -110,16 +110,17 @@ public class EditExperienceActivity extends AppCompatActivity implements View.On
         String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
         int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-        Call<BaseResponse> call = service.postUpdateJobSeekerExperience(new ExperienceRequest(userId, companyName, location, description, token, userId, experience.id, ExperienceRequest.DELETE));
+        Call<BaseResponse> call = service.postDeleteJobSeekerExperience(new ExperienceRequest(experience.id, userId, token, userId));
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
                 if (response.body() != null) {
-                    Toast.makeText(EditExperienceActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                     if (response.body().code == 200) {
                         setResult(RESULT_OK);
                         finish();
                     }
+                    Toast.makeText(EditExperienceActivity.this, response.body().message,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -139,8 +140,9 @@ public class EditExperienceActivity extends AppCompatActivity implements View.On
         call.enqueue(new Callback<BaseResponse>() {
             @Override
             public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                Toast.makeText(EditExperienceActivity.this, response.body().message,
+                        Toast.LENGTH_SHORT).show();
                 if (response.body() != null) {
-                    Toast.makeText(EditExperienceActivity.this, response.body().message, Toast.LENGTH_SHORT).show();
                     if (response.body().code == 200) {
                         setResult(RESULT_OK);
                         finish();

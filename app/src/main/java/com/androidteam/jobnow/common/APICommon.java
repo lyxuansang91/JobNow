@@ -1,9 +1,11 @@
 package com.androidteam.jobnow.common;
 
+import android.app.Notification;
 import android.util.Log;
 
 import com.androidteam.jobnow.models.ApplyJobRequest;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.CountJobResponse;
 import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.ExperienceRequest;
@@ -13,6 +15,8 @@ import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.LoginRequest;
 import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.MapJobListReponse;
+import com.androidteam.jobnow.models.NotificationResponse;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
 import com.androidteam.jobnow.models.RegisterRequest;
@@ -74,6 +78,25 @@ public class APICommon {
 
     public interface JobNowService {
 
+        @GET("notification/getListNotification/{sign}/{app_id}/{device_type}/{user_id}/{api_token}")
+        Call<NotificationResponse> getListNotification(@Path("sign") String sign,
+                                                       @Path("app_id") String app_id,
+                                                       @Path("device_type") int device_type,
+                                                       @Path("user_id") int user_id,
+                                                       @Path("api_token") String api_token);
+
+        @GET("jobs/getCountJob/{sign}/{app_id}/{device_type}/{location_id}")
+        Call<CountJobResponse> getCountJob(@Path("sign") String sign,
+                                           @Path("app_id") String app_id,
+                                           @Path("device_type") int device_type,
+                                           @Path("location_id") int location_id);
+
+        @GET("jobs/getListJobInLocation/{sign}/{app_id}/{device_type}/{lat}/{lng}")
+        Call<MapJobListReponse> getListJobInLocation(@Path("sign") String sign,
+                                                     @Path("app_id") String app_id,
+                                                     @Path("device_type") int device_type,
+                                                     @Path("lat") Double lat,
+                                                     @Path("lng") Double lng);
         @POST("jobs/postDeleteSaveJob")
         Call<BaseResponse> deleteSaveJob(@Body DeleteJobRequest request);
 
@@ -166,6 +189,9 @@ public class APICommon {
 
         @POST("jobseekerexperience/postAddJobSeekerExperience")
         Call<BaseResponse> postAddJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
+
+        @POST("jobseekerexperience/postDeleteJobSeekerExperience")
+        Call<BaseResponse> postDeleteJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
 
         @POST("jobseekerexperience/postUpdateJobSeekerExperience")
         Call<BaseResponse> postUpdateJobSeekerExperience(@Body ExperienceRequest addExperienceRequest);
