@@ -4,26 +4,20 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.BuildConfig;
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.CountJobResponse;
 import com.androidteam.jobnow.models.RegisterFBReponse;
 import com.androidteam.jobnow.models.RegisterFBRequest;
-import com.androidteam.jobnow.models.SkillResponse;
 import com.androidteam.jobnow.utils.Utils;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -35,8 +29,6 @@ import com.facebook.login.LoginResult;
 
 import org.json.JSONObject;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 
 import retrofit.Call;
@@ -57,28 +49,29 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Log.d(TAG, "(on create)");
         setContentView(R.layout.activity_splash_screen);
-        try {
-            PackageInfo info = getPackageManager().getPackageInfo(
-                    BuildConfig.APPLICATION_ID,
-                    PackageManager.GET_SIGNATURES);
-            for (Signature signature : info.signatures) {
-                MessageDigest md = MessageDigest.getInstance("SHA");
-                md.update(signature.toByteArray());
-                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
-            }
-        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+//        try {
+//            PackageInfo info = getPackageManager().getPackageInfo(
+//                    BuildConfig.APPLICATION_ID,
+//                    PackageManager.GET_SIGNATURES);
+//            for (Signature signature : info.signatures) {
+//                MessageDigest md = MessageDigest.getInstance("SHA");
+//                md.update(signature.toByteArray());
+//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT));
+//            }
+//        } catch (PackageManager.NameNotFoundException | NoSuchAlgorithmException e) {
+//            e.printStackTrace();
+//        }
 
+
+        setupView();
         SharedPreferences sharedPreferences = getSharedPreferences(
                 Config.Pref, Context.MODE_PRIVATE);
         String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
-        if(token != null && !token.isEmpty()) {
+        if (token != null && !token.isEmpty()) {
             Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
             startActivity(intent);
             finish();
         }
-        setupView();
         initData();
         getCountJob();
     }
@@ -159,9 +152,21 @@ public class SplashScreen extends AppCompatActivity {
         call.enqueue(new Callback<CountJobResponse>() {
             @Override
             public void onResponse(Response<CountJobResponse> response, Retrofit retrofit) {
-                progressDialog.dismiss();
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            if (progressDialog.isShowing())
+                                progressDialog.dismiss();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
                 Log.d(TAG, "response:" + response.body());
-                if(response.body() != null && response.body().code == 200) {
+                if (response.body() != null && response.body().code == 200) {
                     tvNumberJob.setText(getString(R.string.number_job, response.body().result));
                 } else {
                     Toast.makeText(getApplicationContext(), response.body().message, Toast.LENGTH_SHORT)
