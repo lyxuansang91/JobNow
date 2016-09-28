@@ -160,7 +160,6 @@ public class FilterActivity extends AppCompatActivity {
 
     private void initevent() {
         btnFilter.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);

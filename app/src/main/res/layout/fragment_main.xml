@@ -58,8 +58,9 @@
                 android:ellipsize="start"
                 android:hint="@string/search_hint"
                 android:imeOptions="actionSearch"
+                android:inputType="text"
                 android:padding="5dp"
-                android:singleLine="true" />
+                android:maxLines="1" />
         </RelativeLayout>
 
         <android.support.design.widget.TabLayout

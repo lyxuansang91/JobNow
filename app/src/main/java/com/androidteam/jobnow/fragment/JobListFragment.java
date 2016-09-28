@@ -2,13 +2,17 @@ package com.androidteam.jobnow.fragment;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -16,13 +20,16 @@ import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
+import com.androidteam.jobnow.acitvity.SearchResultActivity;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.models.IndustryObject;
 import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobObject;
 import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.CRecyclerView;
+import com.androidteam.jobnow.widget.CustomEditText;
 
 import java.util.ArrayList;
 
@@ -30,6 +37,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -65,6 +74,7 @@ public class JobListFragment extends Fragment {
     private CRecyclerView rvListJob;
     private JobListAdapter adapter;
     private TextView tvNumberJob;
+    private CustomEditText edtSearchTitle;
 
 
     @Override
@@ -151,7 +161,18 @@ public class JobListFragment extends Fragment {
                 Toast.makeText(getActivity(), getActivity().getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void search(String title) {
+        Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+        if (title.equals(""))
+            title = null;
+        JobListRequest request = new JobListRequest(1, "ASC", title, null, null,
+                null, null, null, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SearchResultActivity.KEY_JOB, request);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
     }
 
     private void initUI(View view) {
@@ -163,6 +184,7 @@ public class JobListFragment extends Fragment {
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
         spnSortBy = (Spinner) view.findViewById(R.id.spnSortBy);
+
         Utils.closeKeyboard(getActivity());
 
     }

@@ -54,6 +54,7 @@
             <com.androidteam.jobnow.widget.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/edtSearchTitle"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:layout_centerVertical="true"
