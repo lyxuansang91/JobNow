@@ -96,8 +96,9 @@ public class SaveJobListFragment extends Fragment {
                             tvNumberJob.setText(result.total + " saved job");
                             adapter.addAll(result.data);
                             Log.d(TAG, "save job list total:" + result.total);
-                            EventBus.getDefault().post(new SaveJobListEvent(saved_job));
                             saved_job = result.total;
+                            EventBus.getDefault().post(new SaveJobListEvent(saved_job));
+
                         }
                     } else {
                         Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
