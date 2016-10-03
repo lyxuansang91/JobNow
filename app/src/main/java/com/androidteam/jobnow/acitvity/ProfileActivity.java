@@ -1,19 +1,26 @@
 package com.androidteam.jobnow.acitvity;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.common.APICommon;
+import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.eventbus.SaveJobListEvent;
 import com.androidteam.jobnow.fragment.AppliedJobListFragment;
 import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
 import com.androidteam.jobnow.fragment.SaveJobListFragment;
+import com.androidteam.jobnow.models.JobListReponse;
 import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
@@ -23,6 +30,11 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+
+import retrofit.Call;
+import retrofit.Callback;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = ProfileActivity.class.getSimpleName();
@@ -100,10 +112,54 @@ public class ProfileActivity extends AppCompatActivity {
             tabbottom.hideMsg(1);
     }
 
+    private void displayNumberOfSaveJob() {
+
+        final ProgressDialog progressDialog = ProgressDialog.show(ProfileActivity.this, "Loading...",
+                "Please wait", true, false);
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getSharedPreferences(
+                Config.Pref, Context.MODE_PRIVATE);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        Call<JobListReponse> request = service.getSaveListJob(
+                APICommon.getSign(APICommon.getApiKey(), "/api/v1/jobs/getSaveJob"),
+                APICommon.getAppId(),
+                APICommon.getDeviceType(),
+                userId,
+                token, null);
+        request.enqueue(new Callback<JobListReponse>() {
+            @Override
+            public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
+                JobListReponse jobList = response.body();
+                if(jobList != null) {
+                    if(jobList.code == 200) {
+                        JobListReponse.JobListResult result = jobList.result;
+                        if(result != null) {
+                            Log.d(TAG, "save job list total:" + result.total);
+                            EventBus.getDefault().post(new SaveJobListEvent(result.total));
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), jobList.message, Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getApplicationContext(), getString(R.string.error_connect),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         EventBus.getDefault().register(this);
+        displayNumberOfSaveJob();
     }
 
     @Override

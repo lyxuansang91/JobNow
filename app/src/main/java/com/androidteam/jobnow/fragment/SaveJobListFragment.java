@@ -2,20 +2,29 @@ package com.androidteam.jobnow.fragment;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.androidteam.jobnow.R;
+import com.androidteam.jobnow.acitvity.FilterActivity;
 import com.androidteam.jobnow.acitvity.MyApplication;
+import com.androidteam.jobnow.acitvity.NotificationActivity;
+import com.androidteam.jobnow.acitvity.SearchResultActivity;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
@@ -40,6 +49,8 @@ import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
 
+import static com.facebook.FacebookSdk.getApplicationContext;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -60,6 +71,11 @@ public class SaveJobListFragment extends Fragment {
     private CRecyclerView rvListJob;
     private JobListAdapter adapter;
     private TextView tvNumberJob;
+    private SwipeRefreshLayout refresh;
+    private boolean isCanNext = false;
+    private boolean isProgessingLoadMore = false;
+    private RelativeLayout imgFilter, imgBack;
+    private int page = 1;
     private LinearLayout lnErrorView;
 
 
@@ -74,6 +90,7 @@ public class SaveJobListFragment extends Fragment {
     }
 
     private void bindData() {
+        isProgessingLoadMore = true;
         APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(
                 Config.Pref, Context.MODE_PRIVATE);
@@ -84,10 +101,12 @@ public class SaveJobListFragment extends Fragment {
                 APICommon.getAppId(),
                 APICommon.getDeviceType(),
                 userId,
-                token);
+                token, page);
         request.enqueue(new Callback<JobListReponse>() {
             @Override
             public void onResponse(Response<JobListReponse> response, Retrofit retrofit) {
+                refresh.setRefreshing(false);
+                isProgessingLoadMore = false;
                 JobListReponse jobList = response.body();
                 if(jobList != null) {
                     if(jobList.code == 200) {
@@ -95,8 +114,18 @@ public class SaveJobListFragment extends Fragment {
                         if(result != null) {
                             tvNumberJob.setText(result.total + " saved job");
                             adapter.addAll(result.data);
+
                             Log.d(TAG, "save job list total:" + result.total);
                             saved_job = result.total;
+
+                            if(page < result.last_page) {
+                                page++;
+                                isCanNext = true;
+                            } else
+                                isCanNext = false;
+                            if(result.data.size() == 0)
+                                isCanNext = false;
+
                             EventBus.getDefault().post(new SaveJobListEvent(saved_job));
                             if(result.total == 0) {
                                 lnErrorView.setVisibility(View.VISIBLE);
@@ -115,10 +144,24 @@ public class SaveJobListFragment extends Fragment {
 
             @Override
             public void onFailure(Throwable t) {
+                refresh.setRefreshing(false);
+                isProgessingLoadMore = false;
                 Toast.makeText(getActivity(), getString(R.string.error_connect),
                         Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    void search(String title) {
+        Intent intent = new Intent(getApplicationContext(), SearchResultActivity.class);
+        if (title.equals(""))
+            title = null;
+        JobListRequest request = new JobListRequest(1, "ASC", title, null, null,
+                null, null, null, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(SearchResultActivity.KEY_JOB, request);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
     }
 
     private void initUI(View view) {
@@ -128,7 +171,59 @@ public class SaveJobListFragment extends Fragment {
         rvListJob.setAdapter(adapter);
         tvNumberJob = (TextView) view.findViewById(R.id.tvNumberJob);
         lnErrorView = (LinearLayout) view.findViewById(R.id.lnErrorView);
-        Utils.closeKeyboard(getActivity());
+        imgFilter = (RelativeLayout) view.findViewById(R.id.imgFilter);
+        imgBack = (RelativeLayout) view.findViewById(R.id.imgRing);
+
+        refresh = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+
+        refresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refresh.setRefreshing(true);
+                adapter.clear();
+                page = 1;
+                bindData();
+            }
+        });
+        rvListJob.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(Utils.isReadyForPullEnd(recyclerView) && isCanNext && !isProgessingLoadMore) {
+                    bindData();
+                }
+            }
+        });
+
+        EditText edtSearch = (EditText) view.findViewById(R.id.edSearch);
+        edtSearch.requestFocus();
+        edtSearch.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if(actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search(v.getText().toString());
+                    return true;
+                }
+                return false;
+            }
+        });
+        imgBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), NotificationActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
+
+        imgFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), FilterActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent);
+            }
+        });
     }
 
     @Subscribe

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="dialog_success">500dp</dimen>
+    <dimen name="share_button">45dp</dimen>
 </resources>

@@ -10,4 +10,5 @@
     <dimen name="image_final_width">32dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
     <dimen name="dialog_success">250dp</dimen>
+    <dimen name="share_button">40dp</dimen>
 </resources>

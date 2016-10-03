@@ -28,6 +28,7 @@ import com.androidteam.jobnow.models.IndustryResponse;
 import com.androidteam.jobnow.models.JobListRequest;
 import com.androidteam.jobnow.models.JobLocationResponse;
 import com.androidteam.jobnow.models.SkillResponse;
+import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.DisableScrollRecyclerView;
 
 import java.util.ArrayList;
@@ -87,6 +88,8 @@ public class FilterActivity extends AppCompatActivity {
         initUI();
         bindData();
         initevent();
+
+        Utils.closeKeyboard(FilterActivity.this);
     }
 
     private String getLocationParseFromLocations() {
@@ -105,7 +108,7 @@ public class FilterActivity extends AppCompatActivity {
             }
         }
         Log.d(TAG, "location : " + sb.toString());
-        return null;
+        return sb.toString();
     }
 
     private String getSkillParseFromSkills() {
@@ -141,6 +144,7 @@ public class FilterActivity extends AppCompatActivity {
 
     private void clearSelectData() {
         //skill
+        spnIndustry.setSelection(0);
         for(int i = 0; i < skillAdapter.getItemCount(); i++) {
             SkillResponse.Skill skillItem = skillAdapter.getItembyPostion(i);
             if(skillItem.isSelected == 1) {
@@ -156,6 +160,8 @@ public class FilterActivity extends AppCompatActivity {
                 jobLocationAdapter.setData(i, jobLocation);
             }
         }
+        edtMinSalary.setText("");
+        edtTitle.setText("");
     }
 
     private void initevent() {
@@ -196,8 +202,8 @@ public class FilterActivity extends AppCompatActivity {
 
     private void bindData() {
         getIndustry();
-        getJobLocation();
         getSkill();
+        getJobLocation();
     }
 
     private void getSkill() {

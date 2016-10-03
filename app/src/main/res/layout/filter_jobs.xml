@@ -22,7 +22,11 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
                 android:orientation="vertical">
+
+                <requestFocus />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -86,13 +90,6 @@
                     android:layout_marginTop="10dp"
                     android:visibility="visible" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:text="Show more"
-                    android:textColor="@color/colorPrimary"
-                    android:textStyle="bold" />
 
             </LinearLayout>
 

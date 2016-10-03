@@ -3,6 +3,7 @@ package com.androidteam.jobnow.adapter;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -37,13 +38,8 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
         onBind = true;
         holder.bindData(list.get(position));
         onBind = false;
-
     }
 
-    @Override
-    public SkillResponse.Skill getItembyPostion(int position) {
-        return super.getItembyPostion(position);
-    }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         private CheckBox checkBox;
@@ -56,26 +52,24 @@ public class SkillAdapter extends BaseRecyclerAdapter<SkillResponse.Skill, Skill
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                     if(!onBind) {
                         SkillResponse.Skill skill = getItembyPostion(getAdapterPosition());
+                        Log.d("SkillAdapter", "skill:" + skill);
                         if (skill != null) {
                             skill.isSelected = isChecked ? 1 : 0;
                             setData(getAdapterPosition(), skill);
                         }
-                        if (isChecked) {
-                            checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
-                        } else {
-                            checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.black));
-                        }
                     }
-
                 }
             });
         }
 
         public void bindData(SkillResponse.Skill skill) {
+            Log.d(TAG, "skill bind data:" + skill.Name);
             checkBox.setText(skill.Name);
             if (skill.isSelected == 1) {
+                checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
                 checkBox.setChecked(true);
             } else {
+                checkBox.setTextColor(ContextCompat.getColor(mContext, R.color.black));
                 checkBox.setChecked(false);
             }
             //onBind = false;

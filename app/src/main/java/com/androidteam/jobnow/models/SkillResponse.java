@@ -1,12 +1,13 @@
 package com.androidteam.jobnow.models;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by manhi on 27/8/2016.
  */
 public class SkillResponse extends BaseResponse {
-    public List<Skill> result;
+    public ArrayList<Skill> result;
 
     public class Skill {
         public Integer id;

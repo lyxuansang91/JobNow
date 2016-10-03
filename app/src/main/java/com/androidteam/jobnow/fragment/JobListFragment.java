@@ -118,6 +118,7 @@ public class JobListFragment extends Fragment {
             public void onRefresh() {
                 refresh.setRefreshing(true);
                 adapter.clear();
+                page = 1;
                 bindData();
             }
         });

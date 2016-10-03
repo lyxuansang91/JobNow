@@ -1,25 +1,25 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.androidteam.jobnow.fragment.JobListFragment">
+    android:orientation="vertical">
+
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <RelativeLayout
-                android:focusable="true"
-                android:focusableInTouchMode="true"
                 android:id="@+id/rlSearchBar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorPrimary">
+                android:background="@color/colorPrimary"
+                android:focusable="true"
+                android:focusableInTouchMode="true">
 
                 <requestFocus />
 
@@ -54,12 +54,10 @@
 
                 </RelativeLayout>
 
-                <com.androidteam.jobnow.widget.CustomEditText
+                <EditText
+                    android:id="@+id/edSearch"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/edtSearchTitle"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/imgFilter"
                     android:layout_toRightOf="@+id/imgRing"
@@ -67,9 +65,9 @@
                     android:drawableLeft="@mipmap/ic_search"
                     android:drawablePadding="5dp"
                     android:ellipsize="start"
-                    android:gravity="center_vertical"
                     android:hint="@string/search_hint"
                     android:imeOptions="actionSearch"
+                    android:inputType="text"
                     android:padding="5dp"
                     android:maxLines="1" />
             </RelativeLayout>
@@ -101,7 +99,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#73befc" />
-            
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -109,37 +107,36 @@
                 <LinearLayout
                     android:id="@+id/lnErrorView"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:visibility="gone"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_height="wrap_content">
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/ivNodata"
-                        android:src="@mipmap/no_data"
                         android:layout_width="120dp"
-                        android:layout_height="120dp" />
+                        android:layout_height="120dp"
+                        android:src="@mipmap/no_data" />
 
                     <TextView
-                        android:text="@string/no_data"
-                        android:maxLines="1"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/no_data"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
 
                 <com.androidteam.jobnow.widget.CRecyclerView
                     android:id="@+id/rvListJob"
-                    android:visibility="visible"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:visibility="visible" />
 
             </RelativeLayout>
-
 
 
         </LinearLayout>

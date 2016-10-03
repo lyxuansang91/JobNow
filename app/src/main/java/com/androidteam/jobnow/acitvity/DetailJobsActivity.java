@@ -59,6 +59,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
     public static final String TAG = DetailJobsActivity.class.getSimpleName();
     public static final String KEY_LAT = "lattitude";
     public static final String KEY_LNG = "longtitude";
+    private static final int DELAY_TIME = 3000;
 
     private Handler mHandler = new Handler();
 
@@ -237,7 +238,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                                 if(dialog.isShowing())
                                     dialog.dismiss();
                             }
-                        }, 1000);
+                        }, 3000);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
                         tvTitle.setText("SAVED!");
@@ -289,7 +290,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                                 if(dialog.isShowing())
                                     dialog.dismiss();
                             }
-                        }, 1000);
+                        }, DELAY_TIME);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
                         tvTitle.setText("UNSAVED!");
@@ -342,7 +343,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                                 if(dialog.isShowing())
                                     dialog.dismiss();
                             }
-                        }, 1000);
+                        }, DELAY_TIME);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
                         tvTitle.setText("Unapplied!".toUpperCase());
@@ -391,7 +392,7 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                                 if(dialog.isShowing())
                                     dialog.dismiss();
                             }
-                        }, 1000);
+                        }, DELAY_TIME);
                         TextView tvTitle = (TextView) dialog.findViewById(R.id.tvTitle);
                         TextView tvMessage = (TextView) dialog.findViewById(R.id.tvMessage);
                         tvTitle.setText("Applied!".toUpperCase());

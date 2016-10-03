@@ -122,7 +122,8 @@ public class APICommon {
                                             @Path("app_id") String app_id,
                                             @Path("device_type") int device_type,
                                             @Path("user_id") int user_id,
-                                            @Path("ApiToken") String apiToken);
+                                            @Path("ApiToken") String apiToken,
+                                            @Query("page") Integer page);
 
         @POST("users/postLogin")
         Call<LoginResponse> loginUser(@Body LoginRequest request);

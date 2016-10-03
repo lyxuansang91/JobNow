@@ -36,13 +36,6 @@
         android:singleLine="true"
         android:textSize="16sp" />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Forgot password?"
-        android:textColor="@android:color/black" />
-
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="match_parent"
