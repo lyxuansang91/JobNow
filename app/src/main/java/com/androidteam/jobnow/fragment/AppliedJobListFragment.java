@@ -126,9 +126,17 @@ public class AppliedJobListFragment extends Fragment {
                             if(result.data.size() == 0)
                                 isCanNext = false;
                         }
-                    } else {
+                    } else if(jobList.code == 503) {
+                        MyApplication.getInstance().getApiToken(new MyApplication.TokenCallback() {
+                            @Override
+                            public void onTokenSuccess() {
+                                page = 1;
+                                bindData();
+                            }
+                        });
                         Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
-                    }
+                    } else
+                        Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -251,6 +259,8 @@ public class AppliedJobListFragment extends Fragment {
                             lnErrorView.setVisibility(View.GONE);
                             rvListJob.setVisibility(View.VISIBLE);
                         }
+                    } else if(response.body().code == 503){
+                        MyApplication.getInstance().getApiToken();
                     } else {
                         Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT)
                                 .show();

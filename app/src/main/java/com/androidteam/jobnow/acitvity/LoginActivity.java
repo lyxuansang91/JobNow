@@ -80,6 +80,7 @@ public class LoginActivity extends AppCompatActivity {
                         SharedPreferences.Editor editor = sharedPreferences.edit();
                         editor.putString(Config.KEY_TOKEN, response.body().result.apiToken).commit();
                         editor.putInt(Config.KEY_ID, response.body().result.id).commit();
+                        editor.putString(Config.KEY_EMAIL, response.body().result.email).commit();
                         Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);

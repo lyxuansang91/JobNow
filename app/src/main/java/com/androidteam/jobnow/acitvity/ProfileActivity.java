@@ -21,6 +21,8 @@ import com.androidteam.jobnow.fragment.MainFragment;
 import com.androidteam.jobnow.fragment.ProfileFragment;
 import com.androidteam.jobnow.fragment.SaveJobListFragment;
 import com.androidteam.jobnow.models.JobListReponse;
+import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.utils.Utils;
 import com.androidteam.jobnow.widget.TabEntity;
 import com.flyco.tablayout.CommonTabLayout;
@@ -112,6 +114,35 @@ public class ProfileActivity extends AppCompatActivity {
             tabbottom.hideMsg(1);
     }
 
+    public void getApiToken() {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String email = sharedPreferences.getString(Config.KEY_EMAIL, "");
+        Call<LoginResponse> call = service.getToken(new TokenRequest(userId, email));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                Log.d(TAG, "get token: " + response.body());
+                if(response.body() != null && response.body().code == 200) {
+                    SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Config.KEY_TOKEN, response.body().result.apiToken);
+                    editor.commit();
+                    displayNumberOfSaveJob();
+                } else
+                    Toast.makeText(getApplicationContext(), response.body().message,
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.error_connect, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
     private void displayNumberOfSaveJob() {
 
         final ProgressDialog progressDialog = ProgressDialog.show(ProfileActivity.this, "Loading...",
@@ -139,7 +170,8 @@ public class ProfileActivity extends AppCompatActivity {
                             Log.d(TAG, "save job list total:" + result.total);
                             EventBus.getDefault().post(new SaveJobListEvent(result.total));
                         }
-                    } else {
+                    } else if(jobList.code == 503) {
+                        getApiToken();
                         Toast.makeText(getApplicationContext(), jobList.message, Toast.LENGTH_SHORT).show();
                     }
 

@@ -89,6 +89,13 @@ public class SkillsFragment extends Fragment {
                         lnRemoveSkill.setVisibility(View.GONE);
                     else
                         lnRemoveSkill.setVisibility(View.VISIBLE);
+                } else if(response.body().code == 503) {
+                    MyApplication.getInstance().getApiToken(new MyApplication.TokenCallback() {
+                        @Override
+                        public void onTokenSuccess() {
+                            bindData();
+                        }
+                    });
                 }
             }
 
@@ -117,6 +124,14 @@ public class SkillsFragment extends Fragment {
                     Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
                     if (response.body().code == 200) {
                         bindData();
+                    } else if(response.body().code == 503) {
+                        MyApplication.getInstance().getApiToken(new MyApplication.TokenCallback() {
+                            @Override
+                            public void onTokenSuccess() {
+                                removeAllSkill();
+                            }
+                        });
+
                     }
                 }
             }

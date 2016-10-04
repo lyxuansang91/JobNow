@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,8 @@ import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.ExperienceRequest;
 import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.ExperienceResponse;
+import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.TokenRequest;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -29,6 +32,7 @@ public class EditExperienceActivity extends AppCompatActivity implements View.On
     private Button btnSave, btnCancel, btnRemove;
     private EditText edCompanyName, edJobOrPosition, edDescription;
     private String companyName, location, description;
+    private String TAG = EditExperienceActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +46,34 @@ public class EditExperienceActivity extends AppCompatActivity implements View.On
         initUI();
         bindData();
         event();
+    }
 
+    public void getApiToken() {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String email = sharedPreferences.getString(Config.KEY_EMAIL, "");
+        Call<LoginResponse> call = service.getToken(new TokenRequest(userId, email));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                Log.d(TAG, "get token: " + response.body());
+                if(response.body() != null && response.body().code == 200) {
+                    SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Config.KEY_TOKEN, response.body().result.apiToken);
+                    editor.commit();
+                } else
+                    Toast.makeText(getApplicationContext(), response.body().message,
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.error_connect, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
     }
 
     private void event() {
@@ -118,9 +149,14 @@ public class EditExperienceActivity extends AppCompatActivity implements View.On
                     if (response.body().code == 200) {
                         setResult(RESULT_OK);
                         finish();
-                    }
-                    Toast.makeText(EditExperienceActivity.this, response.body().message,
-                            Toast.LENGTH_SHORT).show();
+                    } else if(response.body().code == 503) {
+                        getApiToken();
+                        Toast.makeText(EditExperienceActivity.this, response.body().message,
+                                Toast.LENGTH_SHORT).show();
+                    } else
+                        Toast.makeText(EditExperienceActivity.this, response.body().message,
+                                Toast.LENGTH_SHORT).show();
+
                 }
             }
 
@@ -146,6 +182,13 @@ public class EditExperienceActivity extends AppCompatActivity implements View.On
                     if (response.body().code == 200) {
                         setResult(RESULT_OK);
                         finish();
+                    } else if(response.body().code == 503) {
+                        getApiToken();
+                        Toast.makeText(EditExperienceActivity.this, response.body().message,
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(EditExperienceActivity.this, response.body().message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }

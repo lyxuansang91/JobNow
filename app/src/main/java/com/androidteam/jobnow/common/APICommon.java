@@ -1,6 +1,5 @@
 package com.androidteam.jobnow.common;
 
-import android.app.Notification;
 import android.util.Log;
 
 import com.androidteam.jobnow.models.ApplyJobRequest;
@@ -24,6 +23,7 @@ import com.androidteam.jobnow.models.RegisterResponse;
 import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.models.SkillRequest;
 import com.androidteam.jobnow.models.SkillResponse;
+import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.models.UpdateProfileRequest;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.models.UserDetailResponse;
@@ -77,6 +77,9 @@ public class APICommon {
     }
 
     public interface JobNowService {
+
+        @POST("users/getToken")
+        Call<LoginResponse> getToken(@Body TokenRequest request);
 
         @GET("notification/getListNotification/{sign}/{app_id}/{device_type}/{user_id}/{api_token}")
         Call<NotificationResponse> getListNotification(@Path("sign") String sign,

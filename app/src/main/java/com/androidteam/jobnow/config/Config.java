@@ -15,4 +15,5 @@ public class Config {
     public static final int TYPE_EDIT_POSTALCODE = 5;
     public static final int TYPE_EDIT_DESCRIPTION = 6;
 
+    public static final String KEY_EMAIL = "Email";
 }

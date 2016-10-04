@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,8 @@ import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.JobLocationResponse;
+import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.models.UpdateProfileRequest;
 import com.androidteam.jobnow.models.UserDetailResponse;
 import com.androidteam.jobnow.models.UserModel;
@@ -44,6 +47,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class MyProfileFragment extends Fragment implements View.OnClickListener {
     private TextView tvEmail, tvPhoneNumber, tvGender, tvBirthday, tvCountry, tvPostalCode, tvDescription;
@@ -80,6 +85,34 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
         loadUserDetail();
     }
 
+    public void getApiToken() {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String email = sharedPreferences.getString(Config.KEY_EMAIL, "");
+        Call<LoginResponse> call = service.getToken(new TokenRequest(userId, email));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                if(response.body() != null && response.body().code == 200) {
+                    SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Config.KEY_TOKEN, response.body().result.apiToken);
+                    editor.commit();
+                    bindData();
+                } else
+                    Toast.makeText(getActivity().getApplicationContext(), response.body().message,
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getActivity().getApplicationContext(), R.string.error_connect, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
     private void loadUserDetail() {
         progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
@@ -103,7 +136,8 @@ public class MyProfileFragment extends Fragment implements View.OnClickListener 
                             setProfileToUI(true);
                         }
                     });
-
+                } else if(response.body().code == 503) {
+                    getApiToken();
                 }
             }
 

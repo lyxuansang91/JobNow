@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -15,6 +13,7 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,6 +28,7 @@ import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.adapter.JobListAdapter;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.common.FunctionCommon;
+import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.eventbus.ApplyJobEvent;
 import com.androidteam.jobnow.eventbus.SaveJobEvent;
@@ -37,10 +37,9 @@ import com.androidteam.jobnow.models.BaseResponse;
 import com.androidteam.jobnow.models.DeleteJobRequest;
 import com.androidteam.jobnow.models.DetailJobResponse;
 import com.androidteam.jobnow.models.JobObject;
+import com.androidteam.jobnow.models.LoginResponse;
 import com.androidteam.jobnow.models.SaveJobRequest;
 import com.androidteam.jobnow.utils.Utils;
-import com.facebook.share.ShareApi;
-import com.google.android.gms.maps.model.LatLng;
 import com.ocpsoft.pretty.time.PrettyTime;
 import com.squareup.picasso.Picasso;
 
@@ -108,6 +107,36 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
         }
     }
 
+    public void getApiToken() {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String email = sharedPreferences.getString(Config.KEY_EMAIL, "");
+        Call<LoginResponse> call = service.getToken(new TokenRequest(userId, email));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                Log.d(TAG, "get token: " + response.body());
+                if(response.body() != null && response.body().code == 200) {
+                    SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Config.KEY_TOKEN, response.body().result.apiToken);
+                    editor.commit();
+                    bindData1();
+                } else
+                    Toast.makeText(getApplicationContext(), response.body().message,
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.error_connect, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
+
 
     private void bindData1() {
         progressDialog = ProgressDialog.show(this, "", getString(R.string.loading), true, true);
@@ -142,6 +171,9 @@ public class DetailJobsActivity extends AppCompatActivity implements View.OnClic
                     longtitude = response.body().result.longtitude;
                     tvYearOfExperience.setText(jobObject.YearOfExperience);
                     tvCountUserApplyJob.setText(jobObject.CountUserApplyJob + " Applications");
+                } else if(response.body().code == 503) {
+                    getApiToken();
+                    bindData1();
                 }
             }
 

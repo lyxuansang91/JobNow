@@ -2,27 +2,33 @@ package com.androidteam.jobnow.acitvity;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.androidteam.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.common.APICommon.JobNowService;
+import com.androidteam.jobnow.config.Config;
+import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.utils.TypefaceUtil;
 import com.facebook.FacebookSdk;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.squareup.okhttp.Interceptor;
 import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.Request;
 import com.squareup.okhttp.logging.HttpLoggingInterceptor;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit.Call;
+import retrofit.Callback;
 import retrofit.GsonConverterFactory;
+import retrofit.Response;
 import retrofit.Retrofit;
 
 /**
@@ -100,6 +106,63 @@ public class MyApplication extends Application {
         initAPIService();
     }
 
+    public void getApiToken() {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String email = sharedPreferences.getString(Config.KEY_EMAIL, "");
+        Call<LoginResponse> call = service.getToken(new TokenRequest(userId, email));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                Log.d(TAG, "get token: " + response.body());
+                if(response.body() != null && response.body().code == 200) {
+                    SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Config.KEY_TOKEN, response.body().result.apiToken);
+                    editor.commit();
+                } else
+                    Toast.makeText(getApplicationContext(), response.body().message,
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.error_connect, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
+    public void getApiToken(final TokenCallback callback) {
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int userId = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String email = sharedPreferences.getString(Config.KEY_EMAIL, "");
+        Call<LoginResponse> call = service.getToken(new TokenRequest(userId, email));
+        call.enqueue(new Callback<LoginResponse>() {
+            @Override
+            public void onResponse(Response<LoginResponse> response, Retrofit retrofit) {
+                Log.d(TAG, "get token: " + response.body());
+                if(response.body() != null && response.body().code == 200) {
+                    SharedPreferences sharedPreferences = getSharedPreferences(Config.Pref, MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Config.KEY_TOKEN, response.body().result.apiToken);
+                    editor.commit();
+                    callback.onTokenSuccess();
+                } else
+                    Toast.makeText(getApplicationContext(), response.body().message,
+                            Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Toast.makeText(getApplicationContext(), R.string.error_connect, Toast.LENGTH_SHORT)
+                        .show();
+            }
+        });
+    }
+
     private void initAPIService() {
         final Gson gson = new GsonBuilder().serializeNulls().create();
 
@@ -129,5 +192,9 @@ public class MyApplication extends Application {
 //        setDefaultFont(this, "MONOSPACE", "fonts/FuturaLT-Oblique.ttf");
 //        setDefaultFont(this, "SANS_SERIF", "fonts/FuturaLT.ttf");
         setDefaultFont(this, "SERIF", "helveticaneue.ttf");
+    }
+
+    public interface TokenCallback {
+        public void onTokenSuccess();
     }
 }

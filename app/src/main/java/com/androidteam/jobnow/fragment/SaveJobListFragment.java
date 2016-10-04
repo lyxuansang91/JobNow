@@ -135,7 +135,14 @@ public class SaveJobListFragment extends Fragment {
                                 rvListJob.setVisibility(View.VISIBLE);
                             }
                         }
-                    } else {
+                    } else if(jobList.code == 503) {
+                        MyApplication.getInstance().getApiToken(new MyApplication.TokenCallback() {
+                            @Override
+                            public void onTokenSuccess() {
+                                page = 1;
+                                bindData();
+                            }
+                        });
                         Toast.makeText(getActivity(), jobList.message, Toast.LENGTH_SHORT).show();
                     }
 

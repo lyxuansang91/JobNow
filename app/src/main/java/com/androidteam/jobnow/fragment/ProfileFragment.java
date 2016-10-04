@@ -42,6 +42,8 @@ import com.androidteam.jobnow.acitvity.SplashScreen;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.BaseResponse;
+import com.androidteam.jobnow.models.LoginResponse;
+import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.squareup.okhttp.MediaType;
@@ -57,6 +59,8 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -94,6 +98,48 @@ public class ProfileFragment extends Fragment {
         bindData();
         initEvent();
         return v;
+    }
+
+    private void logout() {
+        progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
+        final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
+        int userID = sharedPreferences.getInt(Config.KEY_ID, 0);
+        String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
+
+        APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
+        Call<BaseResponse> call = service.getLogout(APICommon.getSign(APICommon.getApiKey(), "api/v1/users/getLogout"), APICommon.getAppId(), APICommon.getDeviceType(), userID, token);
+        call.enqueue(new Callback<BaseResponse>() {
+            @Override
+            public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
+                progressDialog.dismiss();
+                if (response.body() != null) {
+                    if (response.body().code == 200) {
+                        Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.clear();
+                        editor.commit();
+                        Intent intent = new Intent(getActivity(), SplashScreen.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        getActivity().finish(); // call this to f
+                    } else if(response.body().code == 503){
+                        MyApplication.getInstance().getApiToken(new MyApplication.TokenCallback() {
+                            @Override
+                            public void onTokenSuccess() {
+                                logout();
+                            }
+                        });
+                        Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                progressDialog.dismiss();
+                Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void initEvent() {
@@ -167,39 +213,7 @@ public class ProfileFragment extends Fragment {
         imgLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                progressDialog = ProgressDialog.show(getActivity(), "", getString(R.string.loading), true, true);
-                final SharedPreferences sharedPreferences = getActivity().getSharedPreferences(Config.Pref, Context.MODE_PRIVATE);
-                int userID = sharedPreferences.getInt(Config.KEY_ID, 0);
-                String token = sharedPreferences.getString(Config.KEY_TOKEN, "");
-
-                APICommon.JobNowService service = MyApplication.getInstance().getJobNowService();
-                Call<BaseResponse> call = service.getLogout(APICommon.getSign(APICommon.getApiKey(), "api/v1/users/getLogout"), APICommon.getAppId(), APICommon.getDeviceType(), userID, token);
-                call.enqueue(new Callback<BaseResponse>() {
-                    @Override
-                    public void onResponse(Response<BaseResponse> response, Retrofit retrofit) {
-                        progressDialog.dismiss();
-                        if (response.body() != null) {
-                            if (response.body().code == 200) {
-                                Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.clear();
-                                editor.commit();
-                                Intent intent = new Intent(getActivity(), SplashScreen.class);
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(intent);
-                                getActivity().finish(); // call this to f
-                            } else {
-                                Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        progressDialog.dismiss();
-                        Toast.makeText(getActivity(), getString(R.string.error_connect), Toast.LENGTH_SHORT).show();
-                    }
-                });
+               logout();
             }
         });
     }
@@ -312,7 +326,6 @@ public class ProfileFragment extends Fragment {
                 public void onResponse(Response<UploadFileResponse> response, Retrofit retrofit) {
                     if (response.body() != null) {
                         Toast.makeText(getActivity(), response.body().message, Toast.LENGTH_SHORT).show();
-
                     }
                 }
 

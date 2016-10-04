@@ -219,13 +219,14 @@ public class FilterActivity extends AppCompatActivity {
                 progressDialog.dismiss();
                 if (response.body() != null && response.body().code == 200) {
                     if (response.body().result != null && response.body().result.size() > 0) {
+                        skillAdapter.clear();
 //                        skillAdapter.addAll(response.body().result);
                         for (int i = 0; i < response.body().result.size(); i++) {
                             if (response.body().result.get(i).isSelected == null) {
                                 response.body().result.get(i).isSelected = 0;
                             }
-                            skillAdapter.add(response.body().result.get(i));
                         }
+                        skillAdapter.addAll(response.body().result);
                     }
                 }
             }
