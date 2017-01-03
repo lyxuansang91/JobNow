@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.androidteam.jobnow.fragment.FilterFragment">
+    tools:context="com.newtech.jobnow.fragment.FilterFragment">
 
 
     <RelativeLayout
@@ -68,7 +68,7 @@
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
-                <com.androidteam.jobnow.widget.DisableScrollRecyclerView
+                <com.newtech.jobnow.widget.DisableScrollRecyclerView
                     android:id="@+id/rvJobLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -79,13 +79,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:visibility="gone"
                     android:text="Skill"
                     android:textColor="@color/black"
                     android:textStyle="bold" />
 
-                <com.androidteam.jobnow.widget.DisableScrollRecyclerView
+                <com.newtech.jobnow.widget.DisableScrollRecyclerView
                     android:id="@+id/rvSkill"
                     android:layout_width="match_parent"
+                    android:visibility="gone"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp" />
 

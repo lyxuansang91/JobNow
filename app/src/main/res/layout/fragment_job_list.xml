@@ -130,7 +130,7 @@
                 </LinearLayout>
 
 
-                <com.androidteam.jobnow.widget.CRecyclerView
+                <com.newtech.jobnow.widget.CRecyclerView
                     android:id="@+id/rvListJob"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

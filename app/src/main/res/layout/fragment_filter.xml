@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.androidteam.jobnow.fragment.FilterFragment">
+    tools:context="com.newtech.jobnow.fragment.FilterFragment">
 
     <android.support.design.widget.AppBarLayout
         style="@style/AppTheme.AppBarOverlay"
@@ -38,7 +38,7 @@
                     android:layout_marginRight="10dp"
                     android:src="@mipmap/ic_filter" />
 
-                <com.androidteam.jobnow.widget.CustomEditText
+                <com.newtech.jobnow.widget.CustomEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="20dp"

@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    tools:context="com.androidteam.jobnow.fragment.SkillsFragment">
+    tools:context="com.newtech.jobnow.fragment.SkillsFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -81,7 +81,7 @@
                 android:src="@mipmap/ic_edit_blue"
                 android:visibility="gone" />
 
-            <com.androidteam.jobnow.widget.CRecyclerView
+            <com.newtech.jobnow.widget.CRecyclerView
                 android:id="@+id/rvSkill"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

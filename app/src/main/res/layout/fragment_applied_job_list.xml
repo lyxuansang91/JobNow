@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.androidteam.jobnow.fragment.JobListFragment">
+    tools:context="com.newtech.jobnow.fragment.JobListFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
 
             </RelativeLayout>
 
-            <com.androidteam.jobnow.widget.CustomEditText
+            <com.newtech.jobnow.widget.CustomEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -94,7 +94,7 @@
             android:layout_height="1dp"
             android:background="#73befc" />
 
-        <com.androidteam.jobnow.widget.CRecyclerView
+        <com.newtech.jobnow.widget.CRecyclerView
             android:id="@+id/rvListJob"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />

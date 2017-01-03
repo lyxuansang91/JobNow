@@ -36,7 +36,7 @@
             android:layout_height="1dp"
             android:background="@color/colorGray" />
 
-        <com.androidteam.jobnow.widget.CRecyclerView
+        <com.newtech.jobnow.widget.CRecyclerView
             android:id="@+id/rvExperience"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

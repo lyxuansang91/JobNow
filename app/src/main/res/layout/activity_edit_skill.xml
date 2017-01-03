@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fitsSystemWindows="true"
-    tools:context="com.androidteam.jobnow.acitvity.EditSkillActivity">
+    tools:context="com.newtech.jobnow.acitvity.EditSkillActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -18,7 +18,7 @@
             android:layout_above="@+id/lnBottom"
             android:orientation="vertical">
 
-            <com.androidteam.jobnow.widget.CenteredToolbar
+            <com.newtech.jobnow.widget.CenteredToolbar
                 android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
@@ -26,7 +26,7 @@
                 android:title="@string/profile"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-            <com.androidteam.jobnow.widget.CRecyclerView
+            <com.newtech.jobnow.widget.CRecyclerView
                 android:id="@+id/rvSkill"
                 android:layout_width="match_parent"
                 android:padding="10dp"
