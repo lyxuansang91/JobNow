@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.eventbus.EditExperienceEvent;
 import com.androidteam.jobnow.models.ExperienceResponse;
 import com.ocpsoft.pretty.time.PrettyTime;

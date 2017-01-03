@@ -12,7 +12,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.ExperienceRequest;

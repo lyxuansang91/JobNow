@@ -36,14 +36,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.acitvity.SplashScreen;
 import com.androidteam.jobnow.common.APICommon;
 import com.androidteam.jobnow.config.Config;
 import com.androidteam.jobnow.models.BaseResponse;
-import com.androidteam.jobnow.models.LoginResponse;
-import com.androidteam.jobnow.models.TokenRequest;
 import com.androidteam.jobnow.models.UploadFileResponse;
 import com.androidteam.jobnow.widget.CenteredToolbar;
 import com.squareup.okhttp.MediaType;
@@ -59,8 +57,6 @@ import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
 import retrofit.Retrofit;
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 /**
@@ -122,7 +118,7 @@ public class ProfileFragment extends Fragment {
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         getActivity().finish(); // call this to f
-                    } else if(response.body().code == 503){
+                    } else if (response.body().code == 503) {
                         MyApplication.getInstance().getApiToken(new MyApplication.TokenCallback() {
                             @Override
                             public void onTokenSuccess() {
@@ -199,7 +195,6 @@ public class ProfileFragment extends Fragment {
                 }
 
 
-
             }
         });
 
@@ -213,10 +208,11 @@ public class ProfileFragment extends Fragment {
         imgLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               logout();
+                logout();
             }
         });
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
@@ -231,6 +227,7 @@ public class ProfileFragment extends Fragment {
             }
         }
     }
+
     private void changeAvatar() {
         final CharSequence[] items = {getString(R.string.takephoto), getString(R.string.gallery), getString(R.string.cancel)};
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());

@@ -17,7 +17,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.acitvity.FilterActivity;
 import com.androidteam.jobnow.acitvity.NotificationActivity;
 import com.androidteam.jobnow.acitvity.SearchResultActivity;

@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 
 /**
  * A placeholder fragment containing a simple view.

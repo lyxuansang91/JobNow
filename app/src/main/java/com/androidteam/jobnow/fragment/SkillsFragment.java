@@ -15,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.acitvity.EditSkillActivity;
 import com.androidteam.jobnow.acitvity.MyApplication;
 import com.androidteam.jobnow.adapter.MySkillAdapter;

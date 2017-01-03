@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.fragment.JobListFragment;
 import com.androidteam.jobnow.models.JobListRequest;
 

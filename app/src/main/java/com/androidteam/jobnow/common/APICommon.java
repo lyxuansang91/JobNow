@@ -43,7 +43,7 @@ import retrofit.http.Url;
  * Created by SANG on 8/21/2016.
  */
 public class APICommon {
-    public static final String BASE_URL = "http://jobnew.vnblues.net/api/v1/";
+    public static final String BASE_URL = "http://jobnow.com.sg/api/v1/";
     public static final int ANDROID = 4;
     public static final int IOS = 3;
     public static final int WEB = 2;

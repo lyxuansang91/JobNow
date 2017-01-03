@@ -18,7 +18,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.adapter.IndustryAdapter;
 import com.androidteam.jobnow.adapter.JobLocationAdapter;
 import com.androidteam.jobnow.adapter.SkillAdapter;

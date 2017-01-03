@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.acitvity.AddExperienceActivity;
 import com.androidteam.jobnow.acitvity.EditExperienceActivity;
 import com.androidteam.jobnow.acitvity.MyApplication;

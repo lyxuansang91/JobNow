@@ -8,7 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 
 /**
  * Created by manhi on 10/8/2016.

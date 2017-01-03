@@ -7,7 +7,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.AttributeSet;
 import android.view.View;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 

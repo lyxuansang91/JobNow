@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.androidteam.jobnow.R;
+import com.newtech.jobnow.R;
 import com.androidteam.jobnow.acitvity.DetailJobsActivity;
 import com.androidteam.jobnow.eventbus.DeleteJobEvent;
 import com.androidteam.jobnow.models.JobObject;
